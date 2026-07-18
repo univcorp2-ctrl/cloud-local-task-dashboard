@@ -1,0 +1,64 @@
+name: CI and task snapshot
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm install
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dashboard-dist
+          path: dist
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test collector
+        run: python -m unittest discover -s agent -p 'test_*.py'
+
+  refresh-cloud-snapshot:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Collect GitHub Actions and Cloudflare Cron
+        env:
+          GH_TASK_SOURCE_REPOS: ${{ vars.GH_TASK_SOURCE_REPOS }}
+          GH_TASK_SOURCE_TOKEN: ${{ secrets.GH_TASK_SOURCE_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python agent/task_collector.py --cloud-only --output public/data/tasks.json
+      - name: Commit changed snapshot
+        run: |
+          git config user.name 'task-control-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add public/data/tasks.json
+          git diff --cached --quiet || git commit -m 'chore: refresh cloud task snapshot'
+          git push
+      - uses: actions/upload-artifact@v4
+        with:
+          name: task-snapshot
+          path: public/data/tasks.json
