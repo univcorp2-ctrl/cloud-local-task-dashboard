@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-28T07:18:15Z",
+  "generatedAt": "2026-07-28T10:06:36Z",
   "redacted": true,
   "agents": [
     {
@@ -7,7 +7,7 @@
       "name": "GitHub Actions",
       "kind": "Cloud workflow",
       "status": "online",
-      "lastSeen": "2026-07-28T07:18:15Z",
+      "lastSeen": "2026-07-28T10:06:36Z",
       "taskCount": 1
     },
     {
@@ -27,13 +27,13 @@
       "environment": "univcorp2-ctrl/cloud-local-task-dashboard",
       "status": "running",
       "schedule": ".github/workflows/ci.yml",
-      "lastRun": "2026-07-28T07:17:59Z",
+      "lastRun": "2026-07-28T10:06:26Z",
       "nextRun": null,
       "durationSeconds": null,
       "successRate": 100.0,
       "command": ".github/workflows/ci.yml",
       "host": "github.com",
-      "detail": "https://github.com/univcorp2-ctrl/cloud-local-task-dashboard/actions/runs/30337877746"
+      "detail": "https://github.com/univcorp2-ctrl/cloud-local-task-dashboard/actions/runs/30349417293"
     }
   ]
 }
