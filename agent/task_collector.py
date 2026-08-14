@@ -28,9 +28,30 @@ def task_id(prefix: str, value: str) -> str:
     return f"{prefix}-{hashlib.sha1(value.encode('utf-8')).hexdigest()[:12]}"
 
 
+def hidden_subprocess_kwargs() -> dict[str, Any]:
+    """Return Windows process flags that guarantee no console window is shown."""
+    if os.name != 'nt':
+        return {}
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = subprocess.SW_HIDE
+    return {
+        'creationflags': subprocess.CREATE_NO_WINDOW,
+        'startupinfo': startupinfo,
+    }
+
+
 def run(command: list[str]) -> str:
     try:
-        result = subprocess.run(command, capture_output=True, text=True, timeout=20, check=False)
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=20,
+            check=False,
+            stdin=subprocess.DEVNULL,
+            **hidden_subprocess_kwargs(),
+        )
         return result.stdout if result.returncode == 0 else ''
     except (OSError, subprocess.SubprocessError):
         return ''
