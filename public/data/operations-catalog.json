@@ -7,31 +7,39 @@
   "totalUserScheduledTasks": 113,
   "classificationNote": "Category is registered for select repos, inferred by name for others; manual verification required.",
   "coverageNote": "Includes GitHub repository metadata and non-Microsoft local Windows tasks, not the execution history of all workflows.",
-  "quotaStatus": "unavailable",
+  "quotaStatus": "partial",
   "quotas": [
     {
       "provider": "Codex CLI",
-      "remainingPercent": null,
-      "resetAt": null,
-      "evidence": "No verified provider quota endpoint"
+      "remainingPercent": 22,
+      "resetAt": "2026-10-19T14:25:25Z",
+      "evidence": "2026-10-19 22:43 JST Codex token_countログ（5時間/7日間）",
+      "usedPercent": 78,
+      "weeklyUsedPercent": 28,
+      "windowLabel": "5時間",
+      "quality": "measured",
+      "model": "gpt-6.1-sol"
     },
     {
       "provider": "Claude Code CLI",
       "remainingPercent": null,
       "resetAt": null,
-      "evidence": "No verified provider quota endpoint"
+      "evidence": "No verified provider quota endpoint ／ 推定の母数を確認中",
+      "quality": "unavailable"
     },
     {
       "provider": "Gemini / Antigravity CLI",
       "remainingPercent": null,
       "resetAt": null,
-      "evidence": "No verified provider quota endpoint"
+      "evidence": "No verified provider quota endpoint ／ 推定の母数を確認中",
+      "quality": "unavailable"
     },
     {
       "provider": "ChatGPT通常Chat",
       "remainingPercent": null,
       "resetAt": null,
-      "evidence": "No official remaining-quota telemetry connected"
+      "evidence": "No official remaining-quota telemetry connected ／ 推定の母数を確認中",
+      "quality": "unavailable"
     }
   ],
   "categories": [
