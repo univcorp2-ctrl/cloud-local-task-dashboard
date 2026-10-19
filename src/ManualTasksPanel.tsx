@@ -12,7 +12,7 @@ const views = [
 const categories = ['🏠 不動産・民泊', '🏦 銀行・融資・補助金', '🧾 確定申告・経理', '⚙️ AI開発・自動化',
   '📦 物販・買取', '🤝 営業・連絡', '📝 事務・生活', '🎯 経営・戦略', '📚 調査・学習', '🔍 要確認'];
 const rank = (s: string) => s.includes('最高') ? 0 : s.includes('高') ? 1 : s.includes('中') ? 2 : 3;
-const isHuman = (t: Task) => t.owner.includes('人間') || t.executor === 'Hiro' || Boolean(t.humanAction);
+const isHuman = (t: Task) => (t.owner.includes('人間') || t.owner.includes('両方')) || t.executor === 'Hiro' || Boolean(t.humanAction);
 const isAI = (t: Task) => t.owner.includes('AI') || ['CLIエージェント', 'ChatGPT追撃', '自動調査'].includes(t.executor);
 const safeDue = (value: string | null) => value ? value.slice(0, 10) : '期限なし';
 
