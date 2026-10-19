@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fallbackSnapshot } from './sample';
+import TokenUsagePanel from './TokenUsagePanel';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
 const statusLabel: Record<TaskStatus, string> = {
@@ -58,7 +59,7 @@ function TaskRow({ task }: { task: ScheduledTask }) {
 }
 
 export default function App() {
-  const [snapshot, setSnapshot] = useState<TaskSnapshot>(fallbackSnapshot);
+  const [snapshot, setSnapshot] = useState<TaskSnapshot>({ ...fallbackSnapshot, generatedAt: '', agents: [], tasks: [] });
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<'all' | TaskStatus>('all');
   const [source, setSource] = useState<'all' | ScheduledTask['source']>('all');
@@ -132,6 +133,8 @@ export default function App() {
           <KpiCard tone="orange" label="成功" value={totals.success} note={`成功率 ${successPercent}%`} icon="✓" />
           <KpiCard tone="red" label="要確認" value={totals.failed} note="直近の失敗" icon="!" />
         </section>
+
+        <TokenUsagePanel />
 
         <section className="overview-grid">
           <article className="panel status-panel">
