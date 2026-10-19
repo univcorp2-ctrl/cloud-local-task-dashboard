@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fallbackSnapshot } from './sample';
 import TokenUsagePanel from './TokenUsagePanel';
+import ManualTasksPanel from './ManualTasksPanel';
 import OperationsOverview from './OperationsOverview';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
@@ -60,6 +61,8 @@ function TaskRow({ task }: { task: ScheduledTask }) {
 }
 
 export default function App() {
+  const [activePage, setActivePage] = useState<'automation' | 'work'>(() => typeof window !== 'undefined' && window.location.hash === '#my-tasks' ? 'work' : 'automation');
+  useEffect(() => { const onHashChange = () => setActivePage(window.location.hash === '#my-tasks' ? 'work' : 'automation'); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
   const [snapshot, setSnapshot] = useState<TaskSnapshot>({ ...fallbackSnapshot, generatedAt: '', agents: [], tasks: [] });
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<'all' | TaskStatus>('all');
@@ -109,13 +112,16 @@ export default function App() {
       <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
         <div className="brand"><span className="brand-mark">☁</span><div><strong>Task Control</strong><small>Cloud + Local</small></div></div>
         <nav aria-label="メインナビゲーション">
-          <a className="active" href="#dashboard">⌂ <span>ダッシュボード</span></a>
-          <a href="#quota">AI残量</a>
-          <a href="#inventory">全リポ・分類</a>
-          <a href="#tasks">☷ <span>タスク一覧</span></a>
-          <a href="#history">◷ <span>実行履歴</span></a>
-          <a href="#agents">▣ <span>エージェント</span></a>
-          <a href="#setup">⚙ <span>接続設定</span></a>
+          <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
+          <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
+          {activePage === 'automation' && <>
+            <a href="#quota">AI残量</a>
+            <a href="#inventory">全リポ・分類</a>
+            <a href="#tasks">▤ <span>自動実行一覧</span></a>
+            <a href="#history">◷ <span>実行履歴</span></a>
+            <a href="#agents">▣ <span>エージェント</span></a>
+            <a href="#setup">⚙ <span>接続設定</span></a>
+          </>}
         </nav>
         <div className="sidebar-foot"><span className="live-dot" /> 60秒ごとに自動更新</div>
       </aside>
@@ -123,13 +129,14 @@ export default function App() {
       <main>
         <header className="topbar" id="dashboard">
           <button className="menu-button" onClick={() => setMenuOpen((value) => !value)} aria-label="メニューを開閉">☰</button>
-          <div><p className="eyebrow">UNIFIED OPERATIONS</p><h1>クラウド & ローカル定期タスク</h1><p>すべての自動処理を、ひと目で把握。</p></div>
-          <div className="header-actions">
-            <span className={loadError ? 'data-state warning' : 'data-state'}><i />{loadError ? 'サンプル表示中' : 'データ接続済み'}</span>
+          <div><p className="eyebrow">UNIFIED OPERATIONS</p><h1>{activePage === "automation" ? "クラウド & ローカル定期タスク" : "全タスク・本人対応"}</h1><p>{activePage === "automation" ? "AI稼働・トークン消費と自動処理を監視。" : "Notionのタスクをカテゴリ・担当者別に整理。"}</p></div>
+          {activePage === 'automation' && <div className="header-actions">
+            <span className={loadError ? 'data-state warning' : 'data-state'}><i />{loadError ? '取得失敗' : 'データ接続済み'}</span>
             <button className="refresh-button" onClick={() => void load()} disabled={refreshing}>{refreshing ? '更新中…' : '↻ 更新'}</button>
-          </div>
+          </div>}
         </header>
 
+        {activePage === 'automation' ? <>
         <section className="kpi-grid" aria-label="主要指標">
           <KpiCard tone="blue" label="総タスク数" value={totals.total} note={`${snapshot.agents.filter((agent) => agent.status === 'online').length} エージェント接続`} icon="▤" />
           <KpiCard tone="green" label="実行中" value={totals.running} note="リアルタイム監視" icon="▶" />
@@ -172,7 +179,8 @@ export default function App() {
           <article className="panel setup-panel" id="setup"><div className="panel-heading"><div><span className="section-kicker">QUICK START</span><h2>データ接続</h2></div></div><p>ローカルPCではインストールスクリプトがOSのタスク管理機能へ自動登録します。クラウド側はGitHub Actionsが15分ごとに収集します。</p><div className="setup-steps"><span>1</span><div><strong>ローカルエージェント</strong><small><code>scripts/install-agent.ps1</code> または <code>scripts/install-agent.sh</code></small></div></div><div className="setup-steps"><span>2</span><div><strong>クラウド連携</strong><small>GitHub / Cloudflare用のSecrets名だけを登録</small></div></div><a className="docs-link" href="https://github.com/univcorp2-ctrl/cloud-local-task-dashboard/blob/main/docs/setup.md">設定ガイドを見る →</a></article>
         </section>
 
-        <footer><span>最終スナップショット: {formatDate(snapshot.generatedAt)}</span><span>Task Control Center v1.0</span></footer>
+        <footer><span>最終スナップショット: {formatDate(snapshot.generatedAt)}</span><span>Task Control Center v1.1</span></footer>
+        </> : <ManualTasksPanel />}
       </main>
       {menuOpen && <button className="backdrop" onClick={() => setMenuOpen(false)} aria-label="メニューを閉じる" />}
     </div>
