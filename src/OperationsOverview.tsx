@@ -21,6 +21,12 @@ interface Catalog {
   publicRepositoryCount: number; totalUserScheduledTasks: number;
   categories: Category[]; quotas: Quota[];
 }
+const defaultQuotas: Quota[] = [
+  { provider: 'Codex CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
+  { provider: 'Claude Code CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
+  { provider: 'Gemini / Antigravity CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
+  { provider: 'ChatGPT通常Chat', remainingPercent: null, resetAt: null, evidence: '未接続' },
+];
 const MASTER_NOTION = 'https://app.notion.com/p/3fe10562e58b81aeb778eb9885e62446';
 const MANIFEST_FILE = '/data/operations-catalog.json';
 
@@ -66,12 +72,7 @@ export default function OperationsOverview({ section = 'all' }: { section?: 'quo
       </div>
       <p className="quota-compact-note">利用枠に対する<strong>消費％</strong>を大きく表示。ログ実測と推定を区別し、根拠がない場合は推定不能と表示します。</p>
       <div className="quota-grid">
-        {(data?.quotas ?? [
-          { provider: 'Codex CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
-          { provider: 'Claude Code CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
-          { provider: 'Gemini / Antigravity CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
-          { provider: 'ChatGPT通常Chat', remainingPercent: null, resetAt: null, evidence: '未接続' },
-        ]).map((quota) => {
+        {(data?.quotas ?? defaultQuotas).map((quota) => {
           const remaining = quota.remainingPercent;
           const used = typeof quota.usedPercent === 'number' ? quota.usedPercent :
             typeof remaining === 'number' ? 100 - remaining : null;
