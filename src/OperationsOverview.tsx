@@ -8,6 +8,7 @@ interface Category {
   privateRepoCount: number; publicRepoCount: number;
   scheduledTaskCount: number; suspectedFailedTaskCount: number;
   publicRepositories: Repository[];
+  executionOwners?: Array<{ owner: string; taskCount: number }>;
 }
 interface Quota {
   provider: string; remainingPercent: number | null;
@@ -124,12 +125,17 @@ export default function OperationsOverview() {
             <span>定期タスク {cat.scheduledTaskCount}</span>
             {cat.suspectedFailedTaskCount > 0 && <span className="category-fail">要調査 {cat.suspectedFailedTaskCount}</span>}
           </div>
+          {(cat.executionOwners?.length ?? 0) > 0 && <p className="category-owners">
+            <strong>実行担当:</strong>{' '}
+            {cat.executionOwners?.slice(0, 3).map((owner) =>
+              <span key={owner.owner}>{owner.owner} ({owner.taskCount}件)</span>)}
+          </p>}
           {cat.publicRepositories.length > 0 && <details className="category-repos">
             <summary>公開リポジトリの役割を見る ({cat.publicRepositories.length}件)</summary>
             <div className="category-repo-list">
               {cat.publicRepositories.map((repo) => <div key={repo.url}>
                 <a href={repo.url} target="_blank" rel="noreferrer">{repo.name} ↗</a>
-                <small>{repo.description || '機能説明未登録・調査対象'}<span>／実行担当: 未検証</span></small>
+                <small>{repo.description || '機能説明未登録・調査対象'}<span>／実行担当: {repo.executionOwner === "unverified" ? "未確認" : repo.executionOwner}</span></small>
               </div>)}
             </div>
           </details>}

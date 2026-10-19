@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-19T07:33:29.685861+00:00",
+  "generatedAt": "2026-10-19T07:41:18.337925+00:00",
   "redacted": true,
   "agents": [
     {
@@ -7,8 +7,8 @@
       "name": "Windowsスケジューラー",
       "kind": "PC scheduled tasks (anonymized)",
       "status": "online",
-      "lastSeen": "2026-10-19T07:33:29.685861+00:00",
-      "taskCount": 112
+      "lastSeen": "2026-10-19T07:41:18.337925+00:00",
+      "taskCount": 113
     }
   ],
   "tasks": [
@@ -1265,7 +1265,7 @@
       "name": "Webダッシュボード・実行基盤 / 自動タスク 9",
       "source": "local",
       "environment": "Windows / 詳細は内部台帳",
-      "status": "failed",
+      "status": "scheduled",
       "schedule": "詳細非公開",
       "lastRun": null,
       "nextRun": null,
@@ -1404,6 +1404,19 @@
       "detail": "実行内容とログはPrivate台帳で確認。終了コードは成果達成を保証しない。"
     },
     {
+      "id": "local-cffa413ec77f",
+      "name": "Webダッシュボード・実行基盤 / 自動タスク 11",
+      "source": "local",
+      "environment": "Windows / 詳細は内部台帳",
+      "status": "scheduled",
+      "schedule": "詳細非公開",
+      "lastRun": null,
+      "nextRun": null,
+      "durationSeconds": null,
+      "successRate": -1,
+      "detail": "実行内容とログはPrivate台帳で確認。終了コードは成果達成を保証しない。"
+    },
+    {
       "id": "local-0401761dfb98",
       "name": "情報収集・投資調査 / 自動タスク 3",
       "source": "local",
@@ -1457,7 +1470,7 @@
     },
     {
       "id": "local-47990e632256",
-      "name": "Webダッシュボード・実行基盤 / 自動タスク 11",
+      "name": "Webダッシュボード・実行基盤 / 自動タスク 12",
       "source": "local",
       "environment": "Windows / 詳細は内部台帳",
       "status": "failed",
