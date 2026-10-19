@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-19T07:33:29.685861+00:00",
+  "generatedAt": "2026-10-19T07:41:18.337925+00:00",
   "source": "GitHub authenticated inventory + Windows Task Scheduler",
   "totalRepositories": 153,
   "privateRepositoryCount": 60,
   "publicRepositoryCount": 93,
-  "totalUserScheduledTasks": 112,
+  "totalUserScheduledTasks": 113,
   "classificationNote": "Category is registered for select repos, inferred by name for others; manual verification required.",
   "coverageNote": "Includes GitHub repository metadata and non-Microsoft local Windows tasks, not the execution history of all workflows.",
   "quotaStatus": "unavailable",
@@ -44,6 +44,16 @@
       "publicRepoCount": 9,
       "scheduledTaskCount": 22,
       "suspectedFailedTaskCount": 2,
+      "executionOwners": [
+        {
+          "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "taskCount": 19
+        },
+        {
+          "owner": "Python・スクリプト",
+          "taskCount": 3
+        }
+      ],
       "publicRepositories": [
         {
           "name": "apartment-volume-planner-jp",
@@ -128,6 +138,16 @@
       "publicRepoCount": 5,
       "scheduledTaskCount": 13,
       "suspectedFailedTaskCount": 0,
+      "executionOwners": [
+        {
+          "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "taskCount": 11
+        },
+        {
+          "owner": "Python・スクリプト",
+          "taskCount": 2
+        }
+      ],
       "publicRepositories": [
         {
           "name": "amazon-marketplace-sync-hub",
@@ -180,6 +200,20 @@
       "publicRepoCount": 3,
       "scheduledTaskCount": 3,
       "suspectedFailedTaskCount": 1,
+      "executionOwners": [
+        {
+          "owner": "Python・スクリプト",
+          "taskCount": 1
+        },
+        {
+          "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "taskCount": 1
+        },
+        {
+          "owner": "Windowsスケジューラー（内部実行先未検証）",
+          "taskCount": 1
+        }
+      ],
       "publicRepositories": [
         {
           "name": "authorized-web-data-exporter",
@@ -216,6 +250,16 @@
       "publicRepoCount": 0,
       "scheduledTaskCount": 3,
       "suspectedFailedTaskCount": 1,
+      "executionOwners": [
+        {
+          "owner": "Windowsスケジューラー（内部実行先未検証）",
+          "taskCount": 2
+        },
+        {
+          "owner": "Python・スクリプト",
+          "taskCount": 1
+        }
+      ],
       "publicRepositories": []
     },
     {
@@ -227,6 +271,16 @@
       "publicRepoCount": 6,
       "scheduledTaskCount": 31,
       "suspectedFailedTaskCount": 8,
+      "executionOwners": [
+        {
+          "owner": "Python・スクリプト",
+          "taskCount": 30
+        },
+        {
+          "owner": "Windowsスケジューラー（内部実行先未検証）",
+          "taskCount": 1
+        }
+      ],
       "publicRepositories": [
         {
           "name": "facebook-auto-post",
@@ -249,8 +303,8 @@
           "url": "https://github.com/univcorp2-ctrl/fb-group-autoposter",
           "description": "Facebook group property posting pipeline with Telegram approval gate, SQLite queue, Playwright runner, and safety-first operations.",
           "classificationEvidence": "registered",
-          "executionOwner": "unverified",
-          "verification": "repository_detected_only"
+          "executionOwner": "Python・スクリプト",
+          "verification": "explicit_scheduled_command_reference"
         },
         {
           "name": "notion-creator-ops-dashboard",
@@ -287,6 +341,7 @@
       "publicRepoCount": 8,
       "scheduledTaskCount": 0,
       "suspectedFailedTaskCount": 0,
+      "executionOwners": [],
       "publicRepositories": [
         {
           "name": "Gmail-auto-reply_gemini",
@@ -363,6 +418,20 @@
       "publicRepoCount": 2,
       "scheduledTaskCount": 6,
       "suspectedFailedTaskCount": 2,
+      "executionOwners": [
+        {
+          "owner": "ChatGPT通常Chat（制御スクリプト）",
+          "taskCount": 3
+        },
+        {
+          "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "taskCount": 2
+        },
+        {
+          "owner": "Python・スクリプト",
+          "taskCount": 1
+        }
+      ],
       "publicRepositories": [
         {
           "name": "chatgpt-safe-message-sender",
@@ -391,6 +460,7 @@
       "publicRepoCount": 4,
       "scheduledTaskCount": 0,
       "suspectedFailedTaskCount": 0,
+      "executionOwners": [],
       "publicRepositories": [
         {
           "name": "ai-agent-handoff-hub",
@@ -433,8 +503,26 @@
       "repoCount": 29,
       "privateRepoCount": 16,
       "publicRepoCount": 13,
-      "scheduledTaskCount": 11,
-      "suspectedFailedTaskCount": 5,
+      "scheduledTaskCount": 12,
+      "suspectedFailedTaskCount": 4,
+      "executionOwners": [
+        {
+          "owner": "Python・スクリプト",
+          "taskCount": 5
+        },
+        {
+          "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "taskCount": 4
+        },
+        {
+          "owner": "Windowsスケジューラー（内部実行先未検証）",
+          "taskCount": 2
+        },
+        {
+          "owner": "Codex CLI",
+          "taskCount": 1
+        }
+      ],
       "publicRepositories": [
         {
           "name": "Add-repository",
@@ -473,8 +561,8 @@
           "url": "https://github.com/univcorp2-ctrl/cloud-local-task-dashboard",
           "description": "Cloud and local scheduled task monitoring dashboard with cross-platform collectors and Cloudflare Pages deployment.",
           "classificationEvidence": "registered",
-          "executionOwner": "unverified",
-          "verification": "repository_detected_only"
+          "executionOwner": "Python・スクリプト",
+          "verification": "explicit_scheduled_command_reference"
         },
         {
           "name": "compliant-b2b-outreach-automation",
@@ -551,6 +639,12 @@
       "publicRepoCount": 10,
       "scheduledTaskCount": 2,
       "suspectedFailedTaskCount": 0,
+      "executionOwners": [
+        {
+          "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "taskCount": 2
+        }
+      ],
       "publicRepositories": [
         {
           "name": "ai-call-landing-page",
@@ -589,8 +683,8 @@
           "url": "https://github.com/univcorp2-ctrl/auto-ai-blog",
           "description": "Hugo + Cloudflare Pages fully automated Japanese AI blog system using local AI CLIs only.",
           "classificationEvidence": "name_inferred",
-          "executionOwner": "unverified",
-          "verification": "repository_detected_only"
+          "executionOwner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "verification": "explicit_scheduled_command_reference"
         },
         {
           "name": "japanese-ai-outbound-caller",
@@ -643,6 +737,12 @@
       "publicRepoCount": 15,
       "scheduledTaskCount": 1,
       "suspectedFailedTaskCount": 0,
+      "executionOwners": [
+        {
+          "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "taskCount": 1
+        }
+      ],
       "publicRepositories": [
         {
           "name": "autonomous-game-factory",
@@ -673,8 +773,8 @@
           "url": "https://github.com/univcorp2-ctrl/roblox-autonomous-product-factory",
           "description": "Zero-touch Roblox product factory: Git sync, Rojo build, Open Cloud Luau Execution, Studio MCP visual QA, bounded repair/quarantine, and guarded publishing.",
           "classificationEvidence": "name_inferred",
-          "executionOwner": "unverified",
-          "verification": "repository_detected_only"
+          "executionOwner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "verification": "explicit_scheduled_command_reference"
         },
         {
           "name": "roblox-autonomous-revenue-os",
@@ -775,6 +875,7 @@
       "publicRepoCount": 8,
       "scheduledTaskCount": 0,
       "suspectedFailedTaskCount": 0,
+      "executionOwners": [],
       "publicRepositories": [
         {
           "name": "cripto-auto-trade",
@@ -851,6 +952,24 @@
       "publicRepoCount": 10,
       "scheduledTaskCount": 20,
       "suspectedFailedTaskCount": 9,
+      "executionOwners": [
+        {
+          "owner": "Windowsスケジューラー（内部実行先未検証）",
+          "taskCount": 11
+        },
+        {
+          "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
+          "taskCount": 5
+        },
+        {
+          "owner": "Codex CLI",
+          "taskCount": 2
+        },
+        {
+          "owner": "Gemini / Antigravity CLI",
+          "taskCount": 2
+        }
+      ],
       "publicRepositories": [
         {
           "name": "ai-readable-pdf-capture",

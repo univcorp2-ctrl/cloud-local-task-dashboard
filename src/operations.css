@@ -30,6 +30,7 @@
 .category-repo-list>div{padding:10px 1px;border-bottom:1px solid #eef2f7}
 .category-repo-list a{font-size:13px;font-weight:700;color:#215fd8;overflow-wrap:anywhere}
 .category-repo-list small{display:block;color:#64748b;font-size:11px;margin:5px 0 0;line-height:1.5;overflow-wrap:anywhere}
+.category-owners{display:flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:11px;color:#475569;margin:8px 0}.category-owners span{padding:3px 6px;background:#eaf2ff;border-radius:5px;color:#1e40af}
 .category-private{font-size:11px;color:#64748b;line-height:1.65;margin:12px 0 2px}
 .catalog-provenance{font-size:11px;line-height:1.7;color:#64748b;margin:16px 0 0}
 @media(max-width:1000px){.catalog-kpis,.quota-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

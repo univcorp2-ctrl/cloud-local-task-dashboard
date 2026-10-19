@@ -152,6 +152,14 @@ def report(repos: list[dict], tasks: list[dict]) -> tuple[dict,dict]:
             "publicRepoCount": sum(1 for r in rr if not r["private"]),
             "scheduledTaskCount": len(tt),
             "suspectedFailedTaskCount": sum(1 for t in tt if t["health"] == "needs_review"),
+            "executionOwners": [
+                {"owner": name, "taskCount": count}
+                for name, count in sorted(
+                    ((name, sum(1 for t in tt if t["executionOwner"] == name))
+                     for name in sorted({t["executionOwner"] for t in tt})),
+                    key=lambda pair: -pair[1]
+                )
+            ],
             # Public-only resource contains NO private repository names, URLs, paths,
             # commands, hostnames, emails, or authorization data.
             "publicRepositories": [
@@ -218,6 +226,16 @@ def main():
     p.add_argument("--tasks-public-output", required=False)
     args = p.parse_args()
     repos, tasks = git_repos(), scheduler_tasks()
+    # Link only when the actual scheduler executable/arguments references the
+    # repository name. Name/category similarity alone does not prove ownership.
+    for repo in repos:
+        name = repo["name"].lower()
+        direct = [t for t in tasks if len(name) >= 7 and name in
+                  (str(t.get("executable") or "") + " " + str(t.get("arguments") or "")).lower()]
+        if direct:
+            owners = sorted(set(t["executionOwner"] for t in direct))
+            repo["executionOwner"] = " / ".join(owners)
+            repo["verification"] = "explicit_scheduled_command_reference"
     public, private = report(repos, tasks)
     for path, obj in ((args.public_output, public), (args.private_output, private)):
         target=Path(path)
