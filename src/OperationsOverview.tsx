@@ -80,7 +80,7 @@ export default function OperationsOverview({ section = 'all' }: { section?: 'quo
           const quality = quota.quality || (reliable ? 'measured' : 'unavailable');
           return <article className="quota-item" key={quota.provider}>
             <strong className="quota-title">{quota.provider}</strong>
-            <div className="quota-main"><span className="quota-value">{reliable ? Math.round(used) + '%' : '—%'}</span>
+            <div className="quota-main"><span className="quota-value">{reliable ? Math.round(used ?? 0) + '%' : '—%'}</span>
               <span className="quota-kind">{quality === 'estimated' ? '推定使用率' : reliable ? '実測使用率' : '推定不能'}</span></div>
             <span className="quota-track" role="img" aria-label={reliable ? '使用率 ' + used + '%' : '使用率の情報なし'}>
               <span style={{ width: reliable ? used + '%' : '0%' }} />
