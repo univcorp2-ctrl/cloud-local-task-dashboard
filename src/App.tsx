@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fallbackSnapshot } from './sample';
 import TokenUsagePanel from './TokenUsagePanel';
+import OperationsOverview from './OperationsOverview';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
 const statusLabel: Record<TaskStatus, string> = {
@@ -53,7 +54,7 @@ function TaskRow({ task }: { task: ScheduledTask }) {
       <td>{formatDate(task.lastRun)}</td>
       <td>{formatDate(task.nextRun)}</td>
       <td>{duration(task.durationSeconds)}</td>
-      <td><strong>{task.successRate.toFixed(1)}%</strong></td>
+      <td><strong>{task.successRate < 0 ? "未計測" : `${task.successRate.toFixed(1)}%`}</strong></td>
     </tr>
   );
 }
@@ -109,6 +110,8 @@ export default function App() {
         <div className="brand"><span className="brand-mark">☁</span><div><strong>Task Control</strong><small>Cloud + Local</small></div></div>
         <nav aria-label="メインナビゲーション">
           <a className="active" href="#dashboard">⌂ <span>ダッシュボード</span></a>
+          <a href="#quota">AI残量</a>
+          <a href="#inventory">全リポ・分類</a>
           <a href="#tasks">☷ <span>タスク一覧</span></a>
           <a href="#history">◷ <span>実行履歴</span></a>
           <a href="#agents">▣ <span>エージェント</span></a>
@@ -134,6 +137,7 @@ export default function App() {
           <KpiCard tone="red" label="要確認" value={totals.failed} note="直近の失敗" icon="!" />
         </section>
 
+        <OperationsOverview />
         <TokenUsagePanel />
 
         <section className="overview-grid">
