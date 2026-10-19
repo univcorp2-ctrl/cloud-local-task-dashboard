@@ -81,6 +81,7 @@ export default function TokenUsagePanel() {
         <div><small>記録済みトークン / {period}</small><strong>{format(total)}</strong><span>実測ログベース・請求額ではありません</span></div>
         <div><small>AI業務の監視対象</small><strong>{snapshot ? snapshot.monitoredTaskCount : '—'} 件</strong><span>Windowsタスク全件ではありません</span></div>
         <div><small>30日間の計測あり</small><strong>{snapshot ? snapshot.measuredTaskCount : '—'} 件</strong><span>0表示は実際の不使用を証明しません</span></div>
+        <div><small>トークン残量・残り割合</small><strong>未取得</strong><span>提供元の正確な利用枠が未取得。%を推測表示しません</span></div>
       </div>
       {error && <p role="alert" className="usage-error">{error}</p>}
       {!snapshot && <p className="usage-empty">データ未取得。架空のサンプル値は表示しません。</p>}
