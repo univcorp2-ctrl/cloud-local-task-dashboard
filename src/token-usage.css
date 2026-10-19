@@ -1,0 +1,22 @@
+/* AI operations usage; sits within the existing task dashboard design. */
+.usage-panel { margin-top: 24px; margin-bottom: 24px; }
+.usage-heading { align-items: center; gap: 14px; flex-wrap: wrap; }
+.usage-actions { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
+.usage-periods { display: flex; gap: 3px; padding: 4px; border: 1px solid #dce5ef; border-radius: 12px; background: #f1f5f9; }
+.usage-periods button { border: 0; border-radius: 8px; background: transparent; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; color: #475569; }
+.usage-periods button.selected { background: white; color: #1c4eda; font-weight: 700; box-shadow: 0 1px 3px #10182812; }
+.usage-kpis { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; padding-bottom: 12px; }
+.usage-kpis > div { border: 1px solid #e5ebf3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; background: #f8fafc; min-width: 0; }
+.usage-kpis small { color: #526277; font-size: 12px; }
+.usage-kpis strong { font-size: clamp(20px,2.1vw,29px); line-height: 1.2; font-variant-numeric: tabular-nums; color: #1e293b; overflow-wrap: anywhere; }
+.usage-kpis span { color: #64748b; font-size: 12px; }
+.usage-table-wrap { overflow-x: auto; }
+.usage-table-wrap table { width: 100%; border-collapse: collapse; }
+.usage-table-wrap th,.usage-table-wrap td { padding: 12px 10px; border-bottom: 1px solid #e5ebf3; text-align: left; white-space: nowrap; font-size: 13px; }
+.usage-table-wrap th:last-child,.usage-table-wrap td:last-child { text-align: right; }
+.usage-table-wrap th { color: #64748b; font-weight: 600; }
+.usage-provenance { margin-top: 14px; font-size: 12px; color: #64748b; line-height: 1.65; }
+.usage-provenance a { color: #245fcd; }
+.usage-error { color: #b91c1c; margin-bottom: 10px; font-size: 13px; }
+.usage-empty { padding: 16px 0; color: #64748b; }
+@media(max-width:650px){.usage-kpis{grid-template-columns:1fr}.usage-heading{align-items:flex-start}.usage-actions{width:100%;justify-content:space-between}.usage-table-wrap th,.usage-table-wrap td{padding:9px 8px}.usage-panel{margin:18px 0}}
