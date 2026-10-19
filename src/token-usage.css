@@ -5,7 +5,7 @@
 .usage-periods { display: flex; gap: 3px; padding: 4px; border: 1px solid #dce5ef; border-radius: 12px; background: #f1f5f9; }
 .usage-periods button { border: 0; border-radius: 8px; background: transparent; padding: 8px 12px; cursor: pointer; font: inherit; font-size: 13px; color: #475569; }
 .usage-periods button.selected { background: white; color: #1c4eda; font-weight: 700; box-shadow: 0 1px 3px #10182812; }
-.usage-kpis { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; padding-bottom: 12px; }
+.usage-kpis { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; padding-bottom: 12px; }
 .usage-kpis > div { border: 1px solid #e5ebf3; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 6px; background: #f8fafc; min-width: 0; }
 .usage-kpis small { color: #526277; font-size: 12px; }
 .usage-kpis strong { font-size: clamp(20px,2.1vw,29px); line-height: 1.2; font-variant-numeric: tabular-nums; color: #1e293b; overflow-wrap: anywhere; }
