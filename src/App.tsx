@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fallbackSnapshot } from './sample';
 import TokenUsagePanel from './TokenUsagePanel';
 import ManualTasksPanel from './ManualTasksPanel';
+import OperationsOverview from './OperationsOverview';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
 const statusLabel: Record<TaskStatus, string> = {
@@ -54,7 +55,7 @@ function TaskRow({ task }: { task: ScheduledTask }) {
       <td>{formatDate(task.lastRun)}</td>
       <td>{formatDate(task.nextRun)}</td>
       <td>{duration(task.durationSeconds)}</td>
-      <td><strong>{task.successRate.toFixed(1)}%</strong></td>
+      <td><strong>{task.successRate < 0 ? "未計測" : `${task.successRate.toFixed(1)}%`}</strong></td>
     </tr>
   );
 }
@@ -114,6 +115,8 @@ export default function App() {
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
           <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
           {activePage === 'automation' && <>
+            <a href="#quota">AI残量</a>
+            <a href="#inventory">全リポ・分類</a>
             <a href="#tasks">▤ <span>自動実行一覧</span></a>
             <a href="#history">◷ <span>実行履歴</span></a>
             <a href="#agents">▣ <span>エージェント</span></a>
@@ -141,6 +144,7 @@ export default function App() {
           <KpiCard tone="red" label="要確認" value={totals.failed} note="直近の失敗" icon="!" />
         </section>
 
+        <OperationsOverview />
         <TokenUsagePanel />
 
         <section className="overview-grid">
