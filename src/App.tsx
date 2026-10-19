@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fallbackSnapshot } from './sample';
 import TokenUsagePanel from './TokenUsagePanel';
 import ManualTasksPanel from './ManualTasksPanel';
+import OperationsOverview from './OperationsOverview';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
 const statusLabel: Record<TaskStatus, string> = {
@@ -142,6 +143,7 @@ export default function App() {
         </section>
 
         <TokenUsagePanel />
+        <OperationsOverview />
 
         <section className="overview-grid">
           <article className="panel status-panel">
