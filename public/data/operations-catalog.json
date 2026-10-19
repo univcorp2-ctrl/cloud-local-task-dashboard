@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-19T07:11:27.841763+00:00",
+  "generatedAt": "2026-10-19T07:33:29.685861+00:00",
   "source": "GitHub authenticated inventory + Windows Task Scheduler",
   "totalRepositories": 153,
   "privateRepositoryCount": 60,
   "publicRepositoryCount": 93,
-  "totalUserScheduledTasks": 110,
+  "totalUserScheduledTasks": 112,
   "classificationNote": "Category is registered for select repos, inferred by name for others; manual verification required.",
   "coverageNote": "Includes GitHub repository metadata and non-Microsoft local Windows tasks, not the execution history of all workflows.",
   "quotaStatus": "unavailable",
@@ -225,8 +225,8 @@
       "repoCount": 8,
       "privateRepoCount": 2,
       "publicRepoCount": 6,
-      "scheduledTaskCount": 30,
-      "suspectedFailedTaskCount": 7,
+      "scheduledTaskCount": 31,
+      "suspectedFailedTaskCount": 8,
       "publicRepositories": [
         {
           "name": "facebook-auto-post",
@@ -434,7 +434,7 @@
       "privateRepoCount": 16,
       "publicRepoCount": 13,
       "scheduledTaskCount": 11,
-      "suspectedFailedTaskCount": 3,
+      "suspectedFailedTaskCount": 5,
       "publicRepositories": [
         {
           "name": "Add-repository",
@@ -849,7 +849,7 @@
       "repoCount": 14,
       "privateRepoCount": 4,
       "publicRepoCount": 10,
-      "scheduledTaskCount": 19,
+      "scheduledTaskCount": 20,
       "suspectedFailedTaskCount": 9,
       "publicRepositories": [
         {
