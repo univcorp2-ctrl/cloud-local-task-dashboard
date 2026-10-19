@@ -13,16 +13,24 @@ interface Category {
 interface Quota {
   provider: string; remainingPercent: number | null;
   resetAt: string | null; evidence: string;
+  usedPercent?: number | null; weeklyUsedPercent?: number | null;
+  windowLabel?: string; quality?: 'measured' | 'estimated' | 'unavailable'; model?: string;
 }
 interface Catalog {
   generatedAt: string; totalRepositories: number; privateRepositoryCount: number;
   publicRepositoryCount: number; totalUserScheduledTasks: number;
   categories: Category[]; quotas: Quota[];
 }
+const defaultQuotas: Quota[] = [
+  { provider: 'Codex CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
+  { provider: 'Claude Code CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
+  { provider: 'Gemini / Antigravity CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
+  { provider: 'ChatGPT通常Chat', remainingPercent: null, resetAt: null, evidence: '未接続' },
+];
 const MASTER_NOTION = 'https://app.notion.com/p/3fe10562e58b81aeb778eb9885e62446';
 const MANIFEST_FILE = '/data/operations-catalog.json';
 
-export default function OperationsOverview() {
+export default function OperationsOverview({ section = 'all' }: { section?: 'quota' | 'catalog' | 'all' }) {
   const [data, setData] = useState<Catalog | null>(null);
   const [selected, setSelected] = useState('all');
   const [query, setQuery] = useState('');
@@ -57,38 +65,35 @@ export default function OperationsOverview() {
   const unclassified = data?.categories.find((cat) => cat.id === 'other');
   const lastUpdated = data?.generatedAt ? new Date(data.generatedAt).toLocaleString('ja-JP') : '不明';
   return <>
-    <section className="panel quota-panel" id="quota" aria-label="AI利用枠・残量">
+    {section !== 'catalog' && <section className="panel quota-panel" id="quota" aria-label="AI利用枠・残量">
       <div className="panel-heading">
         <div><span className="section-kicker">AI QUOTA / OWNER</span><h2>AI担当・トークン残量％</h2></div>
         <span className="soft-badge">実測した利用枠のみ％表示</span>
       </div>
-      <p className="catalog-explainer">
-        モデルの使用トークン数と、サービスの利用枠の残量％は別の数値です。
-        CLIの契約上限とリセット時刻が提供元から取得できない場合、正しい残量％は算出できません。
-        使用トークン数は下の「AIトークン消費量」に実測分を掲載しています。
-      </p>
+      <p className="quota-compact-note">利用枠に対する<strong>消費％</strong>を大きく表示。ログ実測と推定を区別し、根拠がない場合は推定不能と表示します。</p>
       <div className="quota-grid">
-        {(data?.quotas ?? [
-          { provider: 'Codex CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
-          { provider: 'Claude Code CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
-          { provider: 'Gemini / Antigravity CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
-          { provider: 'ChatGPT通常Chat', remainingPercent: null, resetAt: null, evidence: '未接続' },
-        ]).map((quota) => {
-          const percent = quota.remainingPercent;
-          const reliable = typeof percent === 'number' && Number.isFinite(percent) && percent >= 0 && percent <= 100;
+        {(data?.quotas ?? defaultQuotas).map((quota) => {
+          const remaining = quota.remainingPercent;
+          const used = typeof quota.usedPercent === 'number' ? quota.usedPercent :
+            typeof remaining === 'number' ? 100 - remaining : null;
+          const reliable = used !== null && Number.isFinite(used) && used >= 0 && used <= 100;
+          const quality = quota.quality || (reliable ? 'measured' : 'unavailable');
           return <article className="quota-item" key={quota.provider}>
             <strong className="quota-title">{quota.provider}</strong>
-            <span className="quota-value">{reliable ? Math.round(percent) + '%' : '未取得'}</span>
-            <span className="quota-track" role="img" aria-label={reliable ? '残量 ' + percent + '%' : '残量の上限情報なし'}>
-              <span style={{ width: reliable ? percent + '%' : '0%' }} />
+            <div className="quota-main"><span className="quota-value">{reliable ? Math.round(used ?? 0) + '%' : '—%'}</span>
+              <span className="quota-kind">{quality === 'estimated' ? '推定使用率' : reliable ? '実測使用率' : '推定不能'}</span></div>
+            <span className="quota-track" role="img" aria-label={reliable ? '使用率 ' + used + '%' : '使用率の情報なし'}>
+              <span style={{ width: reliable ? used + '%' : '0%' }} />
             </span>
-            <small>{reliable ? 'リセット: ' + (quota.resetAt || '不明') : '公式利用枠・残量の実測なし'}</small>
+            <small>{quota.windowLabel || '利用枠'}　残り {reliable ? Math.round(100 - used!) + '%' : '不明'}</small>
+            {typeof quota.weeklyUsedPercent === 'number' && <small>7日間 使用 {Math.round(quota.weeklyUsedPercent)}%</small>}
+            <small>{quota.model ? 'モデル: ' + quota.model + ' ｜ ' : ''}{quota.evidence || '取得元なし'}</small>
           </article>;
         })}
       </div>
-    </section>
+    </section>}
 
-    <section className="panel catalog-panel" id="inventory" aria-label="全リポジトリ・自動化処理台帳">
+    {section !== 'quota' && <section className="panel catalog-panel" id="inventory" aria-label="全リポジトリ・自動化処理台帳">
       <div className="panel-heading">
         <div><span className="section-kicker">COMPLETE INVENTORY / CATEGORY</span><h2>全リポジトリ・タスク分類</h2></div>
         <a className="catalog-master-link" href={MASTER_NOTION} target="_blank" rel="noreferrer">
@@ -151,6 +156,6 @@ export default function OperationsOverview() {
         会社全体のすべてのGitHub組織・すべての実行端末を保証するものではありません。
         役割の一部はリポジトリ名から推定した仮分類です。
       </p>
-    </section>
+    </section>}
   </>;
 }

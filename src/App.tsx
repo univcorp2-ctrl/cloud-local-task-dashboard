@@ -137,6 +137,9 @@ export default function App() {
         </header>
 
         {activePage === 'automation' ? <>
+        <OperationsOverview section="quota" />
+        <details className="ops-expanded">
+          <summary>☷ 自動実行一覧・リポジトリ・トークン明細を開く <span>{totals.total} タスク</span></summary>
         <section className="kpi-grid" aria-label="主要指標">
           <KpiCard tone="blue" label="総タスク数" value={totals.total} note={`${snapshot.agents.filter((agent) => agent.status === 'online').length} エージェント接続`} icon="▤" />
           <KpiCard tone="green" label="実行中" value={totals.running} note="リアルタイム監視" icon="▶" />
@@ -144,7 +147,7 @@ export default function App() {
           <KpiCard tone="red" label="要確認" value={totals.failed} note="直近の失敗" icon="!" />
         </section>
 
-        <OperationsOverview />
+        <OperationsOverview section="catalog" />
         <TokenUsagePanel />
 
         <section className="overview-grid">
@@ -180,6 +183,7 @@ export default function App() {
         </section>
 
         <footer><span>最終スナップショット: {formatDate(snapshot.generatedAt)}</span><span>Task Control Center v1.1</span></footer>
+        </details>
         </> : <ManualTasksPanel />}
       </main>
       {menuOpen && <button className="backdrop" onClick={() => setMenuOpen(false)} aria-label="メニューを閉じる" />}

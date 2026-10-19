@@ -8,7 +8,7 @@ afterEach(() => { vi.unstubAllGlobals(); });
 test('未認証時に非公開タスクを表示せずNotionへの導線を残す', async () => {
   render(<ManualTasksPanel />);
   expect(await screen.findByText(/認証・Notion連携が未設定/)).toBeInTheDocument();
-  expect(screen.getByRole('link', { name: /カテゴリ別・未完了/ })).toHaveAttribute('href', expect.stringContaining('notion.so'));
+  expect(screen.getByRole('link', { name: /10領域別・未完了/ })).toHaveAttribute('href', expect.stringContaining('notion.so'));
   expect(screen.queryByText('機密サンプル')).not.toBeInTheDocument();
 });
 
@@ -21,5 +21,14 @@ test('認証されたNotionタスクをカテゴリーと優先度付きで表�
   }) }));
   render(<ManualTasksPanel />);
   expect(await screen.findByText('公開テスト用の作業 ↗')).toBeInTheDocument();
-  expect(screen.getByText('🏠 不動産 ・ 🔴 最高 ・ 🔴 未着手')).toBeInTheDocument();
+  expect(screen.getByText('🏠 不動産')).toBeInTheDocument();
+  expect(screen.getByRole('checkbox', { name: /公開テスト用の作業を完了/ })).toBeInTheDocument();
+});
+
+test('一覧とカンバン切り替えが利用できる', async () => {
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => ({ tasks: [], generatedAt: '2026-10-19T00:00:00Z' }) }));
+  render(<ManualTasksPanel />);
+  expect(await screen.findByText('0件（未完了）')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /カンバン/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /一覧/ })).toBeInTheDocument();
 });

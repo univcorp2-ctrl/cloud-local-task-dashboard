@@ -115,7 +115,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       id: page.id,
       url: page.url,
       title: titleOf(page, 'タスク名'),
-      category: optionOf(page, 'カテゴリ') || '未分類',
+      category: optionOf(page, '統合カテゴリ') || '🔍 要確認',
       priority: optionOf(page, '優先度') || '未設定',
       status: optionOf(page, 'ステータス') || '未設定',
       owner: optionOf(page, '担当') || '未設定',
@@ -126,4 +126,59 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       executionStatus: optionOf(page, '実行状況') || '未設定',
     }));
   return json({ generatedAt: new Date().toISOString(), source: 'Notion', truncated, tasks });
+};
+
+/**
+ * Only accept an explicit same-origin completion request after verified
+ * Cloudflare Access JWT. This endpoint never accepts task title/content.
+ */
+export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
+  const domain = env.CF_ACCESS_TEAM_DOMAIN?.trim();
+  const audience = env.CF_ACCESS_AUD?.trim();
+  if (!domain || !audience) return json({ error: 'private_tasks_auth_not_configured' }, 503);
+  let issuer: URL;
+  try {
+    issuer = new URL(domain);
+    if (issuer.protocol !== 'https:' || !issuer.hostname.endsWith('.cloudflareaccess.com')) {
+      return json({ error: 'invalid_access_issuer_configuration' }, 503);
+    }
+  } catch { return json({ error: 'invalid_access_issuer_configuration' }, 503); }
+  const assertion = request.headers.get('Cf-Access-Jwt-Assertion');
+  if (!assertion) return json({ error: 'authentication_required' }, 401);
+  try {
+    await jwtVerify(assertion, createRemoteJWKSet(new URL('/cdn-cgi/access/certs', issuer)),
+      { issuer: issuer.origin, audience, algorithms: ['RS256'] });
+  } catch { return json({ error: 'invalid_access_token' }, 403); }
+  const origin = request.headers.get('Origin');
+  if (!origin || origin !== new URL(request.url).origin) return json({ error: 'same_origin_required' }, 403);
+  if (!request.headers.get('Content-Type')?.startsWith('application/json')) return json({ error: 'invalid_content_type' }, 415);
+  const token = env.NOTION_API_TOKEN?.trim();
+  const dataSourceId = env.NOTION_DATA_SOURCE_ID?.trim();
+  if (!token || !dataSourceId) return json({ error: 'notion_not_configured' }, 503);
+  let body: { id?: unknown; completed?: unknown };
+  try { body = await request.json() as typeof body; } catch { return json({ error: 'invalid_body' }, 400); }
+  if (typeof body.id !== 'string' || !/^[a-f0-9-]{32,36}$/i.test(body.id) || body.completed !== true) {
+    return json({ error: 'invalid_completion_request' }, 400);
+  }
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    'Notion-Version': '2025-09-03',
+    'Content-Type': 'application/json',
+  };
+  try {
+    const pageResponse = await fetch(`https://api.notion.com/v1/pages/${body.id}`, { headers });
+    if (!pageResponse.ok) return json({ error: 'task_not_found_or_inaccessible' }, 404);
+    const page = await pageResponse.json() as { parent?: { type?: string; database_id?: string; data_source_id?: string } };
+    const source = page.parent?.data_source_id?.replace(/-/g, '').toLowerCase();
+    const expected = dataSourceId.replace(/-/g, '').toLowerCase();
+    const database = page.parent?.database_id?.replace(/-/g, '').toLowerCase();
+    const allowedDatabase = '5f61a18de1f84eac84ac355126311f8b';
+    if (source !== expected && database !== allowedDatabase) return json({ error: 'wrong_task_database' }, 403);
+    const response = await fetch(`https://api.notion.com/v1/pages/${body.id}`, {
+      method: 'PATCH', headers,
+      body: JSON.stringify({ properties: { '完了': { checkbox: true }, 'ステータス': { select: { name: '✅ 完了' } } } }),
+    });
+    if (!response.ok) return json({ error: 'notion_save_failed', status: response.status }, 502);
+    return json({ ok: true, taskId: body.id });
+  } catch { return json({ error: 'notion_unreachable' }, 502); }
 };
