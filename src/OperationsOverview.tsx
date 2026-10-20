@@ -10,11 +10,13 @@ interface Category {
   scheduledTaskCount: number; suspectedFailedTaskCount: number;
   publicRepositories: Repository[];
   executionOwners?: Array<{ owner: string; taskCount: number }>;
+  taskHealthCounts?: { exitZero: number; nonzero: number; disabled: number; neverRun: number; runningNow: number };
 }
 interface Catalog {
   generatedAt: string; totalRepositories: number; privateRepositoryCount: number;
   publicRepositoryCount: number; totalUserScheduledTasks: number;
   categories: Category[]; quotas: Quota[];
+  taskHealthSummary?: { exitZero: number; nonzero: number; disabled: number; neverRun: number; runningNow: number };
 }
 const defaultQuotas: Quota[] = [
   { provider: 'Codex CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
@@ -111,6 +113,16 @@ export default function OperationsOverview({ section = 'all' }: { section?: 'quo
         <div><small>PC定期タスク</small><strong>{data?.totalUserScheduledTasks ?? '—'}</strong><span>Microsoft標準以外（成功保証なし）</span></div>
         <div><small>用途未特定のリポジトリ</small><strong>{unclassified?.repoCount ?? '—'}</strong><span>次の手動検証対象</span></div>
       </div>
+      {data?.taskHealthSummary && <div className="health-audit" role="region" aria-label="Windows実行状況">
+        <h3>現在の自動化実行状況 <small>※ 最終終了コード ≠ 実際の業務成功</small></h3>
+        <div className="health-audit-grid">
+          <div><strong>{data.taskHealthSummary.exitZero}</strong><span>直近コード0・成果未検証</span></div>
+          <div><strong>{data.taskHealthSummary.nonzero}</strong><span>異常コード・要調査</span></div>
+          <div><strong>{data.taskHealthSummary.disabled}</strong><span>無効化・停止中</span></div>
+          <div><strong>{data.taskHealthSummary.neverRun}</strong><span>実行記録なし</span></div>
+        </div>
+        <p>この4分類は重複なし。現在Runningの {data.taskHealthSummary.runningNow}件は各分類に含まれ、Runningだけで稼働成功とは判定しません。GitHubの153リポジトリを個別実行検証した件数ではありません。</p>
+      </div>}
       <div className="catalog-filters">
         <label>カテゴリ <select aria-label="カテゴリを選択" value={selected} onChange={(e) => setSelected(e.target.value)}>
           <option value="all">すべて</option>
@@ -128,6 +140,12 @@ export default function OperationsOverview({ section = 'all' }: { section?: 'quo
           <div className="category-stats">
             <span>公開 {cat.publicRepoCount} / 非公開 {cat.privateRepoCount}</span>
             <span>定期タスク {cat.scheduledTaskCount}</span>
+            {cat.taskHealthCounts && <>
+              <span>終了0 {cat.taskHealthCounts.exitZero}</span>
+              <span className={cat.taskHealthCounts.nonzero > 0 ? "category-fail" : ""}>異常 {cat.taskHealthCounts.nonzero}</span>
+              <span>停止 {cat.taskHealthCounts.disabled}</span>
+              <span>未起動 {cat.taskHealthCounts.neverRun}</span>
+            </>}
             {cat.suspectedFailedTaskCount > 0 && <span className="category-fail">要調査 {cat.suspectedFailedTaskCount}</span>}
           </div>
           {(cat.executionOwners?.length ?? 0) > 0 && <p className="category-owners">

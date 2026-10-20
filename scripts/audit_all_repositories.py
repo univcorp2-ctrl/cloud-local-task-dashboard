@@ -100,7 +100,8 @@ $result=foreach($task in $all){
     schedulePath=$task.TaskPath;
     executable=[string]$action.Execute; arguments=[string]$action.Arguments;
     lastRun=[string]$info.LastRunTime; nextRun=[string]$info.NextRunTime;
-    lastResult=$info.LastTaskResult
+    lastResult=$info.LastTaskResult;
+    everRun=[bool]($info.LastRunTime -gt [datetime]'2001-01-01')
   }
 }
 ConvertTo-Json -Compress -Depth 4 -InputObject @($result)
@@ -134,6 +135,7 @@ def scheduler_tasks() -> list[dict]:
             **entry, "category": cat, "classificationEvidence": src,
             "executionOwner": owner,
             "health": "disabled" if entry.get("state") == "Disabled"
+                      else "never_run" if not entry.get("everRun", False)
                       else "needs_review" if isinstance(code, int) and code != 0
                       else "last_exit_zero_unverified",
         })
@@ -152,6 +154,13 @@ def report(repos: list[dict], tasks: list[dict]) -> tuple[dict,dict]:
             "publicRepoCount": sum(1 for r in rr if not r["private"]),
             "scheduledTaskCount": len(tt),
             "suspectedFailedTaskCount": sum(1 for t in tt if t["health"] == "needs_review"),
+            "taskHealthCounts": {
+                "exitZero": sum(1 for t in tt if t["health"] == "last_exit_zero_unverified"),
+                "nonzero": sum(1 for t in tt if t["health"] == "needs_review"),
+                "disabled": sum(1 for t in tt if t["health"] == "disabled"),
+                "neverRun": sum(1 for t in tt if t["health"] == "never_run"),
+                "runningNow": sum(1 for t in tt if t.get("state") == "Running"),
+            },
             "executionOwners": [
                 {"owner": name, "taskCount": count}
                 for name, count in sorted(
@@ -174,6 +183,13 @@ def report(repos: list[dict], tasks: list[dict]) -> tuple[dict,dict]:
         "privateRepositoryCount": sum(1 for r in repos if r["private"]),
         "publicRepositoryCount": sum(1 for r in repos if not r["private"]),
         "totalUserScheduledTasks": len(tasks),
+        "taskHealthSummary": {
+            "exitZero": sum(1 for t in tasks if t["health"] == "last_exit_zero_unverified"),
+            "nonzero": sum(1 for t in tasks if t["health"] == "needs_review"),
+            "disabled": sum(1 for t in tasks if t["health"] == "disabled"),
+            "neverRun": sum(1 for t in tasks if t["health"] == "never_run"),
+            "runningNow": sum(1 for t in tasks if t.get("state") == "Running"),
+        },
         "classificationNote": "Category is registered for select repos, inferred by name for others; manual verification required.",
         "coverageNote": "Includes GitHub repository metadata and non-Microsoft local Windows tasks, not the execution history of all workflows.",
         "quotaStatus": "unavailable", "quotas": [
