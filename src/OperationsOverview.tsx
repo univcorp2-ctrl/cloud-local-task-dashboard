@@ -67,8 +67,8 @@ export default function OperationsOverview({ section = 'all' }: { section?: 'quo
   return <>
     {section !== 'catalog' && <section className="panel quota-panel" id="quota" aria-label="AI利用枠・残量">
       <div className="panel-heading">
-        <div><span className="section-kicker">AI QUOTA / OWNER</span><h2>AI担当・トークン残量％</h2></div>
-        <span className="soft-badge">実測した利用枠のみ％表示</span>
+        <div><span className="section-kicker">AI QUOTA / OWNER</span><h2>AI利用枠の消費率％</h2></div>
+        <span className="soft-badge">実測・推定を区別して表示</span>
       </div>
       <p className="quota-compact-note">利用枠に対する<strong>消費％</strong>を大きく表示。ログ実測と推定を区別し、根拠がない場合は推定不能と表示します。</p>
       <div className="quota-grid">
