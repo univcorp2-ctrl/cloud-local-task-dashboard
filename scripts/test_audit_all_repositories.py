@@ -47,5 +47,21 @@ class InventoryTests(unittest.TestCase):
         public, _ = report([], [])
         self.assertTrue(all(entry["remainingPercent"] is None for entry in public["quotas"]))
 
+    def test_status_health_counts_are_exclusive(self):
+        repos = []
+        base = {"category": "real_estate", "executionOwner": "Python"}
+        tasks = [
+            {**base, "health": "last_exit_zero_unverified", "state": "Ready"},
+            {**base, "health": "needs_review", "state": "Running"},
+            {**base, "health": "disabled", "state": "Disabled"},
+            {**base, "health": "never_run", "state": "Ready"},
+        ]
+        public, private = report(repos, tasks)
+        counts = public["taskHealthSummary"]
+        self.assertEqual([counts[x] for x in ("exitZero","nonzero","disabled","neverRun")], [1,1,1,1])
+        self.assertEqual(counts["runningNow"], 1)
+        self.assertEqual(sum(counts[x] for x in ("exitZero","nonzero","disabled","neverRun")), len(tasks))
+        self.assertEqual(private["taskHealthSummary"], counts)
+
 if __name__ == "__main__":
     unittest.main()

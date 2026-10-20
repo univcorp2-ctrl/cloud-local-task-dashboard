@@ -1,45 +1,44 @@
 {
-  "generatedAt": "2026-10-19T07:41:18.337925+00:00",
+  "generatedAt": "2026-10-20T12:39:33.096167+00:00",
   "source": "GitHub authenticated inventory + Windows Task Scheduler",
   "totalRepositories": 153,
   "privateRepositoryCount": 60,
   "publicRepositoryCount": 93,
-  "totalUserScheduledTasks": 113,
+  "totalUserScheduledTasks": 116,
+  "taskHealthSummary": {
+    "exitZero": 64,
+    "nonzero": 29,
+    "disabled": 18,
+    "neverRun": 5,
+    "runningNow": 8
+  },
   "classificationNote": "Category is registered for select repos, inferred by name for others; manual verification required.",
   "coverageNote": "Includes GitHub repository metadata and non-Microsoft local Windows tasks, not the execution history of all workflows.",
-  "quotaStatus": "partial",
+  "quotaStatus": "unavailable",
   "quotas": [
     {
       "provider": "Codex CLI",
-      "remainingPercent": 22,
-      "resetAt": "2026-10-19T14:25:25Z",
-      "evidence": "2026-10-19 22:43 JST Codex token_countログ（5時間/7日間）",
-      "usedPercent": 78,
-      "weeklyUsedPercent": 28,
-      "windowLabel": "5時間",
-      "quality": "measured",
-      "model": "gpt-6.1-sol"
+      "remainingPercent": null,
+      "resetAt": null,
+      "evidence": "No verified provider quota endpoint"
     },
     {
       "provider": "Claude Code CLI",
       "remainingPercent": null,
       "resetAt": null,
-      "evidence": "No verified provider quota endpoint ／ 推定の母数を確認中",
-      "quality": "unavailable"
+      "evidence": "No verified provider quota endpoint"
     },
     {
       "provider": "Gemini / Antigravity CLI",
       "remainingPercent": null,
       "resetAt": null,
-      "evidence": "No verified provider quota endpoint ／ 推定の母数を確認中",
-      "quality": "unavailable"
+      "evidence": "No verified provider quota endpoint"
     },
     {
       "provider": "ChatGPT通常Chat",
       "remainingPercent": null,
       "resetAt": null,
-      "evidence": "No official remaining-quota telemetry connected ／ 推定の母数を確認中",
-      "quality": "unavailable"
+      "evidence": "No official remaining-quota telemetry connected"
     }
   ],
   "categories": [
@@ -51,7 +50,14 @@
       "privateRepoCount": 16,
       "publicRepoCount": 9,
       "scheduledTaskCount": 22,
-      "suspectedFailedTaskCount": 2,
+      "suspectedFailedTaskCount": 1,
+      "taskHealthCounts": {
+        "exitZero": 17,
+        "nonzero": 1,
+        "disabled": 4,
+        "neverRun": 0,
+        "runningNow": 0
+      },
       "executionOwners": [
         {
           "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
@@ -146,6 +152,13 @@
       "publicRepoCount": 5,
       "scheduledTaskCount": 13,
       "suspectedFailedTaskCount": 0,
+      "taskHealthCounts": {
+        "exitZero": 7,
+        "nonzero": 0,
+        "disabled": 6,
+        "neverRun": 0,
+        "runningNow": 0
+      },
       "executionOwners": [
         {
           "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
@@ -206,19 +219,26 @@
       "repoCount": 8,
       "privateRepoCount": 5,
       "publicRepoCount": 3,
-      "scheduledTaskCount": 3,
+      "scheduledTaskCount": 4,
       "suspectedFailedTaskCount": 1,
+      "taskHealthCounts": {
+        "exitZero": 2,
+        "nonzero": 1,
+        "disabled": 1,
+        "neverRun": 0,
+        "runningNow": 0
+      },
       "executionOwners": [
+        {
+          "owner": "Windowsスケジューラー（内部実行先未検証）",
+          "taskCount": 2
+        },
         {
           "owner": "Python・スクリプト",
           "taskCount": 1
         },
         {
           "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
-          "taskCount": 1
-        },
-        {
-          "owner": "Windowsスケジューラー（内部実行先未検証）",
           "taskCount": 1
         }
       ],
@@ -257,7 +277,14 @@
       "privateRepoCount": 1,
       "publicRepoCount": 0,
       "scheduledTaskCount": 3,
-      "suspectedFailedTaskCount": 1,
+      "suspectedFailedTaskCount": 0,
+      "taskHealthCounts": {
+        "exitZero": 2,
+        "nonzero": 0,
+        "disabled": 0,
+        "neverRun": 1,
+        "runningNow": 0
+      },
       "executionOwners": [
         {
           "owner": "Windowsスケジューラー（内部実行先未検証）",
@@ -277,8 +304,15 @@
       "repoCount": 8,
       "privateRepoCount": 2,
       "publicRepoCount": 6,
-      "scheduledTaskCount": 31,
-      "suspectedFailedTaskCount": 8,
+      "scheduledTaskCount": 32,
+      "suspectedFailedTaskCount": 10,
+      "taskHealthCounts": {
+        "exitZero": 21,
+        "nonzero": 10,
+        "disabled": 1,
+        "neverRun": 0,
+        "runningNow": 4
+      },
       "executionOwners": [
         {
           "owner": "Python・スクリプト",
@@ -286,7 +320,7 @@
         },
         {
           "owner": "Windowsスケジューラー（内部実行先未検証）",
-          "taskCount": 1
+          "taskCount": 2
         }
       ],
       "publicRepositories": [
@@ -349,6 +383,13 @@
       "publicRepoCount": 8,
       "scheduledTaskCount": 0,
       "suspectedFailedTaskCount": 0,
+      "taskHealthCounts": {
+        "exitZero": 0,
+        "nonzero": 0,
+        "disabled": 0,
+        "neverRun": 0,
+        "runningNow": 0
+      },
       "executionOwners": [],
       "publicRepositories": [
         {
@@ -425,7 +466,14 @@
       "privateRepoCount": 1,
       "publicRepoCount": 2,
       "scheduledTaskCount": 6,
-      "suspectedFailedTaskCount": 2,
+      "suspectedFailedTaskCount": 4,
+      "taskHealthCounts": {
+        "exitZero": 1,
+        "nonzero": 4,
+        "disabled": 1,
+        "neverRun": 0,
+        "runningNow": 2
+      },
       "executionOwners": [
         {
           "owner": "ChatGPT通常Chat（制御スクリプト）",
@@ -468,6 +516,13 @@
       "publicRepoCount": 4,
       "scheduledTaskCount": 0,
       "suspectedFailedTaskCount": 0,
+      "taskHealthCounts": {
+        "exitZero": 0,
+        "nonzero": 0,
+        "disabled": 0,
+        "neverRun": 0,
+        "runningNow": 0
+      },
       "executionOwners": [],
       "publicRepositories": [
         {
@@ -512,7 +567,14 @@
       "privateRepoCount": 16,
       "publicRepoCount": 13,
       "scheduledTaskCount": 12,
-      "suspectedFailedTaskCount": 4,
+      "suspectedFailedTaskCount": 3,
+      "taskHealthCounts": {
+        "exitZero": 7,
+        "nonzero": 3,
+        "disabled": 1,
+        "neverRun": 1,
+        "runningNow": 1
+      },
       "executionOwners": [
         {
           "owner": "Python・スクリプト",
@@ -647,6 +709,13 @@
       "publicRepoCount": 10,
       "scheduledTaskCount": 2,
       "suspectedFailedTaskCount": 0,
+      "taskHealthCounts": {
+        "exitZero": 0,
+        "nonzero": 0,
+        "disabled": 2,
+        "neverRun": 0,
+        "runningNow": 0
+      },
       "executionOwners": [
         {
           "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
@@ -745,6 +814,13 @@
       "publicRepoCount": 15,
       "scheduledTaskCount": 1,
       "suspectedFailedTaskCount": 0,
+      "taskHealthCounts": {
+        "exitZero": 1,
+        "nonzero": 0,
+        "disabled": 0,
+        "neverRun": 0,
+        "runningNow": 0
+      },
       "executionOwners": [
         {
           "owner": "Windowsスケジューラー → VBS（内部実行先未検証）",
@@ -883,6 +959,13 @@
       "publicRepoCount": 8,
       "scheduledTaskCount": 0,
       "suspectedFailedTaskCount": 0,
+      "taskHealthCounts": {
+        "exitZero": 0,
+        "nonzero": 0,
+        "disabled": 0,
+        "neverRun": 0,
+        "runningNow": 0
+      },
       "executionOwners": [],
       "publicRepositories": [
         {
@@ -958,8 +1041,15 @@
       "repoCount": 14,
       "privateRepoCount": 4,
       "publicRepoCount": 10,
-      "scheduledTaskCount": 20,
-      "suspectedFailedTaskCount": 9,
+      "scheduledTaskCount": 21,
+      "suspectedFailedTaskCount": 10,
+      "taskHealthCounts": {
+        "exitZero": 6,
+        "nonzero": 10,
+        "disabled": 2,
+        "neverRun": 3,
+        "runningNow": 1
+      },
       "executionOwners": [
         {
           "owner": "Windowsスケジューラー（内部実行先未検証）",
@@ -976,6 +1066,10 @@
         {
           "owner": "Gemini / Antigravity CLI",
           "taskCount": 2
+        },
+        {
+          "owner": "Python・スクリプト",
+          "taskCount": 1
         }
       ],
       "publicRepositories": [

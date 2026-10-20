@@ -1,5 +1,12 @@
 .catalog-panel,.quota-panel{margin-top:22px;margin-bottom:24px}
 .catalog-panel h3{margin:0;font-size:17px;line-height:1.4}
+.health-audit{border:1px solid #e2e8f0;border-radius:14px;padding:16px;margin:16px 0;background:#fafbfc}
+.health-audit h3{margin:0 0 12px;font-size:17px}.health-audit h3 small{font-weight:400;color:#64748b;font-size:11px}
+.health-audit-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.health-audit-grid>div{display:flex;flex-direction:column;gap:5px;border:1px solid #e2e8f0;border-radius:10px;background:white;padding:13px}
+.health-audit-grid strong{font-size:26px;font-variant-numeric:tabular-nums;color:#334155}
+.health-audit-grid span,.health-audit p{color:#64748b;font-size:12px;line-height:1.5}
+@media(max-width:640px){.health-audit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .catalog-explainer{color:#64748b;font-size:13px;line-height:1.8;margin:8px 0 16px}
 .catalog-master-link{color:#225dcc;font-size:13px;font-weight:700;white-space:nowrap;text-decoration:none}
 .catalog-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 20px}
