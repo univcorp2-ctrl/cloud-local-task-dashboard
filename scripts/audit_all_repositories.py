@@ -31,7 +31,7 @@ CATEGORIES = [
 ]
 PATTERNS = [
     ("social", r"facebook|fb[-_]?|threads|x-autopost|auto.post|notion.creator.ops"),
-    ("messaging", r"messenger|line[-_]|gmail.*reply|email.*reply|property.sender|sender.automation|mail"),
+    ("messaging", r"messenger|^line|line[-_]|gmail.*reply|email.*reply|property.sender|sender.automation|mail"),
     ("real_estate", r"bukken|chuko|shinchiku|estate|real[-_]estate|property|apartment|broker|hotel|minpaku|land.search|reins|terass|suumo|rakumachi|kenbiya|rimawari|leasing"),
     ("commerce", r"amazon|mercari|marketplace|purchase|shop|shopee|apple|listing|snaplist|rolex|suzuri|rakuten.room|qoo10|keita|buyback|yamato.ship|morimori|mobatori"),
     ("finance", r"hojokin|subsid|grant|funding|loan|bank.inquiry|finance|capital|fundraise|lender|gpoi|customer.house"),
