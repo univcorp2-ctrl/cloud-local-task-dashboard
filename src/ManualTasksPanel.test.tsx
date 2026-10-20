@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import ManualTasksPanel from './ManualTasksPanel';
 
@@ -21,14 +21,14 @@ test('認証されたNotionタスクをカテゴリーと優先度付きで表�
   }) }));
   render(<ManualTasksPanel />);
   expect(await screen.findByText('公開テスト用の作業 ↗')).toBeInTheDocument();
-  expect(screen.getByText('🏠 不動産')).toBeInTheDocument();
+  expect(screen.getAllByText('🏠 不動産').length).toBeGreaterThan(0);
   expect(screen.getByRole('checkbox', { name: /公開テスト用の作業を完了/ })).toBeInTheDocument();
 });
 
 test('一覧とカンバン切り替えが利用できる', async () => {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => ({ tasks: [], generatedAt: '2026-10-19T00:00:00Z' }) }));
-  render(<ManualTasksPanel />);
-  expect(await screen.findByText('0件（未完了）')).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: /カンバン/ })).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: /一覧/ })).toBeInTheDocument();
+  const { container } = render(<ManualTasksPanel />);
+  expect(await within(container).findByText('0件（未完了）')).toBeInTheDocument();
+  expect(within(container).getByRole('button', { name: /カンバン/ })).toBeInTheDocument();
+  expect(within(container).getByRole('button', { name: /一覧/ })).toBeInTheDocument();
 });
