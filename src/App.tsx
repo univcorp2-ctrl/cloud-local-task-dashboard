@@ -114,14 +114,7 @@ export default function App() {
         <nav aria-label="メインナビゲーション">
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
           <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
-          {activePage === 'automation' && <>
-            <a href="#quota">AI残量</a>
-            <a href="#inventory">全リポ・分類</a>
-            <a href="#tasks">▤ <span>自動実行一覧</span></a>
-            <a href="#history">◷ <span>実行履歴</span></a>
-            <a href="#agents">▣ <span>エージェント</span></a>
-            <a href="#setup">⚙ <span>接続設定</span></a>
-          </>}
+          
         </nav>
         <div className="sidebar-foot"><span className="live-dot" /> 60秒ごとに自動更新</div>
       </aside>
@@ -137,7 +130,7 @@ export default function App() {
         </header>
 
         {activePage === 'automation' ? <>
-        <OperationsOverview section="quota" />
+        <TokenUsagePanel />
         <details className="ops-expanded">
           <summary>☷ 自動実行一覧・リポジトリ・トークン明細を開く <span>{totals.total} タスク</span></summary>
         <section className="kpi-grid" aria-label="主要指標">
@@ -148,7 +141,6 @@ export default function App() {
         </section>
 
         <OperationsOverview section="catalog" />
-        <TokenUsagePanel />
 
         <section className="overview-grid">
           <article className="panel status-panel">

@@ -11,7 +11,8 @@ type RawTask = {
   model?: unknown;
   executor?: unknown;
   status?: unknown;
-  tokenUsage?: Record<string, unknown>;
+  lastRunAt?: unknown;
+  tokenUsage?: Record<string, unknown>
 };
 type RawSnapshot = {
   generatedAt?: unknown;
@@ -41,6 +42,7 @@ export async function onRequestGet(): Promise<Response> {
       executor: safeText(task.executor),
       model: safeText(task.model),
       status: safeText(task.status),
+      lastRunAt: safeText(task.lastRunAt),
       tokens: {
         '24h': safeCount(task.tokenUsage?.['24h']),
         '7d': safeCount(task.tokenUsage?.['7d']),
