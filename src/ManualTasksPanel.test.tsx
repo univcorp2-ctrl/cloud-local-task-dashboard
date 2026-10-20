@@ -9,7 +9,7 @@ test('未認証時に非公開タスクを表示せずNotionへの導線を残�
   render(<ManualTasksPanel />);
   expect(await screen.findByText(/認証・Notion連携が未設定/)).toBeInTheDocument();
   expect(screen.getByRole('link', { name: /10領域別・未完了/ })).toHaveAttribute('href', expect.stringContaining('notion.so'));
-  expect(screen.queryByText('機密サンプル')).not.toBeInTheDocument();
+  expect(screen.queryByText('機密サンプル')).toBeNull();
 });
 
 test('認証されたNotionタスクをカテゴリーと優先度付きで表示する', async () => {
