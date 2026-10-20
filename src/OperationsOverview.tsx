@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import QuotaRow, { type Quota } from './QuotaRow';
 interface Repository {
   name: string; url: string; description: string;
   executionOwner: string; verification: string; classificationEvidence: string;
@@ -9,12 +10,6 @@ interface Category {
   scheduledTaskCount: number; suspectedFailedTaskCount: number;
   publicRepositories: Repository[];
   executionOwners?: Array<{ owner: string; taskCount: number }>;
-}
-interface Quota {
-  provider: string; remainingPercent: number | null;
-  resetAt: string | null; evidence: string;
-  usedPercent?: number | null; weeklyUsedPercent?: number | null;
-  windowLabel?: string; quality?: 'measured' | 'estimated' | 'unavailable'; model?: string;
 }
 interface Catalog {
   generatedAt: string; totalRepositories: number; privateRepositoryCount: number;
@@ -27,6 +22,14 @@ const defaultQuotas: Quota[] = [
   { provider: 'Gemini / Antigravity CLI', remainingPercent: null, resetAt: null, evidence: '未接続' },
   { provider: 'ChatGPT通常Chat', remainingPercent: null, resetAt: null, evidence: '未接続' },
 ];
+function currentUsageForRanking(quota: Quota, now: number): number | null {
+  const stamp = quota.observedAt ? Date.parse(quota.observedAt) : NaN;
+  if (!Number.isFinite(stamp) || stamp > now + 300_000 || now - stamp > 1_800_000 ||
+      quota.quality === 'stale' || quota.quality === 'unavailable') return null;
+  const used = typeof quota.usedPercent === 'number' ? quota.usedPercent :
+    typeof quota.remainingPercent === 'number' ? 100 - quota.remainingPercent : null;
+  return used !== null && Number.isFinite(used) && used >= 0 && used <= 100 ? used : null;
+}
 const MASTER_NOTION = 'https://app.notion.com/p/3fe10562e58b81aeb778eb9885e62446';
 const MANIFEST_FILE = '/data/operations-catalog.json';
 
@@ -35,6 +38,7 @@ export default function OperationsOverview({ section = 'all' }: { section?: 'quo
   const [selected, setSelected] = useState('all');
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
+  const [checkedAt, setCheckedAt] = useState(Date.now);
   const reload = useCallback(async () => {
     try {
       const response = await fetch(MANIFEST_FILE + '?at=' + Date.now(), { cache: 'no-store' });
@@ -47,6 +51,9 @@ export default function OperationsOverview({ section = 'all' }: { section?: 'quo
       setError('');
     } catch {
       setError('分類台帳を取得できません。古い表示や見本の数字は使用しません。');
+    } finally {
+      // Reevaluate freshness even when consecutive polling attempts fail.
+      setCheckedAt(Date.now());
     }
   }, []);
   useEffect(() => {
@@ -62,34 +69,27 @@ export default function OperationsOverview({ section = 'all' }: { section?: 'quo
     return !q || (cat.name + ' ' + cat.purpose + ' ' +
       cat.publicRepositories.map((repo) => repo.name + ' ' + repo.description).join(' ')).toLowerCase().includes(q);
   }), [data, selected, query]);
+  const rankedQuotas = useMemo(() => [...(data?.quotas ?? defaultQuotas)].sort((a, b) => {
+    const av = currentUsageForRanking(a, checkedAt);
+    const bv = currentUsageForRanking(b, checkedAt);
+    if (av !== null && bv !== null) return bv - av || a.provider.localeCompare(b.provider);
+    if (av !== null) return -1;
+    if (bv !== null) return 1;
+    return a.provider.localeCompare(b.provider);
+  }), [data, checkedAt]);
   const unclassified = data?.categories.find((cat) => cat.id === 'other');
   const lastUpdated = data?.generatedAt ? new Date(data.generatedAt).toLocaleString('ja-JP') : '不明';
   return <>
     {section !== 'catalog' && <section className="panel quota-panel" id="quota" aria-label="AI利用枠・残量">
       <div className="panel-heading">
         <div><span className="section-kicker">AI QUOTA / OWNER</span><h2>AI利用枠の消費率％</h2></div>
-        <span className="soft-badge">実測・推定を区別して表示</span>
+        <span className="soft-badge">使用率 / リセット / 取得状態</span>
       </div>
-      <p className="quota-compact-note">利用枠に対する<strong>消費％</strong>を大きく表示。ログ実測と推定を区別し、根拠がない場合は推定不能と表示します。</p>
-      <div className="quota-grid">
-        {(data?.quotas ?? defaultQuotas).map((quota) => {
-          const remaining = quota.remainingPercent;
-          const used = typeof quota.usedPercent === 'number' ? quota.usedPercent :
-            typeof remaining === 'number' ? 100 - remaining : null;
-          const reliable = used !== null && Number.isFinite(used) && used >= 0 && used <= 100;
-          const quality = quota.quality || (reliable ? 'measured' : 'unavailable');
-          return <article className="quota-item" key={quota.provider}>
-            <strong className="quota-title">{quota.provider}</strong>
-            <div className="quota-main"><span className="quota-value">{reliable ? Math.round(used ?? 0) + '%' : '—%'}</span>
-              <span className="quota-kind">{quality === 'estimated' ? '推定使用率' : reliable ? '実測使用率' : '推定不能'}</span></div>
-            <span className="quota-track" role="img" aria-label={reliable ? '使用率 ' + used + '%' : '使用率の情報なし'}>
-              <span style={{ width: reliable ? used + '%' : '0%' }} />
-            </span>
-            <small>{quota.windowLabel || '利用枠'}　残り {reliable ? Math.round(100 - used!) + '%' : '不明'}</small>
-            {typeof quota.weeklyUsedPercent === 'number' && <small>7日間 使用 {Math.round(quota.weeklyUsedPercent)}%</small>}
-            <small>{quota.model ? 'モデル: ' + quota.model + ' ｜ ' : ''}{quota.evidence || '取得元なし'}</small>
-          </article>;
-        })}
+      {error && <p role="alert" className="usage-error">{error}</p>}
+      <p className="quota-compact-note">AIごとに使用率とリセットを表示。観測から30分を超えた値はstale（前回値）、根拠がない値は取得不能です。</p>
+      <div className="quota-rows" role="region" aria-label="AI使用率の降順ランキング">
+        <div className="quota-list-header" aria-hidden="true"><span>順位・AI</span><span>5時間／モデル別枠</span><span>7日間</span><span>測定状態・日時</span></div>
+        {rankedQuotas.map((quota, index) => <QuotaRow key={quota.provider} quota={quota} now={checkedAt} rank={index + 1} />)}
       </div>
     </section>}
 
