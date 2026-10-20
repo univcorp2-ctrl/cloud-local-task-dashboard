@@ -68,3 +68,4 @@ The demo needs no secret. Real cloud collection uses only the secret names docum
 - `.github/workflows/ci.yml` — CI and 15-minute cloud collection
 - `docs/architecture.md` — architecture and data flow
 - `docs/setup.md` — initial connection guide
+- `docs/ai-quotas.md` — quota sources, freshness and sanitized Claude snapshot contract
