@@ -8,6 +8,8 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(category('Apple-Morimori-Buyback-ApprovalWatch')[0], 'commerce')
         self.assertEqual(category('ChatGPT-Supervisor-Resident-Watchdog')[0], 'chatgpt')
         self.assertEqual(category('Hojokin')[0], 'finance')
+        self.assertEqual(category('LineAutoReply5m')[0], 'messaging')
+        self.assertEqual(category('LineDraftChrome9333')[0], 'messaging')
 
     def test_private_names_stay_private(self):
         repos = [
