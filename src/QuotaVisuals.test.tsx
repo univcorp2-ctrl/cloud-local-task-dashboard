@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, cleanup, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import QuotaStrip from './QuotaStrip';
+import QuotaStrip, { untilReset } from './QuotaStrip';
 import UsageDonut from './UsageDonut';
 beforeEach(() => vi.useRealTimers());
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
@@ -41,4 +41,23 @@ test('donut represents observed task shares only and displays coverage', () => {
   expect(screen.getByText('60.0%')).toBeInTheDocument();
   expect(screen.getByText('40.0%')).toBeInTheDocument();
   expect(screen.getByText(/2\/116 タスク/)).toBeInTheDocument();
+});
+test('weekly reset countdown is driven by a real provider reset timestamp', () => {
+  const now = Date.parse('2026-10-21T04:00:00Z');
+  expect(untilReset('2026-10-24T06:00:00Z', now)).toBe('あと3日2時間');
+  expect(untilReset('2026-10-21T04:42:00Z', now)).toBe('あと42分');
+  expect(untilReset(null, now)).toBe('更新日不明');
+  expect(untilReset('2026-10-20T00:00:00Z', now)).toBe('更新時刻確認中');
+});
+
+test('renders Tokyo-local date and reset days beside named weekly quota', async () => {
+  const observed = new Date().toISOString();
+  const weeklyReset = new Date(Date.now() + 3 * 86400000).toISOString();
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ok:true,json:async()=>({quotas:[
+    {provider:'Codex CLI',weeklyUsedPercent:25,usedPercent:10,weeklyResetAt:weeklyReset,observedAt:observed,quality:'measured'}
+  ]})}));
+  render(<QuotaStrip />);
+  expect(await screen.findByText('75%')).toBeInTheDocument();
+  expect(screen.getByLabelText('今日の日付と日本時間')).toBeInTheDocument();
+  expect(screen.getAllByText(/あと2日|あと3日/).length).toBeGreaterThan(0);
 });
