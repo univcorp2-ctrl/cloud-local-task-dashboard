@@ -22,7 +22,7 @@ test('labels stale samples as historical rather than current', async () => {
     {provider:'Codex CLI',usedPercent:80,quality:'measured',observedAt:'2026-01-01T00:00:00Z'},
   ] }) }));
   render(<QuotaStrip />);
-  expect(await screen.findByText('20%')).toBeInTheDocument();
+  expect(await screen.findByText(/古い観測 20%/)).toBeInTheDocument();
   expect(screen.getByText('前回値')).toBeInTheDocument();
 });
 test('donut uses only recorded task shares and displays coverage', () => {

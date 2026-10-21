@@ -44,17 +44,18 @@ export default function QuotaStrip() {
       const primary = q ? remaining(q.usedPercent, q.remainingPercent) : null;
       const weekly = q ? remaining(q.weeklyUsedPercent, null) : null;
       const hasSample = primary !== null && validTime;
+      const displayable = hasSample && ageMinutes <= 24 * 60;
       const status = fresh && hasSample ? (q?.quality === 'estimated' ? '推定' : '実測')
         : hasSample ? '前回値' : '未取得';
       return <article key={name} className={'quota-compact-card ' + (fresh && hasSample ? 'quota-compact-live' : 'quota-compact-unknown')}>
         <div className="quota-compact-title"><strong>{name}</strong><span>{status}</span></div>
         <div className="quota-compact-bottom">
           <div><span>{name === 'Antigravity' ? 'モデル別残量' : '5時間枠残量'}</span>
-            <strong>{printPercent(hasSample ? primary : null)}</strong></div>
+            <strong>{printPercent(displayable ? primary : null)}</strong></div>
           <div><span>{name === 'Antigravity' ? '次回更新' : '7日間枠残量'}</span>
-            <strong>{name === 'Antigravity' ? (fresh ? '自動' : '—') : printPercent(weekly !== null && validTime ? weekly : null)}</strong></div>
+            <strong>{name === 'Antigravity' ? (fresh ? '自動' : '—') : printPercent(weekly !== null && displayable ? weekly : null)}</strong></div>
         </div>
-        <small>{hasSample ? (fresh ? '最終取得 ' : '前回 ' ) + new Date(observedTime).toLocaleString('ja-JP', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' })
+        <small>{hasSample ? (fresh ? '最終取得 ' : ageMinutes > 24 * 60 ? '古い観測 ' + printPercent(primary) + ' / ' : '前回 ' ) + new Date(observedTime).toLocaleString('ja-JP', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' })
           : name === 'Antigravity' ? 'IDEの稼働・接続を確認' : '利用枠の記録待ち'}</small>
       </article>;
     })}
