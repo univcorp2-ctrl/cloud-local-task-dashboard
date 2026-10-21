@@ -3,6 +3,7 @@ import { fallbackSnapshot } from './sample';
 import TokenUsagePanel from './TokenUsagePanel';
 import QuotaStrip from './QuotaStrip';
 import ManualTasksPanel from './ManualTasksPanel';
+import DevelopmentProgressPanel from './DevelopmentProgressPanel';
 import OperationsOverview from './OperationsOverview';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
@@ -62,8 +63,8 @@ function TaskRow({ task }: { task: ScheduledTask }) {
 }
 
 export default function App() {
-  const [activePage, setActivePage] = useState<'automation' | 'work'>(() => typeof window !== 'undefined' && window.location.hash === '#my-tasks' ? 'work' : 'automation');
-  useEffect(() => { const onHashChange = () => setActivePage(window.location.hash === '#my-tasks' ? 'work' : 'automation'); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
+  const [activePage, setActivePage] = useState<'automation' | 'work' | 'development'>(() => typeof window !== 'undefined' ? (window.location.hash === '#my-tasks' ? 'work' : window.location.hash === '#automation' ? 'automation' : 'development') : 'development');
+  useEffect(() => { const onHashChange = () => setActivePage(window.location.hash === '#my-tasks' ? 'work' : window.location.hash === '#automation' ? 'automation' : 'development'); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
   const [snapshot, setSnapshot] = useState<TaskSnapshot>({ ...fallbackSnapshot, generatedAt: '', agents: [], tasks: [] });
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<'all' | TaskStatus>('all');
@@ -115,6 +116,7 @@ export default function App() {
         <nav aria-label="メインナビゲーション">
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
           <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
+          <a className={activePage === 'development' ? 'active' : ''} href="#development">▥ <span>③ 開発進捗・次アクション</span></a>
           
         </nav>
         <div className="sidebar-foot"><span className="live-dot" /> 60秒ごとに自動更新</div>
@@ -123,7 +125,7 @@ export default function App() {
       <main>
         <header className="topbar" id="dashboard">
           <button className="menu-button" onClick={() => setMenuOpen((value) => !value)} aria-label="メニューを開閉">☰</button>
-          <div><p className="eyebrow">UNIFIED OPERATIONS</p><h1>{activePage === "automation" ? "クラウド & ローカル定期タスク" : "全タスク・本人対応"}</h1><p>{activePage === "automation" ? "AI稼働・トークン消費と自動処理を監視。" : "Notionのタスクをカテゴリ・担当者別に整理。"}</p></div>
+          <div><p className="eyebrow">UNIFIED OPERATIONS</p><h1>{activePage === "automation" ? "クラウド & ローカル定期タスク" : activePage === "development" ? "全開発プロジェクト・進捗管理" : "全タスク・本人対応"}</h1><p>{activePage === "automation" ? "AI稼働・トークン消費と自動処理を監視。" : activePage === "development" ? "検証ベースの進捗率、次のアクション、実行と結果を可視化。" : "Notionのタスクをカテゴリ・担当者別に整理。"}</p></div>
           {activePage === 'automation' && <div className="header-actions">
             <span className={loadError ? 'data-state warning' : 'data-state'}><i />{loadError ? '取得失敗' : 'データ接続済み'}</span>
             <button className="refresh-button" onClick={() => void load()} disabled={refreshing}>{refreshing ? '更新中…' : '↻ 更新'}</button>
@@ -178,7 +180,7 @@ export default function App() {
 
         <footer><span>最終スナップショット: {formatDate(snapshot.generatedAt)}</span><span>Task Control Center v1.1</span></footer>
         </details>
-        </> : <ManualTasksPanel />}
+        </> : activePage === "development" ? <DevelopmentProgressPanel /> : <ManualTasksPanel />}
       </main>
       {menuOpen && <button className="backdrop" onClick={() => setMenuOpen(false)} aria-label="メニューを閉じる" />}
     </div>

@@ -10,6 +10,7 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 test('主要なダッシュボード情報を表示する', async () => {
+  window.location.hash = '#automation';
   render(<App />);
   expect(screen.getByRole('heading', { name: 'クラウド & ローカル定期タスク' })).toBeInTheDocument();
   const backupEntries = await screen.findAllByText('Google Driveバックアップ');
