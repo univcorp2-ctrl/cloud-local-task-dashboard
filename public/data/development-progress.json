@@ -1,0 +1,6565 @@
+{
+  "generatedAt": "2026-10-21T01:26:00.754610+00:00",
+  "source": "GitHub GraphQL 153 live default branch trees + private Windows task inventory",
+  "progressDefinition": "各検証マイルストーンを固定配点で集計。開発全仕様に対する完成率とは異なる暫定の証拠ベース進捗",
+  "milestoneWeights": [
+    {
+      "id": "design",
+      "name": "設計・説明が存在",
+      "weight": 15
+    },
+    {
+      "id": "implementation",
+      "name": "実装コードの痕跡",
+      "weight": 25
+    },
+    {
+      "id": "tests_present",
+      "name": "テストコードが存在",
+      "weight": 10
+    },
+    {
+      "id": "tests_pass",
+      "name": "テスト実行成功を検証",
+      "weight": 10
+    },
+    {
+      "id": "automation",
+      "name": "自動化用の構成が存在",
+      "weight": 10
+    },
+    {
+      "id": "runtime",
+      "name": "紐付く実行の終了コード0を検証",
+      "weight": 10
+    },
+    {
+      "id": "deployed",
+      "name": "実際の公開デプロイを検証",
+      "weight": 10
+    },
+    {
+      "id": "outcome",
+      "name": "実データ／業務成果を検証",
+      "weight": 10
+    }
+  ],
+  "coverage": {
+    "allRepositories": 153,
+    "public": 93,
+    "private": 60,
+    "inspected": 153
+  },
+  "averageProgress": 51.0,
+  "categories": [
+    {
+      "id": "real_estate",
+      "name": "不動産",
+      "repositoryCount": 25,
+      "privateRepositoryCount": 16,
+      "averageEvidenceProgress": 52.8,
+      "stageCounts": {
+        "企画・調査段階": 4,
+        "実装段階": 1,
+        "検証段階": 20,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "commerce",
+      "name": "物販・EC",
+      "repositoryCount": 10,
+      "privateRepositoryCount": 5,
+      "averageEvidenceProgress": 53.0,
+      "stageCounts": {
+        "企画・調査段階": 1,
+        "実装段階": 0,
+        "検証段階": 9,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "research",
+      "name": "情報収集・投資調査",
+      "repositoryCount": 8,
+      "privateRepositoryCount": 5,
+      "averageEvidenceProgress": 32.5,
+      "stageCounts": {
+        "企画・調査段階": 4,
+        "実装段階": 0,
+        "検証段階": 4,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "finance",
+      "name": "資金調達・補助金",
+      "repositoryCount": 1,
+      "privateRepositoryCount": 1,
+      "averageEvidenceProgress": 15.0,
+      "stageCounts": {
+        "企画・調査段階": 1,
+        "実装段階": 0,
+        "検証段階": 0,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "social",
+      "name": "Facebook・SNS投稿",
+      "repositoryCount": 8,
+      "privateRepositoryCount": 2,
+      "averageEvidenceProgress": 47.5,
+      "stageCounts": {
+        "企画・調査段階": 2,
+        "実装段階": 1,
+        "検証段階": 5,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "messaging",
+      "name": "LINE・Messenger・顧客対応",
+      "repositoryCount": 12,
+      "privateRepositoryCount": 4,
+      "averageEvidenceProgress": 51.7,
+      "stageCounts": {
+        "企画・調査段階": 2,
+        "実装段階": 3,
+        "検証段階": 7,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "chatgpt",
+      "name": "ChatGPT通常Chat・自動追撃",
+      "repositoryCount": 3,
+      "privateRepositoryCount": 1,
+      "averageEvidenceProgress": 63.3,
+      "stageCounts": {
+        "企画・調査段階": 0,
+        "実装段階": 0,
+        "検証段階": 3,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "secretary",
+      "name": "AI秘書・人手アサイン",
+      "repositoryCount": 6,
+      "privateRepositoryCount": 2,
+      "averageEvidenceProgress": 56.7,
+      "stageCounts": {
+        "企画・調査段階": 0,
+        "実装段階": 1,
+        "検証段階": 5,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "control",
+      "name": "Webダッシュボード・実行基盤",
+      "repositoryCount": 29,
+      "privateRepositoryCount": 16,
+      "averageEvidenceProgress": 48.1,
+      "stageCounts": {
+        "企画・調査段階": 7,
+        "実装段階": 6,
+        "検証段階": 16,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "marketing",
+      "name": "営業・集客・メディア",
+      "repositoryCount": 13,
+      "privateRepositoryCount": 3,
+      "averageEvidenceProgress": 53.8,
+      "stageCounts": {
+        "企画・調査段階": 2,
+        "実装段階": 0,
+        "検証段階": 11,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "games",
+      "name": "ゲーム・デジタル商品",
+      "repositoryCount": 15,
+      "privateRepositoryCount": 0,
+      "averageEvidenceProgress": 55.0,
+      "stageCounts": {
+        "企画・調査段階": 1,
+        "実装段階": 4,
+        "検証段階": 10,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "investment",
+      "name": "投資・市況分析",
+      "repositoryCount": 9,
+      "privateRepositoryCount": 1,
+      "averageEvidenceProgress": 57.8,
+      "stageCounts": {
+        "企画・調査段階": 0,
+        "実装段階": 0,
+        "検証段階": 9,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    },
+    {
+      "id": "other",
+      "name": "その他・未分類",
+      "repositoryCount": 14,
+      "privateRepositoryCount": 4,
+      "averageEvidenceProgress": 50.4,
+      "stageCounts": {
+        "企画・調査段階": 1,
+        "実装段階": 4,
+        "検証段階": 9,
+        "運用接続段階": 0,
+        "本番・成果検証段階": 0
+      }
+    }
+  ],
+  "activeProjects": [
+    {
+      "id": "gpt-followerchatgpt",
+      "title": "GPT Follower｜ChatGPT自動追撃",
+      "priority": "P0",
+      "progressPercent": 70,
+      "confidence": "medium",
+      "executionStatus": "異常コードあり・E2E未確認",
+      "nextAction": "同一Chatの自動追撃・2回の回答回収・checkpoint・doneのE2E再検証",
+      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "phase": "検証段階",
+      "visibility": "public_alias_only"
+    },
+    {
+      "id": "db",
+      "title": "不動産DB・銀行融資自動連携",
+      "priority": "P0",
+      "progressPercent": 70,
+      "confidence": "medium",
+      "executionStatus": "異常コードあり・E2E未確認",
+      "nextAction": "銀行データ鮮度・物件計算・本番表示の入力から結果までの一致を検証",
+      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "phase": "検証段階",
+      "visibility": "public_alias_only"
+    },
+    {
+      "id": "facebook",
+      "title": "Facebook新規投稿・反響自動化",
+      "priority": "P0",
+      "progressPercent": 60,
+      "confidence": "medium",
+      "executionStatus": "異常コードあり・E2E未確認",
+      "nextAction": "新規投稿の実permalinkと物件Web反映を検証",
+      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "phase": "検証段階",
+      "visibility": "public_alias_only"
+    },
+    {
+      "id": "-ai",
+      "title": "海外不動産・資金調達 自律調査AI",
+      "priority": "P0",
+      "progressPercent": 60,
+      "confidence": "low",
+      "executionStatus": "異常コードあり・E2E未確認",
+      "nextAction": "資金調達候補の公式出典・Notion実同期・定期処理のエラーを検証",
+      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "phase": "検証段階",
+      "visibility": "public_alias_only"
+    },
+    {
+      "id": "4",
+      "title": "不動産物件・投稿統合ビュー",
+      "priority": "P1",
+      "progressPercent": 70,
+      "confidence": "medium",
+      "executionStatus": "実行証跡との紐付け未検証",
+      "nextAction": "実物件DBと投稿permalink、公開Webのデータ鮮度を照合",
+      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。実行証跡との紐付け未検証",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "phase": "検証段階",
+      "visibility": "public_alias_only"
+    },
+    {
+      "id": "linemessenger",
+      "title": "LINE・Messenger自動返信",
+      "priority": "P1",
+      "progressPercent": 60,
+      "confidence": "low",
+      "executionStatus": "異常コードあり・E2E未確認",
+      "nextAction": "実送信・添付資料・返信受信までのE2Eを確認",
+      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "phase": "検証段階",
+      "visibility": "public_alias_only"
+    },
+    {
+      "id": "web",
+      "title": "統合Webダッシュボード",
+      "priority": "P1",
+      "progressPercent": 90,
+      "confidence": "high",
+      "executionStatus": "本番公開・データ反映確認済み（開発進捗画面は公開検証前）",
+      "nextAction": "開発進捗パネルの本番反映と定期同期を検証",
+      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。本番公開・データ反映確認済み（開発進捗画面は公開検証前）",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "phase": "実装段階",
+      "visibility": "public_alias_only"
+    }
+  ],
+  "publicProjects": [
+    {
+      "name": "chatgpt-safe-message-sender",
+      "url": "https://github.com/univcorp2-ctrl/chatgpt-safe-message-sender",
+      "category": "chatgpt",
+      "description": "Safe OpenAI Responses API message sender CLI with tests, CI, docs, and live smoke workflow.",
+      "archived": false,
+      "lastCommitAt": "2026-06-07T14:41:49Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "chatgpt-worker-smoketest",
+      "url": "https://github.com/univcorp2-ctrl/chatgpt-worker-smoketest",
+      "category": "chatgpt",
+      "description": "chatgpt cloudflare worker test repo",
+      "archived": false,
+      "lastCommitAt": "2026-06-03T09:39:19Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "amazon-marketplace-sync-hub",
+      "url": "https://github.com/univcorp2-ctrl/amazon-marketplace-sync-hub",
+      "category": "commerce",
+      "description": "Amazon SP-APIの商品情報を取得し、権利確認済みデータをShopee/Qoo10へ出品・価格在庫同期するFastAPIシステム",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T04:38:28Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "amazon-purchase-prep-assistant",
+      "url": "https://github.com/univcorp2-ctrl/amazon-purchase-prep-assistant",
+      "category": "commerce",
+      "description": "Safe Amazon purchase preparation assistant with CSV/XLSX/checklist exports and Amazon Business API integration notes; no checkout browser automation.",
+      "archived": false,
+      "lastCommitAt": "2026-06-26T23:19:09Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "photo-marketplace-listing-assistant",
+      "url": "https://github.com/univcorp2-ctrl/photo-marketplace-listing-assistant",
+      "category": "commerce",
+      "description": "写真からAI出品原稿を生成し、メルカリShops公式API出品・個人向けメルカリ/Yahoo!オークション用ドラフト出力を行うPWAとMCPサーバー",
+      "archived": false,
+      "lastCommitAt": "2026-07-16T08:10:08Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "rolex-reservation-assistant",
+      "url": "https://github.com/univcorp2-ctrl/rolex-reservation-assistant",
+      "category": "commerce",
+      "description": "Safety-first Rolex reservation assistant with encrypted local profile support, generated application text, random near-afternoon dates, and local-only E2E form-fill tests.",
+      "archived": false,
+      "lastCommitAt": "2026-06-22T13:00:08Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "snaplist-ai-marketplace",
+      "url": "https://github.com/univcorp2-ctrl/snaplist-ai-marketplace",
+      "category": "commerce",
+      "description": "写真1枚から相場調査・商品説明生成・マルチマーケット出品を支援するAIクロスリスティング基盤",
+      "archived": false,
+      "lastCommitAt": "2026-07-31T11:04:02Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "cloud-local-task-dashboard",
+      "url": "https://github.com/univcorp2-ctrl/cloud-local-task-dashboard",
+      "category": "control",
+      "description": "Cloud and local scheduled task monitoring dashboard with cross-platform collectors and Cloudflare Pages deployment.",
+      "archived": false,
+      "lastCommitAt": "2026-10-21T01:19:32Z",
+      "progressPercent": 90,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "high",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": true
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "本番Web・定期更新・テスト完了を別途E2E検証",
+      "actionStatus": "verified",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "ai-ci-auto-fixer",
+      "url": "https://github.com/univcorp2-ctrl/ai-ci-auto-fixer",
+      "category": "control",
+      "description": "GitHub Actions failed CI auto-fixer that uses GPT, Claude, or an external Codex/Claude Code command to patch, test, and open PRs across repositories.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:30:25Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "airdrop-agent-engine",
+      "url": "https://github.com/univcorp2-ctrl/airdrop-agent-engine",
+      "category": "control",
+      "description": "Safety-gated airdrop/points scout and DRY_RUN preflight engine with scheduled official-source checks.",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T04:57:55Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "autonomous-cloud-business-automation",
+      "url": "https://github.com/univcorp2-ctrl/autonomous-cloud-business-automation",
+      "category": "control",
+      "description": "Cloudflare-first automation template for Custom GPT driven data collection, analysis, dashboards, CSV/Excel outputs, CI/CD, E2E tests, and safe simulation workflows.",
+      "archived": false,
+      "lastCommitAt": "2026-06-07T15:09:20Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "compliant-b2b-outreach-automation",
+      "url": "https://github.com/univcorp2-ctrl/compliant-b2b-outreach-automation",
+      "category": "control",
+      "description": "公開法人窓口の収集・重複排除・承認付きB2B営業メール/問い合わせフォーム自動化基盤",
+      "archived": false,
+      "lastCommitAt": "2026-07-03T07:09:58Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "custom-gpt-chrome-mcp-agent",
+      "url": "https://github.com/univcorp2-ctrl/custom-gpt-chrome-mcp-agent",
+      "category": "control",
+      "description": "ARCHIVED validation/docs only. Production Chrome MCP integration lives in custom-gpt-cloudflare-bridge and secure-local-ai-agent.",
+      "archived": true,
+      "lastCommitAt": "2026-07-18T09:02:26Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "github-full-automation",
+      "url": "https://github.com/univcorp2-ctrl/github-full-automation",
+      "category": "control",
+      "description": "Cloudflare-first full automation template for Custom GPT driven GitHub, CI/CD, E2E, dashboards, CSV outputs, and safe simulation workflows.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:26:57Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "obsidian-calendar-agent",
+      "url": "https://github.com/univcorp2-ctrl/obsidian-calendar-agent",
+      "category": "control",
+      "description": "Obsidian daily notes and todo lists to Google Calendar hourly blocks with Telegram daily digest and Custom GPT Actions API.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:28:43Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "openmythos-gpt-claude-api",
+      "url": "https://github.com/univcorp2-ctrl/openmythos-gpt-claude-api",
+      "category": "control",
+      "description": "FastAPI bridge for using OpenMythos from Custom GPT Actions or Claude tool use.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:29:30Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "repository-completion-audit",
+      "url": "https://github.com/univcorp2-ctrl/repository-completion-audit",
+      "category": "control",
+      "description": "",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:22:36Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "testgpt",
+      "url": "https://github.com/univcorp2-ctrl/testgpt",
+      "category": "control",
+      "description": "",
+      "archived": false,
+      "lastCommitAt": "2026-07-10T02:29:56Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "Add-repository",
+      "url": "https://github.com/univcorp2-ctrl/Add-repository",
+      "category": "control",
+      "description": "Create new repository automatically",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:31:31Z",
+      "progressPercent": 25,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "企画・調査段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": false
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "READMEとソースを確認し、動く最小実装と完了条件を定義する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "Github-pull-and-push-automation-",
+      "url": "https://github.com/univcorp2-ctrl/Github-pull-and-push-automation-",
+      "category": "control",
+      "description": "Automate pull and push information to Github repository",
+      "archived": false,
+      "lastCommitAt": "2026-05-11T04:18:39Z",
+      "progressPercent": 15,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "企画・調査段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": false
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "READMEとソースを確認し、動く最小実装と完了条件を定義する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-autonomous-product-factory",
+      "url": "https://github.com/univcorp2-ctrl/roblox-autonomous-product-factory",
+      "category": "games",
+      "description": "Zero-touch Roblox product factory: Git sync, Rojo build, Open Cloud Luau Execution, Studio MCP visual QA, bounded repair/quarantine, and guarded publishing.",
+      "archived": false,
+      "lastCommitAt": "2026-08-15T01:36:29Z",
+      "progressPercent": 70,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "medium",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "autonomous-game-factory",
+      "url": "https://github.com/univcorp2-ctrl/autonomous-game-factory",
+      "category": "games",
+      "description": "Godot-based autonomous game factory: ideation, variant generation, QA, OSS template bootstrapping, release packaging, marketing assets, and feedback-driven portfolio iteration.",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T12:24:48Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "nebula-catcher-web-game",
+      "url": "https://github.com/univcorp2-ctrl/nebula-catcher-web-game",
+      "category": "games",
+      "description": "A small browser canvas game deployable to GitHub Pages and Cloudflare Pages.",
+      "archived": false,
+      "lastCommitAt": "2026-07-09T11:16:32Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-revenue-factory",
+      "url": "https://github.com/univcorp2-ctrl/roblox-revenue-factory",
+      "category": "games",
+      "description": "Open-core Roblox Studio monetization safety automation: ReceiptGuard, Studio MCP evidence workflows, tests, and launch playbook.",
+      "archived": false,
+      "lastCommitAt": "2026-08-07T09:12:21Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-revenue-lens",
+      "url": "https://github.com/univcorp2-ctrl/roblox-revenue-lens",
+      "category": "games",
+      "description": "MCP-powered monetization and release-readiness auditor for Roblox Studio.",
+      "archived": false,
+      "lastCommitAt": "2026-08-07T08:58:16Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-revenueos-plugin",
+      "url": "https://github.com/univcorp2-ctrl/roblox-revenueos-plugin",
+      "category": "games",
+      "description": "Sellable Roblox Studio plugin that installs monetization foundations, validates configuration, and instruments revenue analytics.",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T12:40:34Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-skillcity",
+      "url": "https://github.com/univcorp2-ctrl/roblox-skillcity",
+      "category": "games",
+      "description": "Production-oriented Roblox social-learning city: traffic judgment, practical math, roleplay, cooperative incidents, analytics, and safe monetization hooks.",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T12:41:43Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "slime-quest-web-game",
+      "url": "https://github.com/univcorp2-ctrl/slime-quest-web-game",
+      "category": "games",
+      "description": "A responsive browser platform game built with HTML5 Canvas, JavaScript, local rankings, tests, CI, Drive sync, and Cloudflare Pages deployment.",
+      "archived": false,
+      "lastCommitAt": "2026-07-11T05:10:21Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "cascade-circuit",
+      "url": "https://github.com/univcorp2-ctrl/cascade-circuit",
+      "category": "games",
+      "description": "Original browser drop-and-chain puzzle with a free daily allowance and Stripe subscription checkout.",
+      "archived": false,
+      "lastCommitAt": "2026-07-11T12:03:50Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-autonomous-revenue-os",
+      "url": "https://github.com/univcorp2-ctrl/roblox-autonomous-revenue-os",
+      "category": "games",
+      "description": "Deterministic control plane for autonomous Roblox monetization experiments, guardrails, KPI scoring, canaries and rollback.",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T11:54:25Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-liveops-autopilot-plugin",
+      "url": "https://github.com/univcorp2-ctrl/roblox-liveops-autopilot-plugin",
+      "category": "games",
+      "description": "Sellable Roblox Studio plugin that installs safe Experience Config feature flags, kill switches, announcements, and LiveOps runtime scaffolding.",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T12:49:12Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-qa-autopilot-plugin",
+      "url": "https://github.com/univcorp2-ctrl/roblox-qa-autopilot-plugin",
+      "category": "games",
+      "description": "Sellable Roblox Studio plugin for localization, mobile UI, touch-target, clipping, and release-readiness QA.",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T12:47:16Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "roblox-revenue-intelligence",
+      "url": "https://github.com/univcorp2-ctrl/roblox-revenue-intelligence",
+      "category": "games",
+      "description": "Evidence-driven Roblox market intelligence, success/failure pattern mining, opportunity scoring and experiment backlog generation.",
+      "archived": false,
+      "lastCommitAt": "2026-08-14T13:08:33Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "umamuma-kun-stamps",
+      "url": "https://github.com/univcorp2-ctrl/umamuma-kun-stamps",
+      "category": "games",
+      "description": "うまうまくん LINEスタンプ16種・販売導線付きレスポンシブ紹介サイト・審査提出用PNG生成パイプライン",
+      "archived": false,
+      "lastCommitAt": "2026-08-06T08:48:07Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "rock-paper-scissors-python",
+      "url": "https://github.com/univcorp2-ctrl/rock-paper-scissors-python",
+      "category": "games",
+      "description": "A simple Python rock-paper-scissors game with tests and GitHub Actions CI.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:30:40Z",
+      "progressPercent": 35,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "企画・調査段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": false
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "READMEとソースを確認し、動く最小実装と完了条件を定義する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "crypto-arbitrage-scanner-jp",
+      "url": "https://github.com/univcorp2-ctrl/crypto-arbitrage-scanner-jp",
+      "category": "investment",
+      "description": "Paper-only BTC/JPY cross-exchange arbitrage scanner and operations dashboard for Japanese exchanges.",
+      "archived": false,
+      "lastCommitAt": "2026-09-04T18:24:50Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "crypto-auto-trade",
+      "url": "https://github.com/univcorp2-ctrl/crypto-auto-trade",
+      "category": "investment",
+      "description": "Easy crypto auto trading bot with selectable strategies, mandatory trailing stop after entry, dashboard UI, backtest, forward test, real-time validation, paper trading, and guarded live trading.",
+      "archived": false,
+      "lastCommitAt": "2026-09-04T18:29:46Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "crypto-auto-trade-sim",
+      "url": "https://github.com/univcorp2-ctrl/crypto-auto-trade-sim",
+      "category": "investment",
+      "description": "",
+      "archived": false,
+      "lastCommitAt": "2026-06-13T19:27:09Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "investment-logic-audit-lab",
+      "url": "https://github.com/univcorp2-ctrl/investment-logic-audit-lab",
+      "category": "investment",
+      "description": "Robust value-stock screening, factor diagnostics, HRP allocation, J-Quants V2 readiness, and the ValueScope Japan web dashboard.",
+      "archived": false,
+      "lastCommitAt": "2026-10-13T14:59:16Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "stock-investment-simulator",
+      "url": "https://github.com/univcorp2-ctrl/stock-investment-simulator",
+      "category": "investment",
+      "description": "React and Express web app for simulating stock investing with real historical prices from Stooq.",
+      "archived": false,
+      "lastCommitAt": "2026-06-13T19:24:26Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "stock-repo-brushup-automation",
+      "url": "https://github.com/univcorp2-ctrl/stock-repo-brushup-automation",
+      "category": "investment",
+      "description": "Automatically discovers stock-investment related GitHub repositories, recommends OSS finance libraries, and opens safe brush-up PRs.",
+      "archived": false,
+      "lastCommitAt": "2026-06-25T08:57:37Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "cripto-auto-trade",
+      "url": "https://github.com/univcorp2-ctrl/cripto-auto-trade",
+      "category": "investment",
+      "description": "Easy-to-use crypto auto trading bot with selectable strategies, dashboard UI, backtest, forward test, real-time validation, paper trading, and guarded live trading.",
+      "archived": false,
+      "lastCommitAt": "2026-06-18T02:50:12Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "crypto-regime-guard-bot",
+      "url": "https://github.com/univcorp2-ctrl/crypto-regime-guard-bot",
+      "category": "investment",
+      "description": "Research-driven, paper-first cryptocurrency trading bot with regime-aware strategy, backtesting, risk controls, and GitHub repo scanner for 300+ open-source bot evaluation.",
+      "archived": false,
+      "lastCommitAt": "2026-06-16T15:05:09Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "ai-call-landing-page",
+      "url": "https://github.com/univcorp2-ctrl/ai-call-landing-page",
+      "category": "marketing",
+      "description": "AI電話受付サービスのランディングページ再現デモ。Vite静的LP、料金シミュレーター、資料DLフォーム、AI通話デモ、CI、README、docs付き。",
+      "archived": false,
+      "lastCommitAt": "2026-06-29T02:50:33Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "ai-course-preorder-os",
+      "url": "https://github.com/univcorp2-ctrl/ai-course-preorder-os",
+      "category": "marketing",
+      "description": "Notion・外部情報・複数LLMを用いてAI講座の企画、複数エージェント審査、予約販売、配信素材生成を一元化するコンテンツコマースOS",
+      "archived": false,
+      "lastCommitAt": "2026-08-07T09:13:26Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "ai-course-presale-os",
+      "url": "https://github.com/univcorp2-ctrl/ai-course-presale-os",
+      "category": "marketing",
+      "description": "AI講座の企画・生成・多段レビュー・予約販売・配信パッケージ化を安全に自動化する運用基盤",
+      "archived": false,
+      "lastCommitAt": "2026-08-07T09:32:08Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "ai-response-voice-queue",
+      "url": "https://github.com/univcorp2-ctrl/ai-response-voice-queue",
+      "category": "marketing",
+      "description": "ChatGPT・Claude・Codex等の新しい回答を検出し、競合を避けて順番に自動読み上げするChrome拡張機能",
+      "archived": false,
+      "lastCommitAt": "2026-07-10T07:06:04Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "auto-ai-blog",
+      "url": "https://github.com/univcorp2-ctrl/auto-ai-blog",
+      "category": "marketing",
+      "description": "Hugo + Cloudflare Pages fully automated Japanese AI blog system using local AI CLIs only.",
+      "archived": false,
+      "lastCommitAt": "2026-07-31T14:16:56Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "medium",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "japanese-ai-outbound-caller",
+      "url": "https://github.com/univcorp2-ctrl/japanese-ai-outbound-caller",
+      "category": "marketing",
+      "description": "Consent-first Japanese outbound AI phone agent using LiveKit SIP, realtime voice models, compliance guardrails, research report, and Notion sync.",
+      "archived": false,
+      "lastCommitAt": "2026-07-03T07:04:37Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "jp-company-contact-collector",
+      "url": "https://github.com/univcorp2-ctrl/jp-company-contact-collector",
+      "category": "marketing",
+      "description": "日本企業を売上高で抽出し、公式サイト上の法人向け公開メールアドレスと問い合わせフォームURLを安全に収集・CSV化するPython CLI",
+      "archived": false,
+      "lastCommitAt": "2026-07-29T06:27:29Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "lumina-fortune-landing",
+      "url": "https://github.com/univcorp2-ctrl/lumina-fortune-landing",
+      "category": "marketing",
+      "description": "GPT Image 2のビジュアルコンセプトを基にした、無料鑑定デモ付き占いWebサービスのランディングページ",
+      "archived": false,
+      "lastCommitAt": "2026-07-11T05:18:50Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "note-growth-autopublisher",
+      "url": "https://github.com/univcorp2-ctrl/note-growth-autopublisher",
+      "category": "marketing",
+      "description": "Research-to-draft automation for original note.com monetization articles with safe publishing artifacts and feedback loops.",
+      "archived": false,
+      "lastCommitAt": "2026-08-18T02:32:27Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "notion-notebooklm-auto-publisher",
+      "url": "https://github.com/univcorp2-ctrl/notion-notebooklm-auto-publisher",
+      "category": "marketing",
+      "description": "Automated Notion and NotebookLM content remixing into article, audio, video, and YouTube/TikTok publishing with anti-AI-slop quality gates.",
+      "archived": false,
+      "lastCommitAt": "2026-07-01T22:34:38Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "gmail-property-attachment-saver",
+      "url": "https://github.com/univcorp2-ctrl/gmail-property-attachment-saver",
+      "category": "messaging",
+      "description": "GAS automation to save Gmail property attachments to Drive and generate property analysis outputs.",
+      "archived": false,
+      "lastCommitAt": "2026-08-30T11:01:06Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "line-sheet-digest",
+      "url": "https://github.com/univcorp2-ctrl/line-sheet-digest",
+      "category": "messaging",
+      "description": "LINE webhook digest pipeline: verify LINE events, store messages in Google Sheets, summarize, and notify back to LINE.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:21:19Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "line-sokuresu-sales-recovery-bot",
+      "url": "https://github.com/univcorp2-ctrl/line-sokuresu-sales-recovery-bot",
+      "category": "messaging",
+      "description": "LINE公式アカウントの問い合わせに即返信し、予約・資料請求・相談回収まで自動化するFastAPI Botテンプレート",
+      "archived": false,
+      "lastCommitAt": "2026-07-09T05:08:37Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "messenger-auto-reply-bot",
+      "url": "https://github.com/univcorp2-ctrl/messenger-auto-reply-bot",
+      "category": "messaging",
+      "description": "FastAPI Messenger webhook bot for automatic Facebook Page replies with rule-based and optional AI responses.",
+      "archived": false,
+      "lastCommitAt": "2026-07-09T11:14:32Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "messenger-page-auto-reply-bot",
+      "url": "https://github.com/univcorp2-ctrl/messenger-page-auto-reply-bot",
+      "category": "messaging",
+      "description": "Safe Facebook Messenger Platform Page auto-reply bot with FastAPI, webhooks, tests, CI, and setup docs.",
+      "archived": false,
+      "lastCommitAt": "2026-06-15T08:30:59Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "real-estate-sender-automation",
+      "url": "https://github.com/univcorp2-ctrl/real-estate-sender-automation",
+      "category": "messaging",
+      "description": "Automated real-estate property email delivery pipeline with Google Drive ingestion, double validation, Sender.net delivery, Cloudflare Worker secrets/state gateway, D1 idempotency, and GitHub Actions scheduling.",
+      "archived": false,
+      "lastCommitAt": "2026-09-30T03:55:09Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "gmail-sheets-property-mailer",
+      "url": "https://github.com/univcorp2-ctrl/gmail-sheets-property-mailer",
+      "category": "messaging",
+      "description": "Google Sheets and Apps Script based property listing mailer with recipient management, consent/status controls, and safe Gmail free-account limits.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:26:35Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "Gmail-auto-reply_gemini",
+      "url": "https://github.com/univcorp2-ctrl/Gmail-auto-reply_gemini",
+      "category": "messaging",
+      "description": "Create draft for Gmail automatically. Tried to save LLM cost.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:32:24Z",
+      "progressPercent": 25,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "企画・調査段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": false
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "READMEとソースを確認し、動く最小実装と完了条件を定義する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "ai-readable-pdf-capture",
+      "url": "https://github.com/univcorp2-ctrl/ai-readable-pdf-capture",
+      "category": "other",
+      "description": "Compliant OSS-style screen/page capture to AI-readable searchable PDF with OCR text layer, watermarking, tests, CI, and docs.",
+      "archived": false,
+      "lastCommitAt": "2026-07-01T09:40:52Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "digital-download-storefront",
+      "url": "https://github.com/univcorp2-ctrl/digital-download-storefront",
+      "category": "other",
+      "description": "Stripe-ready FastAPI storefront for selling digital downloads with SQLite order tracking, CI, docs, and Codespaces setup.",
+      "archived": false,
+      "lastCommitAt": "2026-06-09T05:06:21Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "eight-card-cleaner",
+      "url": "https://github.com/univcorp2-ctrl/eight-card-cleaner",
+      "category": "other",
+      "description": "Clean and normalize Eight exported business card CSV files into tidy CSV/XLSX outputs.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:28:22Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "hello-world-python-0522-test",
+      "url": "https://github.com/univcorp2-ctrl/hello-world-python-0522-test",
+      "category": "other",
+      "description": "create hello world python script and push to github with tests",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:25:47Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "hello-world-python-worker-scaffold-test",
+      "url": "https://github.com/univcorp2-ctrl/hello-world-python-worker-scaffold-test",
+      "category": "other",
+      "description": "create hello world python script and push to github with tests",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:25:35Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "kindle-notes-pdf-notion",
+      "url": "https://github.com/univcorp2-ctrl/kindle-notes-pdf-notion",
+      "category": "other",
+      "description": "Open-source CLI to turn exported Kindle highlights/notes into Japanese-ready PDFs and sync them to Notion without DRM circumvention.",
+      "archived": false,
+      "lastCommitAt": "2026-08-03T04:47:34Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "revenueguard-studio",
+      "url": "https://github.com/univcorp2-ctrl/revenueguard-studio",
+      "category": "other",
+      "description": "RevenueGuard Studio: a Roblox monetization auditor, safe receipt scaffold, and official Studio MCP release gate.",
+      "archived": false,
+      "lastCommitAt": "2026-08-07T09:02:50Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "scenario-master-db-auto",
+      "url": "https://github.com/univcorp2-ctrl/scenario-master-db-auto",
+      "category": "other",
+      "description": "Automated JSONL master database for global hit movie novel and manga scenario elements.",
+      "archived": false,
+      "lastCommitAt": "2026-09-04T17:12:33Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "telegram-ai-company-hub",
+      "url": "https://github.com/univcorp2-ctrl/telegram-ai-company-hub",
+      "category": "other",
+      "description": "Telegram-driven AI company command hub with Obsidian-style knowledge, GitHub task routing, and MVP FastAPI automation.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:24:17Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "SuperNote",
+      "url": "https://github.com/univcorp2-ctrl/SuperNote",
+      "category": "other",
+      "description": "mindmap, handwritten ,etc all mighty notebooks",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:32:00Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "apartment-volume-planner-jp",
+      "url": "https://github.com/univcorp2-ctrl/apartment-volume-planner-jp",
+      "category": "real_estate",
+      "description": "日本向け共同住宅ボリュームチェックと概略平面生成のWebプロトタイプ",
+      "archived": false,
+      "lastCommitAt": "2026-07-17T06:16:39Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "japan-real-estate-broker-database",
+      "url": "https://github.com/univcorp2-ctrl/japan-real-estate-broker-database",
+      "category": "real_estate",
+      "description": "関東中心・全国対応の不動産取扱業者データベース。戸建て・収益不動産・問い合わせフォーム・根拠URLをExcel/CSV/Notion向けに管理。",
+      "archived": false,
+      "lastCommitAt": "2026-09-04T04:39:26Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "minpaku-underwriter",
+      "url": "https://github.com/univcorp2-ctrl/minpaku-underwriter",
+      "category": "real_estate",
+      "description": "民泊候補物件を、公開データ＋任意の有料STR APIで過去実績・稼働率・ADR・収益・ROI・法規制リスクまで一貫評価する分析基盤",
+      "archived": false,
+      "lastCommitAt": "2026-09-02T07:59:50Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "public-drive-property-ocr-cloud",
+      "url": "https://github.com/univcorp2-ctrl/public-drive-property-ocr-cloud",
+      "category": "real_estate",
+      "description": "Google Drive property OCR automation scaffold created via GitHub GPT Developer Worker.",
+      "archived": false,
+      "lastCommitAt": "2026-06-17T00:51:48Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "real-estate-investment-analyzer",
+      "url": "https://github.com/univcorp2-ctrl/real-estate-investment-analyzer",
+      "category": "real_estate",
+      "description": "Public-behavior-based prototype of a Japanese real estate investment scoring and cash-flow analyzer.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:27:51Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "real-estate-investor-needs-form",
+      "url": "https://github.com/univcorp2-ctrl/real-estate-investor-needs-form",
+      "category": "real_estate",
+      "description": "Google Forms generator for real estate investor buy-needs survey with Apps Script, tests, CI, docs, and setup guide.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:24:03Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "real-estate-source-scraper",
+      "url": "https://github.com/univcorp2-ctrl/real-estate-source-scraper",
+      "category": "real_estate",
+      "description": "Config-driven real estate listing source inventory and compliant scraper/auditor for property and investment data.",
+      "archived": false,
+      "lastCommitAt": "2026-06-23T09:43:12Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "shinchiku-land-searcher-ai",
+      "url": "https://github.com/univcorp2-ctrl/shinchiku-land-searcher-ai",
+      "category": "real_estate",
+      "description": "CLI assistant for property URL document-request preparation and investment ranking analysis from Excel.",
+      "archived": false,
+      "lastCommitAt": "2026-06-03T02:00:38Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "shinchiku-production-deploy-temp",
+      "url": "https://github.com/univcorp2-ctrl/shinchiku-production-deploy-temp",
+      "category": "real_estate",
+      "description": "Temporary build runner for Shinchiku_Land_Searcher production module; deleted after Cloudflare deployment",
+      "archived": false,
+      "lastCommitAt": "2026-07-17T07:15:59Z",
+      "progressPercent": 40,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "authorized-web-data-exporter",
+      "url": "https://github.com/univcorp2-ctrl/authorized-web-data-exporter",
+      "category": "research",
+      "description": "Generic authorized login-site data exporter with YAML site profiles, robots.txt inspection, Playwright, checkpointing, and CSV/Excel/JSON/TXT outputs.",
+      "archived": false,
+      "lastCommitAt": "2026-06-21T00:33:28Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "enoking-monitor-starter",
+      "url": "https://github.com/univcorp2-ctrl/enoking-monitor-starter",
+      "category": "research",
+      "description": "Enoking buyback margin monitor starter for Nintendo Switch supplier URLs",
+      "archived": false,
+      "lastCommitAt": "2026-08-13T05:21:38Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "youtube-channel-notion-knowledge",
+      "url": "https://github.com/univcorp2-ctrl/youtube-channel-notion-knowledge",
+      "category": "research",
+      "description": "Channel-wide YouTube transcript collector, comprehensive summarizer, and Notion knowledge-base sync tool.",
+      "archived": false,
+      "lastCommitAt": "2026-07-03T08:21:10Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "ai-agent-handoff-hub",
+      "url": "https://github.com/univcorp2-ctrl/ai-agent-handoff-hub",
+      "category": "secretary",
+      "description": "AI agents automatically detect stalled GitHub work, generate handoff tasks, automate setup preparation, and sync progress to Notion / Google To Do.",
+      "archived": false,
+      "lastCommitAt": "2026-08-29T06:56:05Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "global-job-aggregator-mvp",
+      "url": "https://github.com/univcorp2-ctrl/global-job-aggregator-mvp",
+      "category": "secretary",
+      "description": "Safety-first global job aggregation MVP using official/public APIs, SQLite, FastAPI dashboard, scoring, tests, CI, and scheduled collection.",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:23:01Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "linkedin-ai-crowdworks-bot",
+      "url": "https://github.com/univcorp2-ctrl/linkedin-ai-crowdworks-bot",
+      "category": "secretary",
+      "description": "",
+      "archived": false,
+      "lastCommitAt": "2026-06-01T13:29:07Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "reservation-form-input-helper",
+      "url": "https://github.com/univcorp2-ctrl/reservation-form-input-helper",
+      "category": "secretary",
+      "description": "Personal reservation form input helper that fills user-provided fields and stops before CAPTCHA/final submission.",
+      "archived": false,
+      "lastCommitAt": "2026-06-15T05:34:54Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "facebook-auto-post",
+      "url": "https://github.com/univcorp2-ctrl/facebook-auto-post",
+      "category": "social",
+      "description": "Automated Facebook Page posting with tests and GitHub Actions",
+      "archived": false,
+      "lastCommitAt": "2026-08-10T02:09:03Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "facebook-group-notion-property-logger",
+      "url": "https://github.com/univcorp2-ctrl/facebook-group-notion-property-logger",
+      "category": "social",
+      "description": "Authorized Facebook-group property post importer that appends property URLs and content to a single Notion page.",
+      "archived": false,
+      "lastCommitAt": "2026-06-16T03:13:46Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "fb-group-autoposter",
+      "url": "https://github.com/univcorp2-ctrl/fb-group-autoposter",
+      "category": "social",
+      "description": "Facebook group property posting pipeline with Telegram approval gate, SQLite queue, Playwright runner, and safety-first operations.",
+      "archived": false,
+      "lastCommitAt": "2026-08-20T05:00:53Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "medium",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "新規スレッド投稿の実permalinkとEstateBoard連動を検証し、投稿監視の非0原因を修復する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "threads-auto-poster-cli-keynote",
+      "url": "https://github.com/univcorp2-ctrl/threads-auto-poster-cli-keynote",
+      "category": "social",
+      "description": "Safe CLI and GitHub Actions automation for Threads API text posting, with Keynote-compatible architecture deck generation.",
+      "archived": false,
+      "lastCommitAt": "2026-06-23T07:13:10Z",
+      "progressPercent": 60,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "検証段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "既存テストを安全な検証環境で実行し、失敗ログと根因を保存する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "notion-creator-ops-dashboard",
+      "url": "https://github.com/univcorp2-ctrl/notion-creator-ops-dashboard",
+      "category": "social",
+      "description": "Full-stack Notion-connected creator operations dashboard for kanban task visibility, SNS analytics, and Facebook property post management.",
+      "archived": false,
+      "lastCommitAt": "2026-06-30T08:03:32Z",
+      "progressPercent": 50,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "実装段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": true
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": true
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "入出力と依存先を調査し、最低1件の再現可能な自動テストを追加する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    },
+    {
+      "name": "x-autopost",
+      "url": "https://github.com/univcorp2-ctrl/x-autopost",
+      "category": "social",
+      "description": "X自動投稿スクリプト - 1日3回 不動産コンテンツ+EstateBoard物件情報を自動投稿",
+      "archived": false,
+      "lastCommitAt": "2026-06-16T00:24:57Z",
+      "progressPercent": 15,
+      "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
+      "confidence": "low",
+      "phase": "企画・調査段階",
+      "milestones": [
+        {
+          "id": "design",
+          "label": "設計・説明が存在",
+          "weight": 15,
+          "verified": true
+        },
+        {
+          "id": "implementation",
+          "label": "実装コードの痕跡",
+          "weight": 25,
+          "verified": false
+        },
+        {
+          "id": "tests_present",
+          "label": "テストコードが存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "tests_pass",
+          "label": "テスト実行成功を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "automation",
+          "label": "自動化用の構成が存在",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "runtime",
+          "label": "紐付く実行の終了コード0を検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "deployed",
+          "label": "実際の公開デプロイを検証",
+          "weight": 10,
+          "verified": false
+        },
+        {
+          "id": "outcome",
+          "label": "実データ／業務成果を検証",
+          "weight": 10,
+          "verified": false
+        }
+      ],
+      "nextAction": "READMEとソースを確認し、動く最小実装と完了条件を定義する",
+      "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
+      "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
+      "actionStatus": "investigated_pending_execution",
+      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+    }
+  ],
+  "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照"
+}
