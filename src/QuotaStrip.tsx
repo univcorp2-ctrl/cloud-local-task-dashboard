@@ -40,12 +40,12 @@ export default function QuotaStrip() {
     const q=data?.quotas?.find(x=>x.provider===provider);
     const observed=q?.observedAt?Date.parse(q.observedAt):NaN;
     const age=Number.isFinite(observed)?now-observed:Infinity;
-    const recent=age>=-300000&&age<=86400000&&q?.quality!=='stale'&&q?.quality!=='unavailable';
+    const recent=age>=-300000&&age<=86400000&&q?.quality!=='unavailable';
     const seven=name==='Antigravity'?null:recent?left(q?.weeklyUsedPercent):null;
     const five=recent?left(q?.usedPercent,q?.remainingPercent):null;
     const reset=name==='Antigravity'?q?.resetAt:q?.weeklyResetAt;
     const resetLabel=recent&&reset&&Date.parse(reset)>now?untilReset(reset,now):'更新日不明';
-    const state=seven!==null?(age<=2100000?(q?.quality==='estimated'?'推定':'実測'):'前回'):'未取得';
+    const state=seven!==null?(age<=1800000&&q?.quality!=='stale'?(q?.quality==='estimated'?'推定':'実測'):'前回値'):'未取得';
     return {name,observed,recent,seven,five,resetLabel,state,resetKind:name==='Antigravity'?'モデル枠':'7日枠'};
   });
   return <section className="quota-strip" aria-label="AI別 7日間利用枠の残量" role="group">
