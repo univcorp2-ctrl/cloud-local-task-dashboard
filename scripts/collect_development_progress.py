@@ -186,14 +186,19 @@ def run(main_catalog:Path, private_output:Path, public_output:Path)->dict:
                 "disabled":"停止中・E2E未確認",
                 "never_run":"未起動・E2E未確認",
                 "last_exit_zero_unverified":"処理終了0・業務成果未検証"}).get(current,"実行証跡との紐付け未検証")
+        result_note="GitHub構成の棚卸しとPC実行記録の突合を完了。" + label
+        if repo_name=="chatgpt-chat-controller" and job and job.get("state")=="Running" and job.get("lastResult")==2147946720:
+            label="常駐中／再起動拒否コード0x800710E0。追撃E2Eは未確認"
+            result_note="Windows常駐プロセスの起動、重複起動拒否記録を確認。10/21時点で制御画面HTTP200。実際の追撃E2E未達"
         if repo_name=="cloud-local-task-dashboard" and item["progressPercent"]>=90:
-            label="本番公開・データ反映確認済み（開発進捗画面は公開検証前）"
+            label="本番公開・データ反映確認済み（他の業務システム完了とは別）"
+            result_note="GitHub main反映、Windows定期更新・Cloudflare公開JSON・React/Python検証PASS"
         active.append({
             "id":re.sub(r"[^a-z0-9-]","-",title.lower().encode("ascii","ignore").decode())[:20] or str(len(active)),
             "title":title,"priority":priority,
             "progressPercent":item["progressPercent"],"confidence":item["confidence"],
             "executionStatus":label,"nextAction":action,
-            "lastActionResult":("GitHub構成の棚卸しとPC実行記録の突合を完了。" + label),
+            "lastActionResult":result_note,
             "inspectedAt":now,"phase":item["phase"],
             "visibility":"public_alias_only",
         })

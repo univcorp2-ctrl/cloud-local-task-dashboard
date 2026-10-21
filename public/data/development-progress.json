@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-21T01:26:00.754610+00:00",
+  "generatedAt": "2026-10-21T01:41:10.372234+00:00",
   "source": "GitHub GraphQL 153 live default branch trees + private Windows task inventory",
   "progressDefinition": "各検証マイルストーンを固定配点で集計。開発全仕様に対する完成率とは異なる暫定の証拠ベース進捗",
   "milestoneWeights": [
@@ -242,10 +242,10 @@
       "priority": "P0",
       "progressPercent": 70,
       "confidence": "medium",
-      "executionStatus": "異常コードあり・E2E未確認",
+      "executionStatus": "常駐中／再起動拒否コード0x800710E0。追撃E2Eは未確認",
       "nextAction": "同一Chatの自動追撃・2回の回答回収・checkpoint・doneのE2E再検証",
-      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "lastActionResult": "Windows常駐プロセスの起動、重複起動拒否記録を確認。10/21時点で制御画面HTTP200。実際の追撃E2E未達",
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
       "phase": "検証段階",
       "visibility": "public_alias_only"
     },
@@ -258,7 +258,7 @@
       "executionStatus": "異常コードあり・E2E未確認",
       "nextAction": "銀行データ鮮度・物件計算・本番表示の入力から結果までの一致を検証",
       "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
       "phase": "検証段階",
       "visibility": "public_alias_only"
     },
@@ -271,7 +271,7 @@
       "executionStatus": "異常コードあり・E2E未確認",
       "nextAction": "新規投稿の実permalinkと物件Web反映を検証",
       "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
       "phase": "検証段階",
       "visibility": "public_alias_only"
     },
@@ -284,7 +284,7 @@
       "executionStatus": "異常コードあり・E2E未確認",
       "nextAction": "資金調達候補の公式出典・Notion実同期・定期処理のエラーを検証",
       "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
       "phase": "検証段階",
       "visibility": "public_alias_only"
     },
@@ -297,7 +297,7 @@
       "executionStatus": "実行証跡との紐付け未検証",
       "nextAction": "実物件DBと投稿permalink、公開Webのデータ鮮度を照合",
       "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。実行証跡との紐付け未検証",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
       "phase": "検証段階",
       "visibility": "public_alias_only"
     },
@@ -310,7 +310,7 @@
       "executionStatus": "異常コードあり・E2E未確認",
       "nextAction": "実送信・添付資料・返信受信までのE2Eを確認",
       "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
       "phase": "検証段階",
       "visibility": "public_alias_only"
     },
@@ -320,10 +320,10 @@
       "priority": "P1",
       "progressPercent": 90,
       "confidence": "high",
-      "executionStatus": "本番公開・データ反映確認済み（開発進捗画面は公開検証前）",
+      "executionStatus": "本番公開・データ反映確認済み（他の業務システム完了とは別）",
       "nextAction": "開発進捗パネルの本番反映と定期同期を検証",
-      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。本番公開・データ反映確認済み（開発進捗画面は公開検証前）",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00",
+      "lastActionResult": "GitHub main反映、Windows定期更新・Cloudflare公開JSON・React/Python検証PASS",
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
       "phase": "実装段階",
       "visibility": "public_alias_only"
     }
@@ -394,7 +394,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "chatgpt-worker-smoketest",
@@ -461,7 +461,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "amazon-marketplace-sync-hub",
@@ -528,7 +528,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "amazon-purchase-prep-assistant",
@@ -595,7 +595,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "photo-marketplace-listing-assistant",
@@ -662,7 +662,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "rolex-reservation-assistant",
@@ -729,7 +729,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "snaplist-ai-marketplace",
@@ -796,7 +796,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "cloud-local-task-dashboard",
@@ -804,7 +804,7 @@
       "category": "control",
       "description": "Cloud and local scheduled task monitoring dashboard with cross-platform collectors and Cloudflare Pages deployment.",
       "archived": false,
-      "lastCommitAt": "2026-10-21T01:19:32Z",
+      "lastCommitAt": "2026-10-21T01:32:32Z",
       "progressPercent": 90,
       "progressMetric": "共通の検証チェックリスト達成重み合計 (製品完成率ではない)",
       "confidence": "high",
@@ -863,7 +863,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "本番Web・定期更新・テスト完了を別途E2E検証",
       "actionStatus": "verified",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "ai-ci-auto-fixer",
@@ -930,7 +930,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "airdrop-agent-engine",
@@ -997,7 +997,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "autonomous-cloud-business-automation",
@@ -1064,7 +1064,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "compliant-b2b-outreach-automation",
@@ -1131,7 +1131,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "custom-gpt-chrome-mcp-agent",
@@ -1198,7 +1198,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "github-full-automation",
@@ -1265,7 +1265,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "obsidian-calendar-agent",
@@ -1332,7 +1332,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "openmythos-gpt-claude-api",
@@ -1399,7 +1399,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "repository-completion-audit",
@@ -1466,7 +1466,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "testgpt",
@@ -1533,7 +1533,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "Add-repository",
@@ -1600,7 +1600,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "Github-pull-and-push-automation-",
@@ -1667,7 +1667,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-autonomous-product-factory",
@@ -1734,7 +1734,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "autonomous-game-factory",
@@ -1801,7 +1801,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "nebula-catcher-web-game",
@@ -1868,7 +1868,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-revenue-factory",
@@ -1935,7 +1935,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-revenue-lens",
@@ -2002,7 +2002,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-revenueos-plugin",
@@ -2069,7 +2069,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-skillcity",
@@ -2136,7 +2136,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "slime-quest-web-game",
@@ -2203,7 +2203,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "cascade-circuit",
@@ -2270,7 +2270,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-autonomous-revenue-os",
@@ -2337,7 +2337,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-liveops-autopilot-plugin",
@@ -2404,7 +2404,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-qa-autopilot-plugin",
@@ -2471,7 +2471,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "roblox-revenue-intelligence",
@@ -2538,7 +2538,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "umamuma-kun-stamps",
@@ -2605,7 +2605,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "rock-paper-scissors-python",
@@ -2672,7 +2672,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "crypto-arbitrage-scanner-jp",
@@ -2739,7 +2739,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "crypto-auto-trade",
@@ -2806,7 +2806,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "crypto-auto-trade-sim",
@@ -2873,7 +2873,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "investment-logic-audit-lab",
@@ -2940,7 +2940,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "stock-investment-simulator",
@@ -3007,7 +3007,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "stock-repo-brushup-automation",
@@ -3074,7 +3074,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "cripto-auto-trade",
@@ -3141,7 +3141,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "crypto-regime-guard-bot",
@@ -3208,7 +3208,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "ai-call-landing-page",
@@ -3275,7 +3275,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "ai-course-preorder-os",
@@ -3342,7 +3342,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "ai-course-presale-os",
@@ -3409,7 +3409,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "ai-response-voice-queue",
@@ -3476,7 +3476,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "auto-ai-blog",
@@ -3543,7 +3543,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "japanese-ai-outbound-caller",
@@ -3610,7 +3610,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "jp-company-contact-collector",
@@ -3677,7 +3677,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "lumina-fortune-landing",
@@ -3744,7 +3744,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "note-growth-autopublisher",
@@ -3811,7 +3811,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "notion-notebooklm-auto-publisher",
@@ -3878,7 +3878,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "gmail-property-attachment-saver",
@@ -3945,7 +3945,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "line-sheet-digest",
@@ -4012,7 +4012,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "line-sokuresu-sales-recovery-bot",
@@ -4079,7 +4079,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "messenger-auto-reply-bot",
@@ -4146,7 +4146,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "messenger-page-auto-reply-bot",
@@ -4213,7 +4213,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "real-estate-sender-automation",
@@ -4280,7 +4280,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "gmail-sheets-property-mailer",
@@ -4347,7 +4347,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "Gmail-auto-reply_gemini",
@@ -4414,7 +4414,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "ai-readable-pdf-capture",
@@ -4481,7 +4481,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "digital-download-storefront",
@@ -4548,7 +4548,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "eight-card-cleaner",
@@ -4615,7 +4615,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "hello-world-python-0522-test",
@@ -4682,7 +4682,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "hello-world-python-worker-scaffold-test",
@@ -4749,7 +4749,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "kindle-notes-pdf-notion",
@@ -4816,7 +4816,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "revenueguard-studio",
@@ -4883,7 +4883,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "scenario-master-db-auto",
@@ -4950,7 +4950,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "telegram-ai-company-hub",
@@ -5017,7 +5017,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "SuperNote",
@@ -5084,7 +5084,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "apartment-volume-planner-jp",
@@ -5151,7 +5151,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "japan-real-estate-broker-database",
@@ -5218,7 +5218,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "minpaku-underwriter",
@@ -5285,7 +5285,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "public-drive-property-ocr-cloud",
@@ -5352,7 +5352,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "real-estate-investment-analyzer",
@@ -5419,7 +5419,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "real-estate-investor-needs-form",
@@ -5486,7 +5486,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "real-estate-source-scraper",
@@ -5553,7 +5553,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "shinchiku-land-searcher-ai",
@@ -5620,7 +5620,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "shinchiku-production-deploy-temp",
@@ -5687,7 +5687,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "authorized-web-data-exporter",
@@ -5754,7 +5754,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "enoking-monitor-starter",
@@ -5821,7 +5821,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "youtube-channel-notion-knowledge",
@@ -5888,7 +5888,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "ai-agent-handoff-hub",
@@ -5955,7 +5955,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "global-job-aggregator-mvp",
@@ -6022,7 +6022,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "linkedin-ai-crowdworks-bot",
@@ -6089,7 +6089,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "reservation-form-input-helper",
@@ -6156,7 +6156,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "facebook-auto-post",
@@ -6223,7 +6223,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "facebook-group-notion-property-logger",
@@ -6290,7 +6290,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "fb-group-autoposter",
@@ -6357,7 +6357,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "threads-auto-poster-cli-keynote",
@@ -6424,7 +6424,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "notion-creator-ops-dashboard",
@@ -6491,7 +6491,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     },
     {
       "name": "x-autopost",
@@ -6558,7 +6558,7 @@
       "lastAction": "GitHub default branch のREADME・実装・テスト・自動化構成を読取検査し、PCタスクと実パス突合",
       "lastActionResult": "コード構造のみ確認。個別のテスト実行/本番業務成果は未検証",
       "actionStatus": "investigated_pending_execution",
-      "inspectedAt": "2026-10-21T01:26:00.754610+00:00"
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     }
   ],
   "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照"
