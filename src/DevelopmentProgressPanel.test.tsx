@@ -40,3 +40,18 @@ describe('Development progress: sourced and redacted',()=>{
     expect(screen.queryByText('90%')).not.toBeInTheDocument();
   });
 });
+
+it('shows the actual Cloudflare 503 blocker instead of implying Notion is connected', async () => {
+  const payload = {...data,activeProjects:[...data.activeProjects,{
+    id:'web',title:'統合Webダッシュボード',priority:'P1',progressPercent:90,confidence:'medium',
+    executionStatus:'本番公開・データ反映確認済み',nextAction:'本番の稼働確認',
+    lastActionResult:'Web配信成功',inspectedAt:'2026-10-21T01:00:00Z',phase:'運用'
+  }]};
+  vi.stubGlobal('fetch',vi.fn().mockImplementation(async(input:string)=>{
+    if (String(input).includes('/api/private-tasks')) return {ok:false,status:503};
+    return {ok:true,json:async()=>payload};
+  }));
+  render(<DevelopmentProgressPanel />);
+  expect(await screen.findByText(/Notion本人タスクAPI 503/)).toBeInTheDocument();
+  expect(screen.getByText(/Notion Pages Secrets/)).toBeInTheDocument();
+});
