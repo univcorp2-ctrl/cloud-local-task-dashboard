@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import UsageDonut from './UsageDonut';
 
 type Window = '24h' | '7d' | '30d';
 type Task = {
@@ -83,7 +84,7 @@ export default function TokenUsagePanel() {
     </div>
     {error && <p role="alert" className="usage-error">{error}</p>}
     {!data && !error && <p className="usage-empty">計測結果を取得中…</p>}
-    {data && <div className="spend-scroll" role="region" aria-label="トークン使用率と全体比率">
+    {data && <div className="spend-visual-layout"><UsageDonut slices={breakdown.known.map(t => ({ id:t.id, label:t.name || t.id, tokens:t.tokens[period] ?? 0 }))} total={breakdown.total} coverage={`${breakdown.known.length}/${data.monitoredTaskCount}連携処理のみ計測`} /><div className="spend-scroll" role="region" aria-label="トークン使用率と全体比率">
       <table className="spend-table">
         <thead><tr><th>順位・実行処理</th><th>使用トークン</th><th>計測内シェア</th><th>最終実行</th></tr></thead>
         <tbody>
@@ -108,7 +109,7 @@ export default function TokenUsagePanel() {
           </tr>)}
         </tbody>
       </table>
-    </div>}
+    </div></div>}
     {data && <div className="spend-footnote">
       シェアの分母は連携済み処理で計測されたトークンのみ。 全リポジトリ・全定期タスクの消費率ではありません。記録なしは使用量ゼロの証明ではありません。
       <span>最終更新 {new Date(data.generatedAt).toLocaleString('ja-JP')} {loading ? '・更新中' : ''}</span>

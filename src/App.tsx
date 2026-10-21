@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fallbackSnapshot } from './sample';
 import TokenUsagePanel from './TokenUsagePanel';
+import QuotaStrip from './QuotaStrip';
 import ManualTasksPanel from './ManualTasksPanel';
 import OperationsOverview from './OperationsOverview';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
@@ -129,6 +130,7 @@ export default function App() {
           </div>}
         </header>
 
+        <QuotaStrip />
         {activePage === 'automation' ? <>
         <TokenUsagePanel />
         <details className="ops-expanded">
