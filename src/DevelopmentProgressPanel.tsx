@@ -53,6 +53,23 @@ export default function DevelopmentProgressPanel() {
       a.actionStatus.localeCompare(b.actionStatus)||b.progressPercent-a.progressPercent||a.name.localeCompare(b.name));
   },[data,category,phase,sort,query]);
   const [expanded,setExpanded]=useState<string|null>(null);
+  const [notionApi,setNotionApi]=useState<'checking'|'working'|'auth_missing'|'login_needed'|'error'>('checking');
+  useEffect(()=>{
+    let active=true;
+    const check=async()=>{
+      try{
+        const response=await fetch('/api/private-tasks',{cache:'no-store',credentials:'same-origin'});
+        if(!active)return;
+        if(response.status===503){setNotionApi('auth_missing');return;}
+        if(response.status===401||response.status===403){setNotionApi('login_needed');return;}
+        if(!response.ok){setNotionApi('error');return;}
+        const data:unknown=await response.json();
+        setNotionApi(data && typeof data==='object' && Array.isArray((data as {tasks?:unknown}).tasks)?'working':'error');
+      }catch{if(active)setNotionApi('error');}
+    };
+    void check();
+    return()=>{active=false;};
+  },[]);
   return <section className="development-panel" aria-label="開発プロジェクト進捗・次アクション">
     <div className="dev-header">
       <div><span className="section-kicker">PROJECT DELIVERY / SOURCE-BASED</span>
@@ -66,15 +83,22 @@ export default function DevelopmentProgressPanel() {
         <th>優先</th><th>開発案件</th><th>進捗</th><th>状態・スタック箇所</th><th>次のアクション</th>
       </tr></thead><tbody>
       {(data?.activeProjects ?? []).map((p,i) => {
-        const blocked = /異常|失敗|未検証|未確認|停止|エラー|未達/.test(p.executionStatus);
+        const privateTasksBlocked = p.id === 'web' && notionApi !== 'working';
+        const blocked = privateTasksBlocked || /異常|失敗|未検証|未確認|停止|エラー|未達/.test(p.executionStatus);
+        const statusText = privateTasksBlocked && notionApi === 'auth_missing' ? 'Notion本人タスクAPI 503：Cloudflare Access未設定' :
+          privateTasksBlocked && notionApi === 'login_needed' ? 'Notion本人タスクAPI：ログイン認証が必要' :
+          privateTasksBlocked && notionApi === 'error' ? 'Notion本人タスクAPI：取得失敗・原因調査中' :
+          privateTasksBlocked ? 'Notion本人タスク接続の確認中' : p.executionStatus;
+        const nextAction = privateTasksBlocked ?
+          'Cloudflare Access認証・Notion Pages Secretsを正規設定し、タスク表示と完了PATCHのE2Eを検証' : p.nextAction;
         return <tr key={p.id} className={blocked ? 'dev-is-blocked' : ''}>
           <td className="dev-active-index">{i+1}</td>
           <td><strong title={p.title}>{p.title}</strong><small>{p.priority} · 最終確認 {format(p.inspectedAt)}</small></td>
           <td className="dev-active-progress"><strong>{p.progressPercent}%</strong><div className="dev-meter"><span style={{width:p.progressPercent+'%'}}/></div></td>
           <td><span className={blocked ? 'dev-block-indicator blocked' : 'dev-block-indicator'}>{blocked ? '要対応' : '進行中'}</span>
-            <span className="dev-cell-detail" title={p.executionStatus}>{p.executionStatus}</span>
+            <span className="dev-cell-detail" title={statusText}>{statusText}</span>
             <small className="dev-cell-detail" title={p.lastActionResult}>{p.lastActionResult}</small></td>
-          <td><span className="dev-cell-action" title={p.nextAction}>{p.nextAction}</span></td>
+          <td><span className="dev-cell-action" title={nextAction}>{nextAction}</span></td>
         </tr>;
       })}
       </tbody></table>
