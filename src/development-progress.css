@@ -37,3 +37,31 @@
 .dev-milestones p,.dev-footnote{font-size:11px;line-height:1.7;color:#64748b;margin-top:10px}
 @media(max-width:900px){.dev-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.dev-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dev-project-list{grid-template-columns:1fr}}
 @media(max-width:560px){.dev-category-grid{grid-template-columns:1fr}.dev-filterbar input,.dev-filterbar select{width:100%}}
+/* Compact issue register: fixed heading and inner scrolling instead of seven tall cards. */
+.dev-active-table-scroll{border:1px solid #dbe5ef;border-radius:12px;overflow:auto;max-height:min(59dvh,590px);overscroll-behavior:contain;background:#fff}
+.dev-active-table{width:100%;min-width:865px;border-collapse:separate;border-spacing:0;table-layout:fixed}
+.dev-active-table th{position:sticky;top:0;z-index:2;background:#e8f0fa;color:#40536f;border-bottom:1px solid #d2dfed;font-size:11px;text-align:left;padding:10px 11px}
+.dev-active-table th:nth-child(1){width:50px;text-align:center}
+.dev-active-table th:nth-child(2){width:20%}
+.dev-active-table th:nth-child(3){width:110px}
+.dev-active-table th:nth-child(4){width:30%}
+.dev-active-table th:nth-child(5){width:auto}
+.dev-active-table td{padding:9px 11px;border-bottom:1px solid #e7eef5;vertical-align:top;font-size:12px;color:#40516a;line-height:1.45}
+.dev-active-table tbody tr:last-child td{border-bottom:0}
+.dev-active-table td strong{color:#1a3557;font-size:12px}
+.dev-active-table td small{display:block;font-size:10px;line-height:1.35;margin-top:4px;color:#71849b}
+.dev-active-index{text-align:center;color:#3768aa!important;font-weight:850;font-variant-numeric:tabular-nums}
+.dev-active-progress strong{font-size:15px!important;color:#235ec1!important;font-variant-numeric:tabular-nums}
+.dev-active-progress .dev-meter{height:6px;margin:5px 0 0}
+.dev-block-indicator{display:inline-block;background:#e9f6ef;color:#26744d;border-radius:5px;font-size:10px;font-weight:700;padding:2px 5px;white-space:nowrap;margin-right:5px}
+.dev-block-indicator.blocked{background:#fff0e9;color:#a94d2e}
+.dev-cell-detail{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dev-cell-action{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.dev-active-header{margin:8px 0 7px!important;display:flex;justify-content:space-between;align-items:baseline}
+.dev-active-header h3{font-size:15px!important;margin:0!important}
+.dev-active-header span{font-size:11px;color:#68819c}
+.dev-header{margin:0 0 10px}
+.dev-header h2{font-size:18px;margin:0}
+.dev-header p{font-size:11px;line-height:1.45;margin:4px 0}
+.dev-full-inventory{margin-top:11px}
+@media(max-width:800px){.dev-active-table-scroll{max-height:67dvh}.dev-header h2{font-size:16px}}

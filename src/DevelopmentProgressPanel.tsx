@@ -60,19 +60,25 @@ export default function DevelopmentProgressPanel() {
       <a href={NOTION} target="_blank" rel="noreferrer">非公開60件を含むNotion台帳 ↗</a>
     </div>
     {error&&<p role="alert" className="usage-error">{error}</p>}
-    <div className="dev-active-header"><h3>現在進行中・修復優先プロジェクト</h3><span>優先順 · 最重要 GPT Follower</span></div>
-    <div className="dev-active-list">
-      {(data?.activeProjects ?? []).map((p,i) =>
-        <article key={p.id} className={'dev-active-card'+(i===0?' most-important':'')}>
-          <div className="dev-active-top">
-            <div><small>{p.priority} · 優先順位 {i+1}</small><h3>{p.title}</h3><span>{p.executionStatus}</span></div>
-            <strong>{p.progressPercent}%</strong>
-          </div>
-          <div className="dev-meter"><span style={{width:p.progressPercent+'%'}}/></div>
-          <p><b>次のアクション：</b>{p.nextAction}</p>
-          <p className="dev-action-result"><b>ここまでの実行結果：</b>{p.lastActionResult}</p>
-          <small>進捗は証拠ベース／最終調査 {format(p.inspectedAt)}／未完のE2Eは未達のまま表示</small>
-        </article>)}
+    <div className="dev-active-header"><h3>開発課題・次アクション一覧</h3><span>重要度順／{data?.activeProjects?.length ?? 0}案件</span></div>
+    <div className="dev-active-table-scroll" role="region" aria-label="開発の進捗とスタック一覧">
+      <table className="dev-active-table"><thead><tr>
+        <th>優先</th><th>開発案件</th><th>進捗</th><th>状態・スタック箇所</th><th>次のアクション</th>
+      </tr></thead><tbody>
+      {(data?.activeProjects ?? []).map((p,i) => {
+        const blocked = /異常|失敗|未検証|未確認|停止|エラー|未達/.test(p.executionStatus);
+        return <tr key={p.id} className={blocked ? 'dev-is-blocked' : ''}>
+          <td className="dev-active-index">{i+1}</td>
+          <td><strong title={p.title}>{p.title}</strong><small>{p.priority} · 最終確認 {format(p.inspectedAt)}</small></td>
+          <td className="dev-active-progress"><strong>{p.progressPercent}%</strong><div className="dev-meter"><span style={{width:p.progressPercent+'%'}}/></div></td>
+          <td><span className={blocked ? 'dev-block-indicator blocked' : 'dev-block-indicator'}>{blocked ? '要対応' : '進行中'}</span>
+            <span className="dev-cell-detail" title={p.executionStatus}>{p.executionStatus}</span>
+            <small className="dev-cell-detail" title={p.lastActionResult}>{p.lastActionResult}</small></td>
+          <td><span className="dev-cell-action" title={p.nextAction}>{p.nextAction}</span></td>
+        </tr>;
+      })}
+      </tbody></table>
+      {!data && <p className="usage-empty">開発データを読み込んでいます。</p>}
     </div>
     <details className="dev-full-inventory"><summary>全153リポジトリの進捗・カテゴリー一覧を開く（詳細台帳）</summary>
     <div className="dev-kpis">
