@@ -52,7 +52,7 @@ export default function QuotaStrip() {
         <div className="quota-compact-bottom">
           <div><span>{name === 'Antigravity' ? 'モデル別残量' : '5時間枠残量'}</span>
             <strong>{printPercent(displayable ? primary : null)}</strong></div>
-          <div><span>{name === 'Antigravity' ? '次回更新' : '7日間枠残量'}</span>
+          <div><span>{name === 'Antigravity' ? '次回更新' : '7日間の残量'}</span>
             <strong>{name === 'Antigravity' ? (fresh ? '自動' : '—') : printPercent(weekly !== null && displayable ? weekly : null)}</strong></div>
         </div>
         <small>{hasSample ? (fresh ? '最終取得 ' : ageMinutes > 24 * 60 ? '古い観測 ' + printPercent(primary) + ' / ' : '前回 ' ) + new Date(observedTime).toLocaleString('ja-JP', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' })
