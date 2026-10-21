@@ -50,7 +50,7 @@ export default function QuotaStrip() {
       return <article key={name} className={'quota-compact-card ' + (fresh && hasSample ? 'quota-compact-live' : 'quota-compact-unknown')}>
         <div className="quota-compact-title"><strong>{name}</strong><span>{status}</span></div>
         <div className="quota-compact-bottom">
-          <div><span>{name === 'Antigravity' ? 'モデル別残量' : '5時間枠残量'}</span>
+          <div><span>{name === 'Antigravity' ? 'モデル別残量' : '7日間の残量'}</span>
             <strong>{printPercent(displayable ? primary : null)}</strong></div>
           <div><span>{name === 'Antigravity' ? '次回更新' : '7日間の残量'}</span>
             <strong>{name === 'Antigravity' ? (fresh ? '自動' : '—') : printPercent(weekly !== null && displayable ? weekly : null)}</strong></div>
