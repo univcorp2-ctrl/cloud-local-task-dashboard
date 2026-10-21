@@ -61,3 +61,15 @@ test('renders Tokyo-local date and reset days beside named weekly quota', async 
   expect(screen.getByLabelText('今日の日付と日本時間')).toBeInTheDocument();
   expect(screen.getAllByText(/あと2日|あと3日/).length).toBeGreaterThan(0);
 });
+
+test('preserves last measured weekly quota with an honest previous-value label for a 40-minute-old sample', async () => {
+  const fortyMinutesAgo = new Date(Date.now() - 40 * 60_000).toISOString();
+  const weeklyResetAt = new Date(Date.now() + 4 * 86400_000).toISOString();
+  vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({quotas:[
+    {provider:'Codex CLI',weeklyUsedPercent:25,weeklyResetAt,observedAt:fortyMinutesAgo,quality:'stale'}
+  ]})}));
+  render(<QuotaStrip />);
+  expect(await screen.findByLabelText('Codex 7日間の残量 75%')).toBeInTheDocument();
+  expect(screen.getByText('前回値')).toBeInTheDocument();
+  expect(screen.getAllByText(/あと3日|あと4日/).length).toBeGreaterThan(0);
+});
