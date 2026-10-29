@@ -73,7 +73,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     return json({ error: 'notion_not_configured' }, 503);
   }
 
-  const completedView = new URL(request.url).searchParams.get('status') === 'completed';
+  const showCompleted = new URL(request.url).searchParams.get('showCompleted') === 'true';
   const pages: NotionPage[] = [];
   let cursor: string | null = null;
   let truncated = false;
@@ -81,17 +81,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     for (let index = 0; index < 10; index += 1) {
       const body: Record<string, unknown> = {
         page_size: 100,
-        filter: completedView ? { or: [
-          { property: '完了', checkbox: { equals: true } },
-          { property: 'ステータス', select: { equals: '✅ 完了' } },
-          { property: 'ステータス', select: { equals: '完了' } },
-          { property: 'ステータス', select: { equals: '🟢 完了' } },
-        ] } : { and: [
+        ...(!showCompleted ? {filter: { and: [
           { property: '完了', checkbox: { equals: false } },
           { property: 'ステータス', select: { does_not_equal: '✅ 完了' } },
           { property: 'ステータス', select: { does_not_equal: '完了' } },
           { property: 'ステータス', select: { does_not_equal: '🟢 完了' } },
-        ] },
+        ] }} : {}),
       };
       if (cursor) body.start_cursor = cursor;
       const response = await fetch(`https://api.notion.com/v1/data_sources/${dataSourceId}/query`, {
@@ -115,10 +110,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     return json({ error: 'notion_unreachable' }, 502);
   }
 
-  const tasks = pages.filter((page) => {
-    const isDone = Boolean(page.properties['完了']?.checkbox) || ['✅ 完了', '完了', '🟢 完了'].includes(optionOf(page, 'ステータス'));
-    return completedView ? isDone : !isDone;
-  })
+  const tasks = pages.filter((page) => showCompleted || (!page.properties['完了']?.checkbox &&
+    !['✅ 完了', '完了', '🟢 完了'].includes(optionOf(page, 'ステータス'))))
     .map((page) => ({
       id: page.id,
       url: page.url,
@@ -132,8 +125,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       nextAction: titleOf(page, '次の一手'),
       humanAction: titleOf(page, '人間がやること'),
       executionStatus: optionOf(page, '実行状況') || '未設定',
+      completed: Boolean(page.properties['完了']?.checkbox || ['✅ 完了','完了','🟢 完了'].includes(optionOf(page, 'ステータス'))),
     }));
-  return json({ generatedAt: new Date().toISOString(), source: 'Notion', truncated, tasks });
+  return json({ generatedAt: new Date().toISOString(), source: 'Notion', truncated, showCompleted, tasks });
 };
 
 /**
@@ -165,7 +159,7 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   if (!token || !dataSourceId) return json({ error: 'notion_not_configured' }, 503);
   let body: { id?: unknown; completed?: unknown };
   try { body = await request.json() as typeof body; } catch { return json({ error: 'invalid_body' }, 400); }
-  if (typeof body.id !== 'string' || !/^[a-f0-9-]{32,36}$/i.test(body.id) || (body.completed !== true && body.completed !== false)) {
+  if (typeof body.id !== 'string' || !/^[a-f0-9-]{32,36}$/i.test(body.id) || body.completed !== true) {
     return json({ error: 'invalid_completion_request' }, 400);
   }
   const headers = {
@@ -182,25 +176,26 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
     const database = page.parent?.database_id?.replace(/-/g, '').toLowerCase();
     const allowedDatabase = '5f61a18de1f84eac84ac355126311f8b';
     if (source !== expected && database !== allowedDatabase) return json({ error: 'wrong_task_database' }, 403);
-    const isCompleting = body.completed === true;
     const response = await fetch(`https://api.notion.com/v1/pages/${body.id}`, {
       method: 'PATCH', headers,
-      body: JSON.stringify({ properties: {
-        '完了': { checkbox: isCompleting },
-        'ステータス': { select: { name: isCompleting ? '✅ 完了' : '🟡 進行中' } },
-      } }),
+      body: JSON.stringify({ properties: { '完了': { checkbox: true }, 'ステータス': { select: { name: '✅ 完了' } } } }),
     });
     if (!response.ok) return json({ error: 'notion_save_failed', status: response.status }, 502);
-    // Durable Notion task-page history, not a browser-local completion flag.
-    const event = new Date().toISOString() + ' | Cloud & Local Dashboard | ' + (isCompleting ? '完了' : '未完了に復元');
-    const audit = await fetch(`https://api.notion.com/v1/blocks/${body.id}/children`, {
-      method: 'PATCH', headers,
-      body: JSON.stringify({ children: [{ object: 'block', type: 'paragraph', paragraph: {
-        rich_text: [{ type: 'text', text: { content: event } }],
-      } }] }),
-    });
-    // Do not report the audit as written unless Notion confirmed it.
-    return json({ ok: true, taskId: body.id, completed: isCompleting, auditLogged: audit.ok,
-      warning: audit.ok ? null : 'notion_audit_append_failed' });
+    // Completion audit is kept on the task's Notion page. No secrets or task
+    // content are sent to a public log. The Notion status is the single truth.
+    const completedAt = new Date().toISOString();
+    let auditLogged = false;
+    try {
+      const audit = await fetch(`https://api.notion.com/v1/blocks/${body.id}/children`, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({children: [{
+          object: 'block', type: 'paragraph', paragraph: {rich_text: [{
+            type: 'text', text: {content: `タスクコントロールセンターで完了チェック | ${completedAt} | Notion完了反映`}
+          }]}
+        }]})
+      });
+      auditLogged = audit.ok;
+    } catch { /* status update succeeded, but audit did not */ }
+    return json({ ok: true, taskId: body.id, auditLogged, completedAt });
   } catch { return json({ error: 'notion_unreachable' }, 502); }
 };

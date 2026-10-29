@@ -1,4 +1,6 @@
-# Cloud & Local Task Dashboard
+# タスクコントロールセンター / Task Control Center
+
+**AI共通改修入口:** [docs/TASK_CONTROL_CENTER.md](docs/TASK_CONTROL_CENTER.md) — GitHub・Drive・Notionから名称・別名でこのリポジトリを特定。
 
 ![GPT Image generated concept](docs/assets/generated-readme-hero.png)
 

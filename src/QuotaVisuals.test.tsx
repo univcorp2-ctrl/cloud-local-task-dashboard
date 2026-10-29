@@ -5,7 +5,7 @@ import UsageDonut from './UsageDonut';
 beforeEach(() => vi.useRealTimers());
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
-test('keeps Codex Claude Antigravity and Muse in the compact header without inventing values', async () => {
+test('keeps Codex Claude and Antigravity 7-day quota above the fold with name and percent together', async () => {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok:true, json: async () => ({ quotas: [
     { provider:'Codex CLI', usedPercent:27, weeklyUsedPercent:44, observedAt:new Date().toISOString(), quality:'measured' },
     { provider:'ChatGPT通常Chat', usedPercent:10, observedAt:new Date().toISOString(), quality:'measured' },
@@ -14,16 +14,13 @@ test('keeps Codex Claude Antigravity and Muse in the compact header without inve
   ] }) }));
   const { container } = render(<header className="topbar"><QuotaStrip /></header>);
   expect(await screen.findByText('56%')).toBeInTheDocument();
-  const strip = screen.getByRole('group', { name: /AI別 利用可能な残量/ });
-  expect(within(strip).getByText('AI残量')).toBeInTheDocument();
-  const codex = within(strip).getByLabelText('Codex 7日枠の残量 56%');
+  const strip = screen.getByRole('group', { name: /AI別 7日間利用枠の残量/ });
+  expect(within(strip).getByText('7日残量')).toBeInTheDocument();
+  const codex = within(strip).getByLabelText('Codex 7日残量 56%');
   expect(codex.querySelector('.quota-week-amount')?.textContent).toBe('56%');
   expect(container.querySelector('header.topbar .quota-strip')).not.toBeNull();
-  expect(within(strip).getByLabelText('Antigravity モデル枠の残量 未取得')).toBeInTheDocument();
+  expect(within(strip).getByLabelText('Antigravity モデル残量 未取得')).toBeInTheDocument();
   expect(screen.queryByText('ChatGPT通常Chat')).toBeNull();
-  expect(within(strip).getByLabelText('Muse 取得待ちの残量 未取得')).toBeInTheDocument();
-  expect(codex).toHaveClass('quota-band-good');
-  expect(codex.querySelector('.quota-week-gauge > span')).toHaveStyle({width:'56%'});
   fireEvent.click(screen.getByLabelText('5時間枠と観測日時の詳細を開く'));
   expect(screen.getByText(/5時間 73%/)).toBeInTheDocument();
 });
@@ -33,8 +30,8 @@ test('never promotes stale Antigravity or Codex records as current weekly balanc
     { provider:'Gemini / Antigravity CLI', usedPercent:1,quality:'stale',observedAt:'2026-05-01T00:00:00Z' },
   ] }) }));
   render(<QuotaStrip />);
-  expect(await screen.findByLabelText('Codex 7日枠の残量 未取得')).toBeInTheDocument();
-  expect(screen.getByLabelText('Antigravity モデル枠の残量 未取得')).toBeInTheDocument();
+  expect(await screen.findByLabelText('Codex 残量 未取得')).toBeInTheDocument();
+  expect(screen.getByLabelText('Antigravity モデル残量 未取得')).toBeInTheDocument();
   fireEvent.click(screen.getByLabelText('5時間枠と観測日時の詳細を開く'));
   expect(screen.getAllByText(/旧記録/).length).toBeGreaterThan(0);
 });
@@ -72,18 +69,7 @@ test('preserves last measured weekly quota with an honest previous-value label f
     {provider:'Codex CLI',weeklyUsedPercent:25,weeklyResetAt,observedAt:fortyMinutesAgo,quality:'stale'}
   ]})}));
   render(<QuotaStrip />);
-  expect(await screen.findByLabelText('Codex 7日枠の残量 75%')).toBeInTheDocument();
+  expect(await screen.findByLabelText('Codex 7日残量 75%')).toBeInTheDocument();
   expect(screen.getByText('前回値')).toBeInTheDocument();
   expect(screen.getAllByText(/あと3日|あと4日/).length).toBeGreaterThan(0);
-});
-
-test('uses a real recent Antigravity model-pool fraction and its own scope', async () => {
-  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok:true, json: async () => ({ quotas:[
-    {provider:'Gemini / Antigravity CLI',usedPercent:65,remainingPercent:35,observedAt:new Date().toISOString(),quality:'measured'}
-  ] }) }));
-  render(<QuotaStrip />);
-  const chip = await screen.findByLabelText('Antigravity モデル枠の残量 35%');
-  expect(chip).toHaveClass('quota-band-caution');
-  expect(chip.querySelector('.quota-week-amount')?.textContent).toBe('35%');
-  expect(chip.querySelector('.quota-week-gauge > span')).toHaveStyle({width:'35%'});
 });

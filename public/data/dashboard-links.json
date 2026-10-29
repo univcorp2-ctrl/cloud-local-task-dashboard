@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "canonicalName": "タスクコントロールセンター",
+  "generatedAt": "2026-10-29",
+  "registrationUrl": "https://docs.google.com/spreadsheets/d/1O8OoxxzNH91wRFdTjyx56Jr6l-_KIdQjUVFeoliuUVM/edit",
+  "safety": "Only publicly linkable UI destinations. Private GitHub, task IDs and secrets must never be included.",
+  "links": [
+    {
+      "id": "development",
+      "name": "開発進捗・次アクション",
+      "category": "タスク・開発",
+      "url": "https://cloud-local-task-dashboard.pages.dev/#development",
+      "status": "public",
+      "note": "7案件・リポジトリ進捗"
+    },
+    {
+      "id": "automation",
+      "name": "AI稼働・トークン",
+      "category": "タスク・開発",
+      "url": "https://cloud-local-task-dashboard.pages.dev/#automation",
+      "status": "public",
+      "note": "利用枠・自動実行"
+    },
+    {
+      "id": "my-tasks",
+      "name": "本人タスク・Notion",
+      "category": "タスク・開発",
+      "url": "https://cloud-local-task-dashboard.pages.dev/#my-tasks",
+      "status": "login",
+      "note": "本人タスクAPIは認証が必要"
+    },
+    {
+      "id": "ai-control-center",
+      "name": "AI Automation Control Center",
+      "category": "タスク・開発",
+      "url": "https://ai-automation-control-center-jp.hero511.chatgpt.site/",
+      "status": "login",
+      "note": "ChatGPT Sitesログインが必要"
+    },
+    {
+      "id": "capital",
+      "name": "Bukken DB・キャピタル",
+      "category": "不動産",
+      "url": "https://bukken-customer.pages.dev/capital",
+      "status": "partial",
+      "note": "根拠データの完全連携は未確認"
+    },
+    {
+      "id": "daiwa",
+      "name": "大和ハウス投稿管理",
+      "category": "不動産",
+      "url": "https://estateboard.pages.dev/daiwa-posting/",
+      "status": "public",
+      "note": "投稿状態"
+    },
+    {
+      "id": "daiwa-performance",
+      "name": "大和ハウス投稿効果",
+      "category": "不動産",
+      "url": "https://estateboard.pages.dev/daiwa-posting/performance/",
+      "status": "login",
+      "note": "閲覧トークンが必要"
+    },
+    {
+      "id": "univ-select",
+      "name": "UNIV SELECT公開物件",
+      "category": "不動産",
+      "url": "https://univ-select.pages.dev/",
+      "status": "partial",
+      "note": "会員登録は準備中"
+    },
+    {
+      "id": "sns",
+      "name": "EstateBoard SNS分析",
+      "category": "SNS",
+      "url": "https://estateboard.pages.dev/social-analytics/",
+      "status": "public",
+      "note": "媒体・投稿分析"
+    },
+    {
+      "id": "studio",
+      "name": "SNS Dashboard Studio",
+      "category": "SNS",
+      "url": "https://estateboard.pages.dev/social-analytics/studio/",
+      "status": "partial",
+      "note": "端末内の編集と共通バックエンドの更新は別"
+    },
+    {
+      "id": "fb",
+      "name": "Facebook分析",
+      "category": "SNS",
+      "url": "https://estateboard.pages.dev/facebook-analytics/",
+      "status": "public",
+      "note": "投稿・反響"
+    },
+    {
+      "id": "muse",
+      "name": "Muse Pulse",
+      "category": "SNS",
+      "url": "https://estateboard.pages.dev/muse-analytics/",
+      "status": "login",
+      "note": "閲覧トークンが必要"
+    },
+    {
+      "id": "experiments",
+      "name": "SNS A/B/Cテスト",
+      "category": "SNS",
+      "url": "https://estateboard.pages.dev/social-analytics/experiments/",
+      "status": "public",
+      "note": "実験結果"
+    },
+    {
+      "id": "threads",
+      "name": "Threads分析",
+      "category": "SNS",
+      "url": "https://estateboard.pages.dev/social-analytics/threads/",
+      "status": "public",
+      "note": "投稿・反響"
+    },
+    {
+      "id": "journal",
+      "name": "SNS改善日誌",
+      "category": "SNS",
+      "url": "https://estateboard.pages.dev/social-analytics/journal/",
+      "status": "public",
+      "note": "改善記録"
+    },
+    {
+      "id": "logs",
+      "name": "SNS実行ログ",
+      "category": "SNS",
+      "url": "https://estateboard.pages.dev/social-analytics/logs/",
+      "status": "public",
+      "note": "配信・実行記録"
+    },
+    {
+      "id": "revenue",
+      "name": "Revenue Agent 応募管理",
+      "category": "収益化",
+      "url": "https://revenue-agent-ops.pages.dev/#applications",
+      "status": "partial",
+      "note": "本番集計の読込は未確認"
+    },
+    {
+      "id": "revenue-preview",
+      "name": "Revenue Agent検証プレビュー",
+      "category": "収益化",
+      "url": "https://audit-review.revenue-agent-ops.pages.dev/#applications",
+      "status": "preview",
+      "note": "検証版。本番ではない"
+    }
+  ]
+}
