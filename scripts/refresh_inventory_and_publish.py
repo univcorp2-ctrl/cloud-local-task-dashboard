@@ -112,6 +112,10 @@ def main():
                  "--public-output", "public/data/operations-catalog.json",
                  "--private-output", str(PRIVATE / "repo-repair-inventory-latest.json"),
                  "--tasks-public-output", "public/data/tasks.json"], limit=160)
+        # Refresh local non-secret quota observations before every deployment.
+        # Unknown/expired readings remain explicitly unavailable; no credentials are read.
+        command([sys.executable, "scripts/collect_ai_quotas.py",
+                 "--catalog", "public/data/operations-catalog.json"], limit=45)
         repo_count, task_count = validate_public_snapshot()
         pnpm = shutil.which("pnpm.cmd") or shutil.which("pnpm")
         wrangler = shutil.which("wrangler.cmd") or shutil.which("wrangler")
