@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 type Task = { id: string; url: string; title: string; category: string; priority: string; status: string;
-  owner: string; executor: string; due: string | null; nextAction: string; humanAction: string };
+  owner: string; executor: string; due: string | null; nextAction: string; humanAction: string; completed?: boolean };
 type Mode = 'list' | 'board';
 const notion = 'https://www.notion.so/5f61a18de1f84eac84ac355126311f8b';
 const views = [
@@ -26,10 +26,12 @@ export default function ManualTasksPanel() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [doneIds, setDoneIds] = useState<string[]>([]);
+  const [showCompleted, setShowCompleted] = useState(false);
+  const [auditNotice, setAuditNotice] = useState('');
 
   const reload = useCallback(async () => {
     try {
-      const response = await fetch('/api/private-tasks', { cache: 'no-store', credentials: 'same-origin' });
+      const response = await fetch('/api/private-tasks' + (showCompleted ? '?showCompleted=true' : ''), { cache: 'no-store', credentials: 'same-origin' });
       if (!response.ok) throw new Error(response.status === 503 ? '認証・Notion連携が未設定です' : '認証が必要、または取得できません');
       const data = await response.json() as { tasks?: Task[]; truncated?: boolean };
       if (!Array.isArray(data.tasks)) throw new Error('不正な応答');
@@ -39,16 +41,16 @@ export default function ManualTasksPanel() {
       setTasks(null);
       setMessage(err instanceof Error ? err.message : '取得できません');
     }
-  }, []);
+  }, [showCompleted]);
   useEffect(() => { void reload(); }, [reload]);
   const visibleCategories = useMemo(() => ['すべて', ...new Set([ ...categories, ...(tasks ?? []).map(t => t.category || '🔍 要確認')])], [tasks]);
   const filtered = useMemo(() => (tasks ?? []).filter(t =>
-    !doneIds.includes(t.id) &&
+    (showCompleted || (!doneIds.includes(t.id) && !t.completed)) &&
     (category === 'すべて' || (t.category || '🔍 要確認') === category) &&
     (lane === 'すべて' || (lane === '本人対応' && isHuman(t)) || (lane === 'AI担当' && isAI(t))) &&
     (t.title + ' ' + t.nextAction + ' ' + t.category).toLowerCase().includes(search.toLowerCase()),
-  ).sort((a, b) => rank(a.priority) - rank(b.priority) ||
-    (a.due || '9999').localeCompare(b.due || '9999')), [tasks, category, lane, search, doneIds]);
+  ).sort((a, b) => Number(Boolean(a.completed)) - Number(Boolean(b.completed)) || rank(a.priority) - rank(b.priority) ||
+    (a.due || '9999').localeCompare(b.due || '9999')), [tasks, category, lane, search, doneIds, showCompleted]);
 
   async function complete(task: Task, checked: boolean) {
     if (!checked || busy) return;
@@ -61,7 +63,11 @@ export default function ManualTasksPanel() {
         body: JSON.stringify({ id: task.id, completed: true }),
       });
       if (!response.ok) throw new Error('Notionへ完了を保存できませんでした。再度確認してください');
+      const saved = await response.json() as {ok?:boolean;auditLogged?:boolean};
+      if (!saved.ok) throw new Error('Notionの完了確認に失敗しました');
       setDoneIds(prev => [...prev, task.id]);
+      setTasks(prev => prev ? prev.map(t => t.id===task.id ? {...t,completed:true} : t) : prev);
+      setAuditNotice(saved.auditLogged===false ? 'Notionの完了更新は成功しましたが、操作ログの記録に失敗しました。' : '');
     } catch (err) {
       setError(err instanceof Error ? err.message : '完了処理失敗');
     } finally {
@@ -69,7 +75,7 @@ export default function ManualTasksPanel() {
     }
   }
   const renderTask = (task: Task) => <div className="work-task-content" key={task.id}>
-    <label className="work-tick" title="Notionに完了を保存"><input type="checkbox" aria-label={task.title + 'を完了'} disabled={busy !== null} onChange={e => void complete(task, e.target.checked)} /><span /></label>
+    <label className="work-tick" title="Notionに完了を保存"><input type="checkbox" aria-label={task.title + 'を完了'} checked={Boolean(task.completed || doneIds.includes(task.id))} disabled={busy !== null || Boolean(task.completed)} onChange={e => void complete(task, e.target.checked)} /><span /></label>
     <div className="work-task-copy"><a href={task.url} target="_blank" rel="noreferrer" className="work-task-title">{task.title || '無題'} ↗</a>
       <small>{task.priority}　{safeDue(task.due)}　{task.owner}</small></div>
   </div>;
@@ -81,13 +87,15 @@ export default function ManualTasksPanel() {
         <button type="button" aria-pressed={mode === 'board'} className={mode === 'board' ? 'selected' : ''} onClick={() => setMode('board')}>▦ カンバン</button></div>
     </div>
     <div className="work-toolbar">
+      <button type="button" className="refresh-button" aria-pressed={showCompleted} onClick={() => setShowCompleted(v=>!v)}>{showCompleted ? '未完了のみ表示' : '完了済みも表示'}</button>
       <select aria-label="担当で絞り込み" value={lane} onChange={e => setLane(e.target.value)}>{['すべて', '本人対応', 'AI担当'].map(x => <option key={x}>{x}</option>)}</select>
       <select aria-label="カテゴリで絞り込み" value={category} onChange={e => setCategory(e.target.value)}>{visibleCategories.map(x => <option key={x}>{x}</option>)}</select>
       <input aria-label="タスク検索" placeholder="タスクを検索" value={search} onChange={e => setSearch(e.target.value)} />
     </div>
     {error && <p role="alert" className="usage-error">{error}</p>}
+    {auditNotice && <p role="alert" className="usage-error">{auditNotice}</p>}
     {tasks ? (mode === 'list' ? <div className="work-table-scroll"><table className="work-dense-table"><thead><tr><th>完了</th><th>タスク</th><th>カテゴリ</th><th>重要度</th><th>担当</th><th>期日</th></tr></thead>
-      <tbody>{filtered.map(t => <tr key={t.id}><td><input type="checkbox" aria-label={t.title + 'を完了'} disabled={busy !== null} onChange={e => void complete(t, e.target.checked)} /></td>
+      <tbody>{filtered.map(t => <tr key={t.id}><td><input type="checkbox" aria-label={t.title + 'を完了'} checked={Boolean(t.completed || doneIds.includes(t.id))} disabled={busy !== null || Boolean(t.completed)} onChange={e => void complete(t, e.target.checked)} /></td>
         <td><a href={t.url} target="_blank" rel="noreferrer">{t.title || '無題'} ↗</a></td><td>{t.category || '🔍 要確認'}</td><td>{t.priority}</td><td>{t.owner}</td><td>{safeDue(t.due)}</td></tr>)}</tbody></table>
       {!filtered.length && <div className="empty-state">条件に合うタスクはありません。</div>}</div>
       : <div className="work-kanban-scroll"><div className="work-kanban">{visibleCategories.filter(c => c !== 'すべて' && (category === 'すべて' || category === c)).map(c => {
