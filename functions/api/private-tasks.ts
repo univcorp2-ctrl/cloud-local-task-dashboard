@@ -73,6 +73,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     return json({ error: 'notion_not_configured' }, 503);
   }
 
+  const showCompleted = new URL(request.url).searchParams.get('showCompleted') === 'true';
   const pages: NotionPage[] = [];
   let cursor: string | null = null;
   let truncated = false;
@@ -80,12 +81,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     for (let index = 0; index < 10; index += 1) {
       const body: Record<string, unknown> = {
         page_size: 100,
-        filter: { and: [
+        ...(!showCompleted ? {filter: { and: [
           { property: '完了', checkbox: { equals: false } },
           { property: 'ステータス', select: { does_not_equal: '✅ 完了' } },
           { property: 'ステータス', select: { does_not_equal: '完了' } },
           { property: 'ステータス', select: { does_not_equal: '🟢 完了' } },
-        ] },
+        ] }} : {}),
       };
       if (cursor) body.start_cursor = cursor;
       const response = await fetch(`https://api.notion.com/v1/data_sources/${dataSourceId}/query`, {
@@ -109,8 +110,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     return json({ error: 'notion_unreachable' }, 502);
   }
 
-  const tasks = pages.filter((page) => !page.properties['完了']?.checkbox &&
-    !['✅ 完了', '完了', '🟢 完了'].includes(optionOf(page, 'ステータス')))
+  const tasks = pages.filter((page) => showCompleted || (!page.properties['完了']?.checkbox &&
+    !['✅ 完了', '完了', '🟢 完了'].includes(optionOf(page, 'ステータス'))))
     .map((page) => ({
       id: page.id,
       url: page.url,
@@ -124,8 +125,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       nextAction: titleOf(page, '次の一手'),
       humanAction: titleOf(page, '人間がやること'),
       executionStatus: optionOf(page, '実行状況') || '未設定',
+      completed: Boolean(page.properties['完了']?.checkbox || ['✅ 完了','完了','🟢 完了'].includes(optionOf(page, 'ステータス'))),
     }));
-  return json({ generatedAt: new Date().toISOString(), source: 'Notion', truncated, tasks });
+  return json({ generatedAt: new Date().toISOString(), source: 'Notion', truncated, showCompleted, tasks });
 };
 
 /**
@@ -179,6 +181,21 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
       body: JSON.stringify({ properties: { '完了': { checkbox: true }, 'ステータス': { select: { name: '✅ 完了' } } } }),
     });
     if (!response.ok) return json({ error: 'notion_save_failed', status: response.status }, 502);
-    return json({ ok: true, taskId: body.id });
+    // Completion audit is kept on the task's Notion page. No secrets or task
+    // content are sent to a public log. The Notion status is the single truth.
+    const completedAt = new Date().toISOString();
+    let auditLogged = false;
+    try {
+      const audit = await fetch(`https://api.notion.com/v1/blocks/${body.id}/children`, {
+        method: 'PATCH', headers,
+        body: JSON.stringify({children: [{
+          object: 'block', type: 'paragraph', paragraph: {rich_text: [{
+            type: 'text', text: {content: `タスクコントロールセンターで完了チェック | ${completedAt} | Notion完了反映`}
+          }]}
+        }]})
+      });
+      auditLogged = audit.ok;
+    } catch { /* status update succeeded, but audit did not */ }
+    return json({ ok: true, taskId: body.id, auditLogged, completedAt });
   } catch { return json({ error: 'notion_unreachable' }, 502); }
 };
