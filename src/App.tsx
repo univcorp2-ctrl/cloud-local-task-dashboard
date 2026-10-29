@@ -113,7 +113,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
-        <div className="brand"><span className="brand-mark">☁</span><div><strong>Task Control</strong><small>Cloud + Local</small></div></div>
+        <div className="brand"><span className="brand-mark">☁</span><div><strong>タスクコントロールセンター</strong><small>Task Control Center</small></div></div>
         <nav aria-label="メインナビゲーション">
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
           <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
@@ -130,7 +130,7 @@ export default function App() {
       <main>
         <header className="topbar" id="dashboard">
           <button className="menu-button" onClick={() => setMenuOpen((value) => !value)} aria-label="メニューを開閉">☰</button>
-          <div className="topbar-title"><p className="eyebrow">UNIFIED OPERATIONS</p><h1>{activePage === "automation" ? "クラウド & ローカル定期タスク" : activePage === "development" ? "全開発プロジェクト・進捗管理" : "全タスク・本人対応"}</h1><p>{activePage === "automation" ? "AI稼働・トークン消費と自動処理を監視。" : activePage === "development" ? "検証ベースの進捗率、次のアクション、実行と結果を可視化。" : "Notionのタスクをカテゴリ・担当者別に整理。"}</p></div>
+          <div className="topbar-title"><p className="eyebrow">UNIFIED OPERATIONS</p><h1>{activePage === "automation" ? "クラウド & ローカル定期タスク" : activePage === "development" ? "タスクコントロールセンター｜開発進捗" : "全タスク・本人対応"}</h1><p>{activePage === "automation" ? "AI稼働・トークン消費と自動処理を監視。" : activePage === "development" ? "検証ベースの進捗率、次のアクション、実行と結果を可視化。" : "Notionのタスクをカテゴリ・担当者別に整理。"}</p></div>
           <div className="topbar-right"><QuotaStrip />
           {activePage === 'automation' && <div className="header-actions">
             <span className={loadError ? 'data-state warning' : 'data-state'}><i />{loadError ? '取得失敗' : 'データ接続済み'}</span>
