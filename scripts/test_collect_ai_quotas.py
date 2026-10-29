@@ -55,7 +55,9 @@ class QuotaTests(unittest.TestCase):
             {'category': 'Other', 'currentQuota': True, 'timestamp': '2026-10-20T02:59:00Z'},
             {'category': 'Gemini Pro', 'currentQuota': 1.5, 'timestamp': '2026-10-20T02:59:00Z'},
         ])
-        codex, claude, ag = self.collect()
+        codex, claude, ag, muse = self.collect()
+        self.assertEqual(muse['provider'], 'Muse')
+        self.assertEqual(muse['quality'], 'unavailable')
         self.assertEqual(ag['quality'], 'stale')
         self.assertEqual(ag['usedPercent'], 50)
         for missing in (codex, claude):
