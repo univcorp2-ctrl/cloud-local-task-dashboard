@@ -137,3 +137,44 @@
 @media(max-width:1210px){.quota-clock{min-width:75px}.quota-clock>strong{font-size:15px}.quota-week-chip{min-width:102px}.quota-reset-label{font-size:8px}}
 @media(max-width:940px){.quota-clock{min-width:76px}.quota-strip{gap:4px}.quota-week-chip{min-width:0}.quota-week-amount{font-size:17px}}
 @media(max-width:580px){.quota-clock{min-width:55px}.quota-clock>span{font-size:8px}.quota-clock>strong{font-size:12px}.quota-week-chip{padding:4px;min-width:0}.quota-week-amount{font-size:15px}.quota-reset-label{font-size:8px}}
+
+/* 2026-10-29: compact, truthful provider remaining quota in a single header row. */
+.quota-week-chip{grid-template-rows:auto auto auto 5px;row-gap:1px;min-width:106px;padding:3px 7px}
+.quota-week-name small{display:block;font-size:8px;font-weight:600;color:#728398;line-height:1.1}
+.quota-week-amount{font-size:clamp(18px,2.05vw,24px);line-height:1.12}
+.quota-week-state{font-size:9px}
+.quota-week-gauge{grid-column:1/-1;grid-row:4;display:block;background:#e6edf4;height:5px;border-radius:99px;overflow:hidden;align-self:end}
+.quota-week-gauge>span{display:block;height:100%;border-radius:inherit}
+.quota-band-good .quota-week-amount{color:#188457}
+.quota-band-good .quota-week-gauge>span{background:#19a26b}
+.quota-band-caution .quota-week-amount{color:#af7518}
+.quota-band-caution .quota-week-gauge>span{background:#e5a13b}
+.quota-band-low .quota-week-amount{color:#c12e3e}
+.quota-band-low .quota-week-gauge>span{background:#e14452}
+.quota-band-unknown .quota-week-amount{color:#768497}
+.quota-band-unknown .quota-week-gauge>span{background:#9ca9b7}
+.topbar{padding:4px 8px;margin-bottom:7px;min-height:0}
+.quota-strip{gap:4px}
+@media(max-width:940px){
+  .topbar{flex-wrap:nowrap;align-items:center;gap:4px;padding:4px 6px}
+  .topbar-title{flex:0 0 110px;min-width:0}
+  .topbar-title h1{font-size:12px;line-height:1.24;white-space:normal}
+  .topbar-right{flex:1 1 auto;order:initial;min-width:0;margin-left:0;max-width:calc(100% - 116px);display:block}
+  .quota-strip{justify-content:flex-start;overflow-x:auto;max-width:100%;scrollbar-width:thin;gap:3px;padding-bottom:2px}
+  .quota-week-chip{flex:0 0 91px;min-width:91px;max-width:91px;padding:4px 5px}
+  .quota-week-amount{font-size:20px}
+  .quota-clock,.quota-strip-label{display:none}
+  .topbar-right .header-actions{display:none}
+  .quota-details{align-self:center}
+  .quota-details-content{position:fixed;top:60px;right:10px;max-width:calc(100vw - 20px)}
+}
+@media(max-width:580px){
+  .topbar-title{flex-basis:80px}
+  .topbar-title h1{font-size:11px}
+  .topbar-right{max-width:calc(100% - 87px)}
+  .quota-week-chip{flex-basis:87px;min-width:87px;max-width:87px}
+  .quota-week-amount{font-size:19px}
+  .quota-week-name{font-size:10px}
+  .quota-week-name small{font-size:8px}
+  .quota-reset-label{font-size:8px}
+}
