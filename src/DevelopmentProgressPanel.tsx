@@ -34,6 +34,11 @@ export default function DevelopmentProgressPanel() {
   const [sort,setSort]=useState('priority');
   const [query,setQuery]=useState('');
   const [phase,setPhase]=useState('all');
+  const [showCompleted,setShowCompleted]=useState(false);
+  const [doneIds,setDoneIds]=useState<string[]>([]);
+  const [busy,setBusy]=useState<string|null>(null);
+  const [completionError,setCompletionError]=useState('');
+  const [taskMatches,setTaskMatches]=useState<Array<{id:string;title:string;completed:boolean}>>([]);
   const load=useCallback(async()=>{
     try{
       const response=await fetch(PROGRESS_PATH+'?t='+Date.now(),{cache:'no-store'});
@@ -58,18 +63,48 @@ export default function DevelopmentProgressPanel() {
     let active=true;
     const check=async()=>{
       try{
-        const response=await fetch('/api/private-tasks',{cache:'no-store',credentials:'same-origin'});
+        const response=await fetch('/api/private-tasks?showCompleted=true',{cache:'no-store',credentials:'same-origin'});
         if(!active)return;
         if(response.status===503){setNotionApi('auth_missing');return;}
         if(response.status===401||response.status===403){setNotionApi('login_needed');return;}
         if(!response.ok){setNotionApi('error');return;}
         const data:unknown=await response.json();
-        setNotionApi(data && typeof data==='object' && Array.isArray((data as {tasks?:unknown}).tasks)?'working':'error');
+        const tasks=data && typeof data==='object' ? (data as {tasks?:unknown}).tasks : undefined;
+        if (Array.isArray(tasks)) {
+          setTaskMatches(tasks.filter((x): x is {id:string;title:string;completed:boolean} =>
+            Boolean(x) && typeof x==='object' && typeof x.id==='string' && typeof x.title==='string')
+            .map(x=>({id:x.id,title:x.title,completed:Boolean(x.completed)})));
+          setNotionApi('working');
+        } else setNotionApi('error');
       }catch{if(active)setNotionApi('error');}
     };
     void check();
     return()=>{active=false;};
   },[]);
+  // Only exact unique Notion title matches are allowed to mutate task state.
+  // Partial/similar names can refer to unrelated tasks.
+  const resolveTask=(title:string)=>{
+    const norm=(v:string)=>v.normalize('NFKC').toLowerCase().replace(/[\s　]+/g,'').trim();
+    const matches=taskMatches.filter(t=>norm(t.title)===norm(title));
+    return matches.length===1 ? matches[0] : null;
+  };
+  async function completeDevelopment(id:string,title:string,checked:boolean) {
+    if (!checked || busy || notionApi!=='working') return;
+    const task=resolveTask(title);
+    if (!task || task.completed) { setCompletionError('この開発案件に対応するNotionタスクを一意に特定できません。更新を中止しました。'); return; }
+    setBusy(id);setCompletionError('');
+    try {
+      const response=await fetch('/api/private-tasks',{method:'PATCH',credentials:'same-origin',cache:'no-store',
+        headers:{'Content-Type':'application/json'},body:JSON.stringify({id:task.id,completed:true})});
+      if (!response.ok) throw Error('Notionへの完了保存に失敗しました');
+      const saved=await response.json() as {ok?:boolean;auditLogged?:boolean};
+      if (!saved.ok) throw Error('Notionの完了応答が未確認です');
+      setDoneIds(prev=>[...prev,id]);
+      setTaskMatches(prev=>prev.map(x=>x.id===task.id?{...x,completed:true}:x));
+      if (saved.auditLogged===false) setCompletionError('完了はNotionに反映されましたが、操作ログ追記に失敗しました。');
+    }catch(e){setCompletionError(e instanceof Error?e.message:'Notion更新失敗');}
+    finally{setBusy(null);}
+  }
   return <section className="development-panel" aria-label="開発プロジェクト進捗・次アクション">
     <div className="dev-header">
       <div><span className="section-kicker">PROJECT DELIVERY / SOURCE-BASED</span>
@@ -77,12 +112,21 @@ export default function DevelopmentProgressPanel() {
       <a href={NOTION} target="_blank" rel="noreferrer">非公開60件を含むNotion台帳 ↗</a>
     </div>
     {error&&<p role="alert" className="usage-error">{error}</p>}
+    {completionError&&<p role="alert" className="usage-error">{completionError}</p>}
+    <div className="dev-completion-tools">
+      <button type="button" className="refresh-button" aria-pressed={showCompleted} onClick={()=>setShowCompleted(v=>!v)}>
+        {showCompleted?'未完了のみ表示':'完了済みも表示'}
+      </button>
+      <small>左端の完了チェックはNotionと一意に紐付く案件だけ有効。未認証・未紐付けは変更しません。</small>
+    </div>
     <div className="dev-active-header"><h3>開発課題・次アクション一覧</h3><span>重要度順／{data?.activeProjects?.length ?? 0}案件</span></div>
     <div className="dev-active-table-scroll" role="region" aria-label="開発の進捗とスタック一覧">
       <table className="dev-active-table"><thead><tr>
-        <th>優先</th><th>開発案件</th><th>進捗</th><th>状態・スタック箇所</th><th>次のアクション</th>
+        <th>完了</th><th>優先</th><th>開発案件</th><th>進捗</th><th>状態・スタック箇所</th><th>次のアクション</th>
       </tr></thead><tbody>
-      {(data?.activeProjects ?? []).map((p,i) => {
+      {(data?.activeProjects ?? []).filter(p=>showCompleted || (!doneIds.includes(p.id) && !resolveTask(p.title)?.completed)).map((p,i) => {
+        const linked=resolveTask(p.title);
+        const isCompleted=doneIds.includes(p.id)||Boolean(linked?.completed);
         const privateTasksBlocked = p.id === 'web' && notionApi !== 'working';
         const blocked = privateTasksBlocked || /異常|失敗|未検証|未確認|停止|エラー|未達/.test(p.executionStatus);
         const statusText = privateTasksBlocked && notionApi === 'auth_missing' ? 'Notion本人タスクAPI 503：Cloudflare Access未設定' :
@@ -92,6 +136,9 @@ export default function DevelopmentProgressPanel() {
         const nextAction = privateTasksBlocked ?
           'Cloudflare Access認証・Notion Pages Secretsを正規設定し、タスク表示と完了PATCHのE2Eを検証' : p.nextAction;
         return <tr key={p.id} className={blocked ? 'dev-is-blocked' : ''}>
+          <td><input type="checkbox" aria-label={p.title+'を完了'} title={linked?'Notionタスクに完了を保存':'Notionの対応タスクが未確認です'}
+            checked={isCompleted} disabled={!linked || notionApi!=='working' || Boolean(busy) || isCompleted}
+            onChange={e=>void completeDevelopment(p.id,p.title,e.target.checked)}/></td>
           <td className="dev-active-index">{i+1}</td>
           <td><strong title={p.title}>{p.title}</strong><small>{p.priority} · 最終確認 {format(p.inspectedAt)}</small></td>
           <td className="dev-active-progress"><strong>{p.progressPercent}%</strong><div className="dev-meter"><span style={{width:p.progressPercent+'%'}}/></div></td>
