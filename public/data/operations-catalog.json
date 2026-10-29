@@ -14,31 +14,94 @@
   },
   "classificationNote": "Category is registered for select repos, inferred by name for others; manual verification required.",
   "coverageNote": "Includes GitHub repository metadata and non-Microsoft local Windows tasks, not the execution history of all workflows.",
-  "quotaStatus": "unavailable",
+  "quotaStatus": "stale",
   "quotas": [
     {
       "provider": "Codex CLI",
-      "remainingPercent": null,
-      "resetAt": null,
-      "evidence": "No verified provider quota endpoint"
+      "remainingPercent": 88.0,
+      "resetAt": "2026-10-29T11:32:46+00:00",
+      "evidence": "Codex token_count rate_limits",
+      "usedPercent": 12.0,
+      "weeklyUsedPercent": 8.0,
+      "weeklyResetAt": "2026-11-04T08:01:19+00:00",
+      "observedAt": "2026-10-29T10:37:32.630000+00:00",
+      "quality": "stale",
+      "windowLabel": "5時間"
     },
     {
       "provider": "Claude Code CLI",
       "remainingPercent": null,
       "resetAt": null,
-      "evidence": "No verified provider quota endpoint"
+      "evidence": "利用枠の観測データなし",
+      "usedPercent": null,
+      "weeklyUsedPercent": null,
+      "weeklyResetAt": null,
+      "observedAt": null,
+      "quality": "unavailable"
     },
     {
       "provider": "Gemini / Antigravity CLI",
-      "remainingPercent": null,
-      "resetAt": null,
-      "evidence": "No verified provider quota endpoint"
+      "remainingPercent": 100,
+      "resetAt": "2026-05-22T15:15:42+00:00",
+      "evidence": "Antigravity crsx.ag-usage quotaHistory (read-only)",
+      "usedPercent": 0,
+      "weeklyUsedPercent": null,
+      "weeklyResetAt": null,
+      "observedAt": "2026-05-22T10:15:43.166000+00:00",
+      "quality": "stale",
+      "model": "Gemini Pro",
+      "modelPools": [
+        {
+          "category": "Gemini Pro",
+          "usedPercent": 0,
+          "observedAt": "2026-05-22T10:15:43.166000+00:00",
+          "resetAt": "2026-05-22T15:15:42+00:00",
+          "quality": "stale"
+        },
+        {
+          "category": "Claude/GPT",
+          "usedPercent": 0,
+          "observedAt": "2026-05-22T10:15:43.166000+00:00",
+          "resetAt": "2026-05-22T15:15:42+00:00",
+          "quality": "stale"
+        },
+        {
+          "category": "Gemini",
+          "usedPercent": 0,
+          "observedAt": "2026-05-23T02:59:24.875000+00:00",
+          "resetAt": "2026-05-23T07:59:24+00:00",
+          "quality": "stale"
+        },
+        {
+          "category": "Other",
+          "usedPercent": 0,
+          "observedAt": "2026-05-23T02:59:24.875000+00:00",
+          "resetAt": "2026-05-23T07:59:24+00:00",
+          "quality": "stale"
+        }
+      ],
+      "windowLabel": "モデル別"
     },
     {
       "provider": "ChatGPT通常Chat",
       "remainingPercent": null,
       "resetAt": null,
-      "evidence": "No official remaining-quota telemetry connected"
+      "evidence": "利用枠の観測データなし",
+      "usedPercent": null,
+      "weeklyUsedPercent": null,
+      "weeklyResetAt": null,
+      "observedAt": null,
+      "quality": "unavailable"
+    },
+    {
+      "provider": "Muse",
+      "quality": "unavailable",
+      "evidence": "Museの検証済み使用枠ソース未接続",
+      "remainingPercent": null,
+      "usedPercent": null,
+      "weeklyUsedPercent": null,
+      "resetAt": null,
+      "observedAt": null
     }
   ],
   "categories": [
@@ -1155,5 +1218,6 @@
         }
       ]
     }
-  ]
+  ],
+  "quotaCollectedAt": "2026-10-29T11:46:29.687344+00:00"
 }
