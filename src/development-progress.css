@@ -41,11 +41,12 @@
 .dev-active-table-scroll{border:1px solid #dbe5ef;border-radius:12px;overflow:auto;max-height:min(59dvh,590px);overscroll-behavior:contain;background:#fff}
 .dev-active-table{width:100%;min-width:865px;border-collapse:separate;border-spacing:0;table-layout:fixed}
 .dev-active-table th{position:sticky;top:0;z-index:2;background:#e8f0fa;color:#40536f;border-bottom:1px solid #d2dfed;font-size:11px;text-align:left;padding:10px 11px}
-.dev-active-table th:nth-child(1){width:50px;text-align:center}
-.dev-active-table th:nth-child(2){width:20%}
-.dev-active-table th:nth-child(3){width:110px}
-.dev-active-table th:nth-child(4){width:30%}
-.dev-active-table th:nth-child(5){width:auto}
+.dev-active-table th:nth-child(1){width:55px;text-align:center}
+.dev-active-table th:nth-child(2){width:50px;text-align:center}
+.dev-active-table th:nth-child(3){width:20%}
+.dev-active-table th:nth-child(4){width:110px}
+.dev-active-table th:nth-child(5){width:30%}
+.dev-active-table th:nth-child(6){width:auto}
 .dev-active-table td{padding:9px 11px;border-bottom:1px solid #e7eef5;vertical-align:top;font-size:12px;color:#40516a;line-height:1.45}
 .dev-active-table tbody tr:last-child td{border-bottom:0}
 .dev-active-table td strong{color:#1a3557;font-size:12px}
@@ -65,3 +66,5 @@
 .dev-header p{font-size:11px;line-height:1.45;margin:4px 0}
 .dev-full-inventory{margin-top:11px}
 @media(max-width:800px){.dev-active-table-scroll{max-height:67dvh}.dev-header h2{font-size:16px}}
+
+.dev-completion-tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 10px}.dev-completion-tools small{font-size:11px;color:#64748b}.dev-active-table td:first-child{text-align:center}.dev-active-table input[type=checkbox]{width:18px;height:18px;accent-color:#1f9c6b;cursor:pointer}.dev-active-table input[type=checkbox]:disabled{cursor:not-allowed;opacity:.55}
