@@ -91,3 +91,14 @@ main {padding-top: 12px}
 .sidebar nav .sidebar-app-links>a{display:flex;align-items:center;padding:7px 9px;font-size:12px;line-height:1.3;color:#c2d8f2;background:transparent;box-shadow:none;border-radius:7px;overflow-wrap:anywhere}
 .sidebar nav .sidebar-app-links>a:hover{color:#fff;background:#214b7b;box-shadow:none}
 .sidebar-foot{flex-shrink:0}
+
+/* 2026-10-29: accessible task toggles and a two-way Notion-complete view. */
+.work-view{display:flex;gap:2px;padding:3px;border:1px solid #dce6f0;background:#f0f4fa;border-radius:9px}
+.work-view button{border:0;background:transparent;color:#5b7089;font-size:11px;white-space:nowrap;padding:7px 10px;cursor:pointer;border-radius:7px}
+.work-view button.selected{background:#fff;color:#194fa1;font-weight:800;box-shadow:0 1px 4px #0001}
+.work-view button:focus-visible,.work-dense-table input[type=checkbox]:focus-visible,.work-tick input[type=checkbox]:focus-visible{outline:3px solid #4a8bde;outline-offset:2px}
+.work-dense-table input[type=checkbox],.work-tick input[type=checkbox]{height:23px;width:23px;cursor:pointer;accent-color:#1671d7;touch-action:manipulation;position:relative;z-index:4}
+.work-dense-table td:first-child{vertical-align:middle}
+.work-compact-header{gap:6px}
+.work-compact-header>.refresh-button{margin-left:auto}
+@media(max-width:600px){.work-compact-header>strong{font-size:14px}.work-view button{padding:6px 7px;font-size:10px}.work-compact-header{gap:5px}}
