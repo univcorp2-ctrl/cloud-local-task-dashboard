@@ -4,7 +4,7 @@ import ManualTasksPanel from './ManualTasksPanel';
 import DevelopmentProgressPanel from './DevelopmentProgressPanel';
 import { quotaTone } from './QuotaStrip';
 import '@testing-library/jest-dom/vitest';
-afterEach(()=>{cleanup();vi.unstubAllGlobals();});
+afterEach(()=>{cleanup();window.localStorage.clear();vi.unstubAllGlobals();});
 const task = {id:'12345678123412341234123456789012', title:'資料作成', url:'https://www.notion.so/task', category:'📝 事務・生活',
   priority:'🔴 最高',status:'🔴 未着手',owner:'👤 人間',executor:'Hiro',due:null,nextAction:'提出',humanAction:'',completed:false};
 test('残量ゲージの閾値は50%と30%で切り替わり、未取得は無色',()=>{
@@ -42,7 +42,7 @@ test('Notion更新が失敗すればチェック対象を隠さずエラー表�
   expect(await screen.findByRole('alert')).toHaveTextContent('Notionへ完了を保存できませんでした');
   expect(screen.getByRole('checkbox',{name:'資料作成を完了'})).toBeInTheDocument();
 });
-test('開発タスクはNotionと紐付かない場合はチェックを無効化する',async()=>{
+test('Notionが503でも開発タスクはブラウザ内で仮完了・復元・取り消しができる',async()=>{
   const catalog={generatedAt:'2026-10-29T09:00:00Z',progressDefinition:'evidence',
     coverage:{allRepositories:1,public:1,private:0,inspected:1},averageProgress:50,categories:[],
     publicProjects:[{name:'repo',url:'https://github.com/example/repo',category:'other',description:'',phase:'review',
@@ -56,6 +56,16 @@ test('開発タスクはNotionと紐付かない場合はチェックを無効�
   }));
   render(<DevelopmentProgressPanel/>);
   const table=await screen.findByRole('region',{name:'開発の進捗とスタック一覧'});
-  await waitFor(()=>expect(within(table).getByRole('checkbox',{name:'開発Aを完了'})).toBeDisabled());
-  expect(screen.getByRole('button',{name:'完了済みも表示'})).toBeInTheDocument();
+  const checkbox=within(table).getByRole('checkbox',{name:'開発Aを完了'});
+  expect(checkbox).toBeEnabled();
+  fireEvent.click(checkbox);
+  await waitFor(()=>expect(within(table).queryByRole('checkbox',{name:'開発Aを完了'})).not.toBeInTheDocument());
+  expect(window.localStorage.getItem('tcc-development-local-completions-v1')).toContain('"dev"');
+  expect(screen.getByRole('alert')).toHaveTextContent('Notionには反映していません');
+  fireEvent.click(screen.getByRole('button',{name:'完了済みも表示'}));
+  const restored=within(table).getByRole('checkbox',{name:'開発Aを完了'});
+  expect(restored).toBeChecked();
+  fireEvent.click(restored);
+  await waitFor(()=>expect(within(table).getByRole('checkbox',{name:'開発Aを完了'})).not.toBeChecked());
+  expect(window.localStorage.getItem('tcc-development-local-completions-v1')).toBe('[]');
 });

@@ -160,3 +160,23 @@
 @media(max-width:1110px){.quota-strip{grid-template-columns:auto repeat(4,minmax(90px,1fr)) auto}.quota-strip-label{display:none}.quota-week-amount{font-size:25px}.quota-week-name small{display:none}}
 @media(max-width:750px){.quota-strip{display:flex;flex-wrap:wrap}.quota-clock{width:100%}.quota-week-chip{flex:1 1 calc(50% - 12px);min-width:115px}.quota-details{margin-left:auto}.quota-week-amount{font-size:28px}.quota-week-name small{display:inline}}
 @media(max-width:425px){.quota-week-chip{min-width:105px;padding:6px}.quota-week-name{font-size:10px}.quota-week-name small{font-size:8px}.quota-week-amount{font-size:24px}}
+
+/* Compact Task Control Center header: always keep the task table above the fold. */
+.topbar.tcc-compact{min-height:0;max-height:none;gap:10px;padding:5px 8px;margin-bottom:8px;align-items:center}
+.tcc-compact .topbar-title{min-width:0;flex:0 0 auto}
+.tcc-compact .topbar-title h1{font-size:15px;line-height:1.2;margin:0;white-space:nowrap}
+.tcc-compact .topbar-right{min-width:0;align-items:center;gap:5px}
+.tcc-compact .quota-strip{position:static;display:flex;align-items:center;justify-content:flex-end;gap:5px;flex:1 1 auto;min-width:0;margin:0;padding:0}
+.tcc-compact .quota-strip-label{display:none}
+.tcc-compact .quota-clock{min-width:52px;align-items:flex-start;gap:0}
+.tcc-compact .quota-clock>span{font-size:9px}
+.tcc-compact .quota-clock>strong{font-size:13px;line-height:1.1}
+.tcc-compact .quota-week-chip{flex:0 1 117px;min-width:92px;height:39px;min-height:0;max-height:39px;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:20px 4px;align-content:center;align-items:center;gap:2px 5px;padding:4px 7px;border-radius:7px;overflow:hidden}
+.tcc-compact .quota-week-name{grid-area:1/1;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;line-height:1.2}
+.tcc-compact .quota-week-name small{display:none}
+.tcc-compact .quota-week-amount{grid-area:1/2;font-size:18px;line-height:1.1}
+.tcc-compact .quota-balance-track{grid-area:2/1/3/3;height:4px}
+.tcc-compact .quota-week-state,.tcc-compact .quota-reset-label{display:none}
+.tcc-compact .quota-details>summary{padding:6px 7px;font-size:10px}
+@media(max-width:1060px){.topbar.tcc-compact{flex-wrap:wrap}.tcc-compact .topbar-right{flex:1 0 100%;order:2}.tcc-compact .quota-strip{justify-content:flex-start}}
+@media(max-width:530px){.tcc-compact .quota-week-chip{flex:1 1 21%;min-width:60px;padding:4px}.tcc-compact .quota-week-name{font-size:9px}.tcc-compact .quota-week-amount{font-size:14px}.tcc-compact .quota-clock{display:none}}

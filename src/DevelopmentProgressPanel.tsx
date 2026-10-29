@@ -28,6 +28,13 @@ type ProgressCatalog = {
 const PROGRESS_PATH = '/data/development-progress.json';
 const NOTION = 'https://app.notion.com/p/3fe10562e58b8112a282e19707783c79';
 const format = (v: string) => { const d=new Date(v);return Number.isNaN(d.getTime())?'不明':d.toLocaleString('ja-JP',{timeZone:'Asia/Tokyo',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}); };
+const LOCAL_COMPLETIONS_KEY = 'tcc-development-local-completions-v1';
+function loadLocalCompletions(): string[] {
+  try {
+    const value: unknown = JSON.parse(window.localStorage.getItem(LOCAL_COMPLETIONS_KEY) ?? '[]');
+    return Array.isArray(value) ? value.filter((id): id is string => typeof id === 'string') : [];
+  } catch { return []; }
+}
 export default function DevelopmentProgressPanel() {
   const [data,setData] = useState<ProgressCatalog | null>(null);
   const [error,setError] = useState('');
@@ -36,10 +43,13 @@ export default function DevelopmentProgressPanel() {
   const [query,setQuery]=useState('');
   const [phase,setPhase]=useState('all');
   const [showCompleted,setShowCompleted]=useState(false);
-  const [doneIds,setDoneIds]=useState<string[]>([]);
+  const [doneIds,setDoneIds]=useState<string[]>(loadLocalCompletions);
   const [busy,setBusy]=useState<string|null>(null);
   const [completionError,setCompletionError]=useState('');
   const [taskMatches,setTaskMatches]=useState<Array<{id:string;title:string;completed:boolean}>>([]);
+  useEffect(() => {
+    try { window.localStorage.setItem(LOCAL_COMPLETIONS_KEY, JSON.stringify(doneIds)); } catch { /* Private browsing can block storage. */ }
+  }, [doneIds]);
   const load=useCallback(async()=>{
     try{
       const response=await fetch(PROGRESS_PATH+'?t='+Date.now(),{cache:'no-store'});
@@ -90,9 +100,21 @@ export default function DevelopmentProgressPanel() {
     return matches.length===1 ? matches[0] : null;
   };
   async function completeDevelopment(id:string,title:string,checked:boolean) {
-    if (!checked || busy || notionApi!=='working') return;
+    if (busy) return;
+    if (!checked) {
+      const linked = resolveTask(title);
+      if (linked?.completed) return; // Do not claim to undo a Notion completion.
+      setDoneIds(prev => prev.filter(value => value !== id));
+      setCompletionError('ブラウザ内の仮完了を取り消しました。Notionの状態は変更していません。');
+      return;
+    }
     const task=resolveTask(title);
-    if (!task || task.completed) { setCompletionError('この開発案件に対応するNotionタスクを一意に特定できません。更新を中止しました。'); return; }
+    if (notionApi!=='working' || !task) {
+      setDoneIds(prev => prev.includes(id) ? prev : [...prev,id]);
+      setCompletionError('このブラウザ内に仮完了を保存しました。Notionには反映していません。');
+      return;
+    }
+    if (task.completed) return;
     setBusy(id);setCompletionError('');
     try {
       const response=await fetch('/api/private-tasks',{method:'PATCH',credentials:'same-origin',cache:'no-store',
@@ -103,7 +125,10 @@ export default function DevelopmentProgressPanel() {
       setDoneIds(prev=>[...prev,id]);
       setTaskMatches(prev=>prev.map(x=>x.id===task.id?{...x,completed:true}:x));
       if (saved.auditLogged===false) setCompletionError('完了はNotionに反映されましたが、操作ログ追記に失敗しました。');
-    }catch(e){setCompletionError(e instanceof Error?e.message:'Notion更新失敗');}
+    }catch(e){
+      setDoneIds(prev => prev.includes(id) ? prev : [...prev,id]);
+      setCompletionError('Notion保存を確認できませんでした。このブラウザ内にのみ仮完了を記録しました。' + (e instanceof Error ? ' (' + e.message + ')' : ''));
+    }
     finally{setBusy(null);}
   }
   return <section className="development-panel" aria-label="開発プロジェクト進捗・次アクション">
@@ -119,7 +144,7 @@ export default function DevelopmentProgressPanel() {
       <button type="button" className="refresh-button" aria-pressed={showCompleted} onClick={()=>setShowCompleted(v=>!v)}>
         {showCompleted?'未完了のみ表示':'完了済みも表示'}
       </button>
-      <small>左端の完了チェックはNotionと一意に紐付く案件だけ有効。未認証・未紐付けは変更しません。</small>
+      <small>{notionApi === 'working' ? 'チェックは操作可能。Notionの一致が確認できた案件だけ連携し、他はブラウザ内に仮保存します。' : 'チェック可能：完了はこのブラウザに仮保存されます。Notionには未反映（認証・紐付け未設定）。'} 完了後は一覧から非表示、表示切替で取り消せます。</small>
     </div>
     <div className="dev-active-header"><h3>開発課題・次アクション一覧</h3><span>重要度順／{data?.activeProjects?.length ?? 0}案件</span></div>
     <div className="dev-active-table-scroll" role="region" aria-label="開発の進捗とスタック一覧">
@@ -138,11 +163,11 @@ export default function DevelopmentProgressPanel() {
         const nextAction = privateTasksBlocked ?
           'Cloudflare Access認証・Notion Pages Secretsを正規設定し、タスク表示と完了PATCHのE2Eを検証' : p.nextAction;
         return <tr key={p.id} className={blocked ? 'dev-is-blocked' : ''}>
-          <td><input type="checkbox" aria-label={p.title+'を完了'} title={linked?'Notionタスクに完了を保存':'Notionの対応タスクが未確認です'}
-            checked={isCompleted} disabled={!linked || notionApi!=='working' || Boolean(busy) || isCompleted}
+          <td><input type="checkbox" aria-label={p.title+'を完了'} title={linked && notionApi==='working' ? 'Notion連携で完了を保存' : 'ブラウザのみで仮完了（Notion未反映）'}
+            checked={isCompleted} disabled={Boolean(busy) || Boolean(linked?.completed)}
             onChange={e=>void completeDevelopment(p.id,p.title,e.target.checked)}/></td>
           <td className="dev-active-index">{i+1}</td>
-          <td><strong title={p.title}>{p.title}</strong><small>{p.priority} · 最終確認 {format(p.inspectedAt)}</small></td>
+          <td><strong title={p.title}>{p.title}</strong><small>{p.priority} · 最終確認 {format(p.inspectedAt)}</small>{doneIds.includes(p.id) && !linked?.completed && <small className="dev-local-pending">仮完了・Notion未同期</small>}</td>
           <td className="dev-active-progress"><strong>{p.progressPercent}%</strong><div className="dev-meter"><span style={{width:p.progressPercent+'%'}}/></div></td>
           <td><span className={blocked ? 'dev-block-indicator blocked' : 'dev-block-indicator'}>{blocked ? '要対応' : '進行中'}</span>
             <span className="dev-cell-detail" title={statusText}>{statusText}</span>

@@ -11,7 +11,7 @@ const percent = (v: unknown): number | null =>
   typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 100 ? v : null;
 const left = (spent: unknown, balance: unknown = null): number | null =>
   percent(balance) ?? (percent(spent) === null ? null : 100 - (spent as number));
-const show = (v: number | null) => v === null ? '—%' : Math.round(v) + '%';
+const show = (v: number | null) => v === null ? '—' : Math.round(v) + '%';
 export function quotaTone(value: number | null): 'healthy' | 'warning' | 'critical' | 'unknown' {
   if (value === null) return 'unknown';
   return value < 30 ? 'critical' : value < 50 ? 'warning' : 'healthy';
