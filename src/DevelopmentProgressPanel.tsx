@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import './development-progress.css';
+import DashboardDirectory from './DashboardDirectory';
 import './development-priority.css';
 
 type Milestone = { id: string; label: string; weight: number; verified: boolean };
@@ -111,6 +112,7 @@ export default function DevelopmentProgressPanel() {
         <h2>開発進捗・次のアクション</h2><p>完了の証拠を確認した項目だけ加点。開発仕様全体の完成率ではなく、共通の検証マイルストーン達成度です。</p></div>
       <a href={NOTION} target="_blank" rel="noreferrer">非公開60件を含むNotion台帳 ↗</a>
     </div>
+    <DashboardDirectory />
     {error&&<p role="alert" className="usage-error">{error}</p>}
     {completionError&&<p role="alert" className="usage-error">{completionError}</p>}
     <div className="dev-completion-tools">
