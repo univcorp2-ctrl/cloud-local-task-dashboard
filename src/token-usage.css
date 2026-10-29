@@ -137,3 +137,26 @@
 @media(max-width:1210px){.quota-clock{min-width:75px}.quota-clock>strong{font-size:15px}.quota-week-chip{min-width:102px}.quota-reset-label{font-size:8px}}
 @media(max-width:940px){.quota-clock{min-width:76px}.quota-strip{gap:4px}.quota-week-chip{min-width:0}.quota-week-amount{font-size:17px}}
 @media(max-width:580px){.quota-clock{min-width:55px}.quota-clock>span{font-size:8px}.quota-clock>strong{font-size:12px}.quota-week-chip{padding:4px;min-width:0}.quota-week-amount{font-size:15px}.quota-reset-label{font-size:8px}}
+
+/* Task Control Center: quota balance health, preserving unknown/stale as non-success. */
+.quota-strip{grid-template-columns:auto auto repeat(4,minmax(115px,1fr)) auto;align-items:stretch;gap:6px}
+.quota-week-chip{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto 9px auto auto;gap:2px 8px;min-width:114px;border-width:1px;padding:7px 10px;transition:border-color .15s ease,background-color .15s ease}
+.quota-week-name{grid-column:1;grid-row:1;display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:12px}
+.quota-week-name small{color:#587080;font-size:9px;font-weight:600}
+.quota-week-amount{grid-column:2;grid-row:1;font-size:clamp(24px,2.5vw,36px);letter-spacing:-.05em;font-weight:900}
+.quota-balance-track{grid-column:1/-1;grid-row:2;height:9px;border-radius:99px;background:#dce4ea;overflow:hidden}
+.quota-balance-track>span{display:block;height:100%;background:var(--quota-color,#17865d);border-radius:99px;transition:width .35s ease,background-color .35s ease}
+.quota-week-state{grid-column:1;grid-row:3;font-size:10px}
+.quota-reset-label{grid-column:1/-1;grid-row:4;font-size:10px}
+.quota-balance-healthy{--quota-color:#168456;background:#f1fcf6;border-color:#c9e9d6}
+.quota-balance-warning{--quota-color:#d49c13;background:#fffbec;border-color:#f2d999}
+.quota-balance-critical{--quota-color:#d9323e;background:#fff2f1;border-color:#f3b7b7}
+.quota-balance-unknown{--quota-color:#91a0b3;background:#f7f9fb;border-color:#dbe3ec}
+.quota-balance-healthy .quota-week-amount{color:#13784b}
+.quota-balance-warning .quota-week-amount{color:#946300}
+.quota-balance-critical .quota-week-amount{color:#b91f31}
+.quota-balance-unknown .quota-week-amount{color:#758397}
+.quota-detail-row>small:nth-last-child(1){grid-column:1/-1;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:1110px){.quota-strip{grid-template-columns:auto repeat(4,minmax(90px,1fr)) auto}.quota-strip-label{display:none}.quota-week-amount{font-size:25px}.quota-week-name small{display:none}}
+@media(max-width:750px){.quota-strip{display:flex;flex-wrap:wrap}.quota-clock{width:100%}.quota-week-chip{flex:1 1 calc(50% - 12px);min-width:115px}.quota-details{margin-left:auto}.quota-week-amount{font-size:28px}.quota-week-name small{display:inline}}
+@media(max-width:425px){.quota-week-chip{min-width:105px;padding:6px}.quota-week-name{font-size:10px}.quota-week-name small{font-size:8px}.quota-week-amount{font-size:24px}}
