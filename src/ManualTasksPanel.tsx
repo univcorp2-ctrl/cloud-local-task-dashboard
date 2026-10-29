@@ -63,9 +63,10 @@ export default function ManualTasksPanel() {
         body: JSON.stringify({ id: task.id, completed: checked }),
       });
       if (!response.ok) throw new Error('Notionへの変更保存に失敗しました（' + response.status + '）。');
-      const result = await response.json() as {ok?:boolean};
+      const result = await response.json() as {ok?:boolean; auditLogged?:boolean};
       if (result.ok !== true) throw new Error('Notionへの保存確認ができませんでした。');
       setDoneIds(prev => [...prev, task.id]);
+      if (result.auditLogged === false) setError('Notionの完了状態は更新されましたが、履歴ログの追記に失敗しました。');
     } catch (err) {
       setError(err instanceof Error ? err.message : '完了処理失敗');
     } finally {
