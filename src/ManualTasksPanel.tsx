@@ -23,23 +23,25 @@ export default function ManualTasksPanel() {
   const [lane, setLane] = useState('すべて');
   const [search, setSearch] = useState('');
   const [mode, setMode] = useState<Mode>('list');
+  const [view, setView] = useState<'open' | 'completed'>('open');
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [doneIds, setDoneIds] = useState<string[]>([]);
 
   const reload = useCallback(async () => {
     try {
-      const response = await fetch('/api/private-tasks', { cache: 'no-store', credentials: 'same-origin' });
+      const response = await fetch('/api/private-tasks?status=' + view, { cache: 'no-store', credentials: 'same-origin' });
       if (!response.ok) throw new Error(response.status === 503 ? '認証・Notion連携が未設定です' : '認証が必要、または取得できません');
       const data = await response.json() as { tasks?: Task[]; truncated?: boolean };
       if (!Array.isArray(data.tasks)) throw new Error('不正な応答');
       setTasks(data.tasks);
+      setDoneIds([]);
       setMessage(data.truncated ? '一部のタスクのみ取得' : 'Notionと接続済み');
     } catch (err) {
       setTasks(null);
       setMessage(err instanceof Error ? err.message : '取得できません');
     }
-  }, []);
+  }, [view]);
   useEffect(() => { void reload(); }, [reload]);
   const visibleCategories = useMemo(() => ['すべて', ...new Set([ ...categories, ...(tasks ?? []).map(t => t.category || '🔍 要確認')])], [tasks]);
   const filtered = useMemo(() => (tasks ?? []).filter(t =>
@@ -51,16 +53,18 @@ export default function ManualTasksPanel() {
     (a.due || '9999').localeCompare(b.due || '9999')), [tasks, category, lane, search, doneIds]);
 
   async function complete(task: Task, checked: boolean) {
-    if (!checked || busy) return;
+    if (busy || checked === (view === 'completed')) return;
     setBusy(task.id);
     setError('');
     try {
       const response = await fetch('/api/private-tasks', {
         method: 'PATCH', credentials: 'same-origin', cache: 'no-store',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: task.id, completed: true }),
+        body: JSON.stringify({ id: task.id, completed: checked }),
       });
-      if (!response.ok) throw new Error('Notionへ完了を保存できませんでした。再度確認してください');
+      if (!response.ok) throw new Error('Notionへの変更保存に失敗しました（' + response.status + '）。');
+      const result = await response.json() as {ok?:boolean};
+      if (result.ok !== true) throw new Error('Notionへの保存確認ができませんでした。');
       setDoneIds(prev => [...prev, task.id]);
     } catch (err) {
       setError(err instanceof Error ? err.message : '完了処理失敗');
@@ -69,13 +73,14 @@ export default function ManualTasksPanel() {
     }
   }
   const renderTask = (task: Task) => <div className="work-task-content" key={task.id}>
-    <label className="work-tick" title="Notionに完了を保存"><input type="checkbox" aria-label={task.title + 'を完了'} disabled={busy !== null} onChange={e => void complete(task, e.target.checked)} /><span /></label>
+    <label className="work-tick" title={view === 'completed' ? '未完了に戻す' : 'Notionに完了を保存'}><input type="checkbox" checked={view === 'completed'} aria-label={task.title + (view === 'completed' ? 'を未完了に戻す' : 'を完了')} disabled={busy !== null} onChange={e => void complete(task, e.target.checked)} /><span /></label>
     <div className="work-task-copy"><a href={task.url} target="_blank" rel="noreferrer" className="work-task-title">{task.title || '無題'} ↗</a>
       <small>{task.priority}　{safeDue(task.due)}　{task.owner}</small></div>
   </div>;
 
   return <section className="work-dashboard" id="my-tasks">
-    <div className="work-compact-header"><strong>タスク一覧</strong><span>{tasks ? tasks.length + '件（未完了）' : message}</span>
+    <div className="work-compact-header"><strong>タスク一覧</strong><span>{tasks ? filtered.length + '件（' + (view === 'completed' ? '完了済み' : '未完了') + '）' : message}</span>
+      <div className="work-view" role="group" aria-label="完了状態の切り替え"><button type="button" className={view==='open'?'selected':''} aria-pressed={view==='open'} onClick={()=>setView('open')}>未完了</button><button type="button" className={view==='completed'?'selected':''} aria-pressed={view==='completed'} onClick={()=>setView('completed')}>完了済み・復元</button></div>
       <button className="refresh-button" type="button" onClick={() => void reload()}>↻</button>
       <div className="work-mode" role="group" aria-label="表示形式"><button type="button" aria-pressed={mode === 'list'} className={mode === 'list' ? 'selected' : ''} onClick={() => setMode('list')}>☷ 一覧</button>
         <button type="button" aria-pressed={mode === 'board'} className={mode === 'board' ? 'selected' : ''} onClick={() => setMode('board')}>▦ カンバン</button></div>
@@ -86,8 +91,8 @@ export default function ManualTasksPanel() {
       <input aria-label="タスク検索" placeholder="タスクを検索" value={search} onChange={e => setSearch(e.target.value)} />
     </div>
     {error && <p role="alert" className="usage-error">{error}</p>}
-    {tasks ? (mode === 'list' ? <div className="work-table-scroll"><table className="work-dense-table"><thead><tr><th>完了</th><th>タスク</th><th>カテゴリ</th><th>重要度</th><th>担当</th><th>期日</th></tr></thead>
-      <tbody>{filtered.map(t => <tr key={t.id}><td><input type="checkbox" aria-label={t.title + 'を完了'} disabled={busy !== null} onChange={e => void complete(t, e.target.checked)} /></td>
+    {tasks ? (mode === 'list' ? <div className="work-table-scroll"><table className="work-dense-table"><thead><tr><th>{view === 'completed' ? '復元' : '完了'}</th><th>タスク</th><th>カテゴリ</th><th>重要度</th><th>担当</th><th>期日</th></tr></thead>
+      <tbody>{filtered.map(t => <tr key={t.id}><td><input type="checkbox" checked={view === 'completed'} aria-label={t.title + (view === 'completed' ? 'を未完了に戻す' : 'を完了')} disabled={busy !== null} onChange={e => void complete(t, e.target.checked)} /></td>
         <td><a href={t.url} target="_blank" rel="noreferrer">{t.title || '無題'} ↗</a></td><td>{t.category || '🔍 要確認'}</td><td>{t.priority}</td><td>{t.owner}</td><td>{safeDue(t.due)}</td></tr>)}</tbody></table>
       {!filtered.length && <div className="empty-state">条件に合うタスクはありません。</div>}</div>
       : <div className="work-kanban-scroll"><div className="work-kanban">{visibleCategories.filter(c => c !== 'すべて' && (category === 'すべて' || category === c)).map(c => {
@@ -95,8 +100,8 @@ export default function ManualTasksPanel() {
         return <section className="work-kanban-col" key={c}><h3>{c} <span>{items.length}</span></h3><div className="work-kanban-items">
           {items.map(renderTask)}</div></section>;
       })}</div></div>)
-      : <div className="work-private"><strong>この画面のタスク明細には認証設定が必要です。</strong>
-        <p>公開サイトに個人タスクは出しません。Notionのカテゴリ別一覧ならすぐに確認できます。</p>
+      : <div className="work-private"><strong>現在の公開画面にはNotionを編集する認証がありません。</strong>
+        <p>チェック操作はCloudflare Access認証とNotion連携が有効な場合のみ利用できます。公開ページから保護を回避しません。Notionのタスク一覧で直接完了操作できます。</p>
         <div className="work-links">{views.map(v => <a key={v.label} href={v.url} target="_blank" rel="noreferrer">{v.label} ↗</a>)}</div>
         <div className="work-unconnected-categories">{categories.map(c => <span key={c}>{c}</span>)}</div></div>}
     {tasks && <div className="work-footer-links">{views.map(v => <a key={v.label} href={v.url} target="_blank" rel="noreferrer">{v.label} ↗</a>)}</div>}
