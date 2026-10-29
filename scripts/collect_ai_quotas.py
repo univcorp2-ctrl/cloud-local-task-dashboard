@@ -195,6 +195,25 @@ def merge_observations(catalog: dict[str, Any], home: Path, *, appdata: Path | N
             resetAt=limiting['resetAt'], observedAt=min(p['observedAt'] for p in pools),
             quality=state, model=limiting['category'], modelPools=pools,
             windowLabel='モデル別', evidence='Antigravity crsx.ag-usage quotaHistory (read-only)')
+    # Muse has no verified quota source in this environment. Its optional
+    # sanitized local usage snapshot can be provided by an authorized agent.
+    # No token credentials, browser profile, or prompt content is read.
+    muse = read_json(home / '.muse/usage-dashboard-quota.json')
+    if 'Muse' not in by_name:
+        if isinstance(quotas, list):
+            entry = {'provider':'Muse', 'quality':'unavailable', 'evidence':'Museの検証済み使用枠ソース未接続', 'remainingPercent':None, 'usedPercent':None, 'weeklyUsedPercent':None, 'resetAt':None, 'observedAt':None}
+            quotas.append(entry)
+            by_name['Muse'] = entry
+    if 'Muse' in by_name:
+        q = by_name['Muse']
+        observed = muse.get('observedAt')
+        quota_state = quality(observed, now)
+        remaining = num_percent(muse.get('remainingPercent'))
+        if remaining is not None and quota_state != 'unavailable':
+            q.update(usedPercent=round(100-remaining,2),remainingPercent=remaining,
+                     observedAt=iso(observed),resetAt=iso(muse.get('resetAt')),
+                     quality=quota_state,windowLabel='provider-reported',
+                     evidence='sanitized Muse local quota snapshot (provided by authorized agent)')
     states = {q['quality'] for q in by_name.values()}
     catalog['quotaStatus'] = 'partial_measured' if 'measured' in states else 'stale' if 'stale' in states else 'unavailable'
     catalog['quotaCollectedAt'] = now.isoformat()
