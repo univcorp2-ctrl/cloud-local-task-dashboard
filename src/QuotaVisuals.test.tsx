@@ -16,10 +16,10 @@ test('keeps Codex Claude and Antigravity 7-day quota above the fold with name an
   expect(await screen.findByText('56%')).toBeInTheDocument();
   const strip = screen.getByRole('group', { name: /AI別 7日間利用枠の残量/ });
   expect(within(strip).getByText('7日残量')).toBeInTheDocument();
-  const codex = within(strip).getByLabelText('Codex 7日間の残量 56%');
+  const codex = within(strip).getByLabelText('Codex 7日残量 56%');
   expect(codex.querySelector('.quota-week-amount')?.textContent).toBe('56%');
   expect(container.querySelector('header.topbar .quota-strip')).not.toBeNull();
-  expect(within(strip).getByLabelText('Antigravity 7日間の残量 未取得')).toBeInTheDocument();
+  expect(within(strip).getByLabelText('Antigravity モデル残量 未取得')).toBeInTheDocument();
   expect(screen.queryByText('ChatGPT通常Chat')).toBeNull();
   fireEvent.click(screen.getByLabelText('5時間枠と観測日時の詳細を開く'));
   expect(screen.getByText(/5時間 73%/)).toBeInTheDocument();
@@ -30,8 +30,8 @@ test('never promotes stale Antigravity or Codex records as current weekly balanc
     { provider:'Gemini / Antigravity CLI', usedPercent:1,quality:'stale',observedAt:'2026-05-01T00:00:00Z' },
   ] }) }));
   render(<QuotaStrip />);
-  expect(await screen.findByLabelText('Codex 7日間の残量 未取得')).toBeInTheDocument();
-  expect(screen.getByLabelText('Antigravity 7日間の残量 未取得')).toBeInTheDocument();
+  expect(await screen.findByLabelText('Codex 残量 未取得')).toBeInTheDocument();
+  expect(screen.getByLabelText('Antigravity モデル残量 未取得')).toBeInTheDocument();
   fireEvent.click(screen.getByLabelText('5時間枠と観測日時の詳細を開く'));
   expect(screen.getAllByText(/旧記録/).length).toBeGreaterThan(0);
 });
@@ -69,7 +69,7 @@ test('preserves last measured weekly quota with an honest previous-value label f
     {provider:'Codex CLI',weeklyUsedPercent:25,weeklyResetAt,observedAt:fortyMinutesAgo,quality:'stale'}
   ]})}));
   render(<QuotaStrip />);
-  expect(await screen.findByLabelText('Codex 7日間の残量 75%')).toBeInTheDocument();
+  expect(await screen.findByLabelText('Codex 7日残量 75%')).toBeInTheDocument();
   expect(screen.getByText('前回値')).toBeInTheDocument();
   expect(screen.getAllByText(/あと3日|あと4日/).length).toBeGreaterThan(0);
 });
