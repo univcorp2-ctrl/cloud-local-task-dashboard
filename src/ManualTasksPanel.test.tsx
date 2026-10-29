@@ -1,9 +1,9 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import ManualTasksPanel from './ManualTasksPanel';
 
 beforeEach(() => { vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 503 })); });
-afterEach(() => { vi.unstubAllGlobals(); });
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 test('未認証時に非公開タスクを表示せずNotionへの導線を残す', async () => {
   render(<ManualTasksPanel />);
