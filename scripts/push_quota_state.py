@@ -132,8 +132,12 @@ def main() -> int:
     muse = muse_quota(args.muse_payload or find_muse_payload() or Path("/nonexistent"), now)
     if muse:
         quotas.append(muse)
-    payload = {"actor": "pc-collector", "quotas": quotas,
-               "agents": [{"name": "pc-collector", "status": "running", "currentTask": "AI残量を収集してAPIへ送信"}]}
+    agents = [{"name": "pc-collector", "status": "running", "currentTask": "AI残量を収集してAPIへ送信"}]
+    if muse:
+        # Muse's own 3-hourly Drive update is evidence that Muse is alive; report it as such.
+        agents.append({"name": "muse", "status": "idle", "currentTask": "Drive token_status_payload を更新 " + parse(muse["observedAt"]).astimezone(JST).strftime("%m/%d %H:%M"),
+                       "note": "pc-collector が Drive 更新時刻から推定"})
+    payload = {"actor": "pc-collector", "quotas": quotas, "agents": agents}
     line = f"{dt.datetime.now(JST).isoformat(timespec='seconds')} | providers={','.join(q['provider'] for q in quotas) or 'none'}"
     if not args.apply:
         print(json.dumps(payload, ensure_ascii=False, indent=1))
