@@ -50,7 +50,7 @@
     "private": 60,
     "inspected": 153
   },
-  "averageProgress": 51.0,
+  "averageProgress": 51,
   "categories": [
     {
       "id": "real_estate",
@@ -71,7 +71,7 @@
       "name": "物販・EC",
       "repositoryCount": 10,
       "privateRepositoryCount": 5,
-      "averageEvidenceProgress": 53.0,
+      "averageEvidenceProgress": 53,
       "stageCounts": {
         "企画・調査段階": 1,
         "実装段階": 0,
@@ -99,7 +99,7 @@
       "name": "資金調達・補助金",
       "repositoryCount": 1,
       "privateRepositoryCount": 1,
-      "averageEvidenceProgress": 15.0,
+      "averageEvidenceProgress": 15,
       "stageCounts": {
         "企画・調査段階": 1,
         "実装段階": 0,
@@ -197,7 +197,7 @@
       "name": "ゲーム・デジタル商品",
       "repositoryCount": 15,
       "privateRepositoryCount": 0,
-      "averageEvidenceProgress": 55.0,
+      "averageEvidenceProgress": 55,
       "stageCounts": {
         "企画・調査段階": 1,
         "実装段階": 4,
@@ -355,6 +355,25 @@
       "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
       "phase": "実装段階",
       "visibility": "public_alias_only"
+    },
+    {
+      "id": "knowledge-commerce",
+      "title": "不動産ナレッジ・サービス販売の自動拡充",
+      "priority": "P1",
+      "progressPercent": 70,
+      "confidence": "medium",
+      "executionStatus": "Web本番公開・Windows週2回タスク実稼働／決済・自動納品は未稼働",
+      "nextAction": "教材の実納品物・Stripe課金E2E・法定表示を完成し、記事からの問合せと売上を検証",
+      "lastActionResult": "2026-10-30公開実測：記事7本、商品・サービス8件（問い合わせ5、準備中3）。Windowsタスクは実起動LastTaskResult=0、次回11/02 07:30 JST。Antigravity校正実測13,317トークン、追加請求額は未確認。",
+      "inspectedAt": "2026-10-30T10:35:00+00:00",
+      "phase": "本番運用・改善中",
+      "visibility": "public_alias_only",
+      "links": [
+        {
+          "label": "不動産ブログ・サービス案内",
+          "url": "https://univ-corp.com/learn/"
+        }
+      ]
     }
   ],
   "publicProjects": [
