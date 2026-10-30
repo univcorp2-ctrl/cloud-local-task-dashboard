@@ -237,6 +237,19 @@
   ],
   "activeProjects": [
     {
+      "id": "gpt-followerchatgpt",
+      "title": "GPT Follower｜ChatGPT自動追撃",
+      "priority": "P0",
+      "progressPercent": 70,
+      "confidence": "medium",
+      "executionStatus": "常駐中／再起動拒否コード0x800710E0。追撃E2Eは未確認",
+      "nextAction": "同一Chatの自動追撃・2回の回答回収・checkpoint・doneのE2E再検証",
+      "lastActionResult": "Windows常駐プロセスの起動、重複起動拒否記録を確認。10/21時点で制御画面HTTP200。実際の追撃E2E未達",
+      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
+      "phase": "検証段階",
+      "visibility": "public_alias_only"
+    },
+    {
       "id": "tcc-unified-overview-v2",
       "title": "タスクコントロールセンター統合｜全体像・残量ゲージ・KV状態API・MCP",
       "priority": "P0",
@@ -262,19 +275,6 @@
           "url": "https://cloud-local-task-dashboard.pages.dev/api/mcp"
         }
       ]
-    },
-    {
-      "id": "gpt-followerchatgpt",
-      "title": "GPT Follower｜ChatGPT自動追撃",
-      "priority": "P0",
-      "progressPercent": 70,
-      "confidence": "medium",
-      "executionStatus": "常駐中／再起動拒否コード0x800710E0。追撃E2Eは未確認",
-      "nextAction": "同一Chatの自動追撃・2回の回答回収・checkpoint・doneのE2E再検証",
-      "lastActionResult": "Windows常駐プロセスの起動、重複起動拒否記録を確認。10/21時点で制御画面HTTP200。実際の追撃E2E未達",
-      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
-      "phase": "検証段階",
-      "visibility": "public_alias_only"
     },
     {
       "id": "db",
