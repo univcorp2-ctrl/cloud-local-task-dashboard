@@ -35,3 +35,7 @@ Claude Codeに既存ステータスライン保持のサニタイズラッパー
 3. 安全に最小変更。認証・監査・非公開情報の公開防止を維持。
 4. npm run lint / npm test / npm run build / Python unit tests。
 5. GitHub SHA・CI・Cloudflareデプロイ・本番画面・Notion同期の証跡が揃うまで「本番完了」としない。
+
+## 2026-10-30 恒久運用ルール：全リポジトリ更新後の同期
+
+リポジトリのコード・PR・デプロイ・復旧を実行したときは、必ず同じ作業内で `#development` の進捗、最終検証、次アクション、公開可能なリンクを更新する。**本番 JSON と表示の一致確認ができるまで「完了」にしない。** ユーザー指示の正本は Notion「全ルール集（正本）」および「全153リポジトリ索引」。詳細手順： [REPOSITORY_DASHBOARD_SYNC.md](REPOSITORY_DASHBOARD_SYNC.md)。

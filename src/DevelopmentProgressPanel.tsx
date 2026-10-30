@@ -14,13 +14,14 @@ type ActiveProject = {
   id: string; title: string; priority: string; progressPercent: number;
   confidence: string; executionStatus: string; nextAction: string;
   lastActionResult: string; inspectedAt: string; phase: string;
+  links?: Array<{ label: string; url: string }>;
 };
 type Category = {
   id: string; name: string; repositoryCount: number; privateRepositoryCount: number;
   averageEvidenceProgress: number | null;
 };
 type ProgressCatalog = {
-  generatedAt: string; progressDefinition: string;
+  generatedAt: string; activeProjectsUpdatedAt?: string; progressDefinition: string;
   coverage: { allRepositories: number; public: number; private: number; inspected: number };
   averageProgress: number; categories: Category[]; publicProjects: Project[];
   activeProjects?: ActiveProject[];
@@ -146,7 +147,7 @@ export default function DevelopmentProgressPanel() {
       </button>
       <small>{notionApi === 'working' ? 'チェックは操作可能。Notionの一致が確認できた案件だけ連携し、他はブラウザ内に仮保存します。' : 'チェック可能：完了はこのブラウザに仮保存されます。Notionには未反映（認証・紐付け未設定）。'} 完了後は一覧から非表示、表示切替で取り消せます。</small>
     </div>
-    <div className="dev-active-header"><h3>開発課題・次アクション一覧</h3><span>重要度順／{data?.activeProjects?.length ?? 0}案件</span></div>
+    <div className="dev-active-header"><h3>開発課題・次アクション一覧</h3><span>案件更新 {format(data?.activeProjectsUpdatedAt ?? data?.generatedAt ?? "")} ／ {data?.activeProjects?.length ?? 0}案件</span></div>
     <div className="dev-active-table-scroll" role="region" aria-label="開発の進捗とスタック一覧">
       <table className="dev-active-table"><thead><tr>
         <th>完了</th><th>優先</th><th>開発案件</th><th>進捗</th><th>状態・スタック箇所</th><th>次のアクション</th>
@@ -167,7 +168,9 @@ export default function DevelopmentProgressPanel() {
             checked={isCompleted} disabled={Boolean(busy) || Boolean(linked?.completed)}
             onChange={e=>void completeDevelopment(p.id,p.title,e.target.checked)}/></td>
           <td className="dev-active-index">{i+1}</td>
-          <td><strong title={p.title}>{p.title}</strong><small>{p.priority} · 最終確認 {format(p.inspectedAt)}</small>{doneIds.includes(p.id) && !linked?.completed && <small className="dev-local-pending">仮完了・Notion未同期</small>}</td>
+          <td><strong title={p.title}>{p.title}</strong><small>{p.priority} · 最終確認 {format(p.inspectedAt)}</small>
+            {p.links?.length ? <div className="dev-project-links">{p.links.map(link => <a key={link.url} href={link.url} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>)}</div> : null}
+            {doneIds.includes(p.id) && !linked?.completed && <small className="dev-local-pending">仮完了・Notion未同期</small>}</td>
           <td className="dev-active-progress"><strong>{p.progressPercent}%</strong><div className="dev-meter"><span style={{width:p.progressPercent+'%'}}/></div></td>
           <td><span className={blocked ? 'dev-block-indicator blocked' : 'dev-block-indicator'}>{blocked ? '要対応' : '進行中'}</span>
             <span className="dev-cell-detail" title={statusText}>{statusText}</span>
