@@ -5,13 +5,15 @@
 別名: タスク、タスクコントロール、コントローラー、ダッシュボード、統合ダッシュボード、開発管理、オペレーションハブ、Task Control Center、TCC。
 「タスク」などの一般語は会話文脈により判定。固有のWebアプリ名を指している場合はそのリポジトリへ。
 
-- 本番: https://cloud-local-task-dashboard.pages.dev/#development
+- 本番: https://cloud-local-task-dashboard.pages.dev/#overview（統合ホーム）／ #development
 - GitHub正本: https://github.com/univcorp2-ctrl/cloud-local-task-dashboard
 - Notion AI索引: https://app.notion.com/p/40810562e58b811aa7a9ca50e2d29f9e
 - Google Drive: https://drive.google.com/drive/folders/1Azk8BEl0dkiE1iiAlfZj9_PRDTrgwkJG
 - ユーザー追加用Sheet: https://docs.google.com/spreadsheets/d/1O8OoxxzNH91wRFdTjyx56Jr6l-_KIdQjUVFeoliuUVM/edit
 
 ## 改修箇所
+- `#overview`（既定ホーム）: `src/OverviewPage.tsx`, `src/QuotaGauges.tsx`, `src/controlState.ts`, `src/ConnectDialog.tsx`, `src/overview.css`。データは `/api/state`（KV）＋ `/api/external/*` ＋ 既存JSON。詳細 [control-state-api.md](control-state-api.md)。
+- 状態API/MCP: `functions/_lib/{state,mcp,auth,notion}.ts`, `functions/api/state/*`, `functions/api/mcp.ts`。テスト `functions/_lib/__tests__/`。
 - `#development`: `src/DevelopmentProgressPanel.tsx`, `src/development-progress.css` とデータ `public/data/development-progress.json`。
 - `#my-tasks`: `src/ManualTasksPanel.tsx` + `functions/api/private-tasks.ts`。Notion本人タスクAPIのJWT保護と統合DBの本人確認が必要。
 - `#automation`: `src/OperationsOverview.tsx`, `src/TokenUsagePanel.tsx`, `src/QuotaStrip.tsx`, `scripts/collect_ai_quotas.py`。
@@ -24,6 +26,7 @@ Notionを唯一の正本として扱う。完了チェックは、認証済みNo
 Notion PagesのCloudflare Access設定 `CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`, `NOTION_API_TOKEN`, `NOTION_DATA_SOURCE_ID` は秘密のまま設定。未設定は503で閉鎖。設定・E2Eを通さず有効化と報告しない。
 
 ## AI残量
+2026-10-31以降は `/api/state`（KV）が正本。PC `TCC-Quota-Push`（30分ごと）とMCP `set_quota` が書く。`operations-catalog.json` の quotas は旧経路（参考）。
 Codexの実行ログ、Claude Codeステータスライン、Antigravityのローカル使用枠メタデータ、Museの権限済みサニタイズ済みメタデータを用いる。残りトークン数と利用枠％は別物。
 残り50%以上=緑、30〜49%=黄、30%未満=赤。未取得/古い/推定を区別。
 Claude Codeに既存ステータスライン保持のサニタイズラッパーを設置（実際の利用時のみ観測）。

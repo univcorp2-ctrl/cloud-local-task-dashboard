@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { authHeaders, useOwnerToken } from './controlState';
 import './development-progress.css';
 import DashboardDirectory from './DashboardDirectory';
 import './development-priority.css';
@@ -71,11 +72,12 @@ export default function DevelopmentProgressPanel() {
   },[data,category,phase,sort,query]);
   const [expanded,setExpanded]=useState<string|null>(null);
   const [notionApi,setNotionApi]=useState<'checking'|'working'|'auth_missing'|'login_needed'|'error'>('checking');
+  const [ownerToken]=useOwnerToken();
   useEffect(()=>{
     let active=true;
     const check=async()=>{
       try{
-        const response=await fetch('/api/private-tasks?showCompleted=true',{cache:'no-store',credentials:'same-origin'});
+        const response=await fetch('/api/private-tasks?showCompleted=true',{cache:'no-store',credentials:'same-origin',headers:authHeaders()});
         if(!active)return;
         if(response.status===503){setNotionApi('auth_missing');return;}
         if(response.status===401||response.status===403){setNotionApi('login_needed');return;}
@@ -92,7 +94,7 @@ export default function DevelopmentProgressPanel() {
     };
     void check();
     return()=>{active=false;};
-  },[]);
+  },[ownerToken]);
   // Only exact unique Notion title matches are allowed to mutate task state.
   // Partial/similar names can refer to unrelated tasks.
   const resolveTask=(title:string)=>{
@@ -119,7 +121,7 @@ export default function DevelopmentProgressPanel() {
     setBusy(id);setCompletionError('');
     try {
       const response=await fetch('/api/private-tasks',{method:'PATCH',credentials:'same-origin',cache:'no-store',
-        headers:{'Content-Type':'application/json'},body:JSON.stringify({id:task.id,completed:true})});
+        headers:authHeaders({'Content-Type':'application/json'}),body:JSON.stringify({id:task.id,completed:true})});
       if (!response.ok) throw Error('Notionへの完了保存に失敗しました');
       const saved=await response.json() as {ok?:boolean;auditLogged?:boolean};
       if (!saved.ok) throw Error('Notionの完了応答が未確認です');

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { authHeaders, useOwnerToken } from './controlState';
 
 type Task = { id: string; url: string; title: string; category: string; priority: string; status: string;
   owner: string; executor: string; due: string | null; nextAction: string; humanAction: string; completed?: boolean };
@@ -28,11 +29,12 @@ export default function ManualTasksPanel() {
   const [doneIds, setDoneIds] = useState<string[]>([]);
   const [showCompleted, setShowCompleted] = useState(false);
   const [auditNotice, setAuditNotice] = useState('');
+  const [ownerToken] = useOwnerToken();
 
   const reload = useCallback(async () => {
     try {
-      const response = await fetch('/api/private-tasks' + (showCompleted ? '?showCompleted=true' : ''), { cache: 'no-store', credentials: 'same-origin' });
-      if (!response.ok) throw new Error(response.status === 503 ? '認証・Notion連携が未設定です' : '認証が必要、または取得できません');
+      const response = await fetch('/api/private-tasks' + (showCompleted ? '?showCompleted=true' : ''), { cache: 'no-store', credentials: 'same-origin', headers: authHeaders() });
+      if (!response.ok) throw new Error(response.status === 503 ? '認証・Notion連携が未設定です' : '認証が必要です。左下の「接続（トークン）」から接続してください');
       const data = await response.json() as { tasks?: Task[]; truncated?: boolean };
       if (!Array.isArray(data.tasks)) throw new Error('不正な応答');
       setTasks(data.tasks);
@@ -42,7 +44,7 @@ export default function ManualTasksPanel() {
       setMessage(err instanceof Error ? err.message : '取得できません');
     }
   }, [showCompleted]);
-  useEffect(() => { void reload(); }, [reload]);
+  useEffect(() => { void reload(); }, [reload, ownerToken]);
   const visibleCategories = useMemo(() => ['すべて', ...new Set([ ...categories, ...(tasks ?? []).map(t => t.category || '🔍 要確認')])], [tasks]);
   const filtered = useMemo(() => (tasks ?? []).filter(t =>
     (showCompleted || (!doneIds.includes(t.id) && !t.completed)) &&
@@ -59,7 +61,7 @@ export default function ManualTasksPanel() {
     try {
       const response = await fetch('/api/private-tasks', {
         method: 'PATCH', credentials: 'same-origin', cache: 'no-store',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({ id: task.id, completed: true }),
       });
       if (!response.ok) throw new Error('Notionへ完了を保存できませんでした。再度確認してください');

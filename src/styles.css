@@ -102,3 +102,8 @@ main {padding-top: 12px}
 .work-compact-header{gap:6px}
 .work-compact-header>.refresh-button{margin-left:auto}
 @media(max-width:600px){.work-compact-header>strong{font-size:14px}.work-view button{padding:6px 7px;font-size:10px}.work-compact-header{gap:5px}}
+
+/* v2: sidebar connect button + header right alignment */
+.sidebar-connect{margin-top:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#c9d7e8;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;width:100%;text-align:left}
+.sidebar-connect:hover{background:rgba(255,255,255,.12);color:#fff}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;min-width:0}

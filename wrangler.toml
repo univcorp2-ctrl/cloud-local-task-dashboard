@@ -1,0 +1,15 @@
+# Cloudflare Pages configuration (direct upload via `wrangler pages deploy dist`).
+# Bindings declared here apply to every deployment. Secrets are set with
+# `wrangler pages secret put <NAME> --project-name cloud-local-task-dashboard` and never committed:
+#   TCC_ACCESS_TOKEN   owner token (browser + MCP, unlocks Notion tasks)
+#   TCC_AGENT_TOKEN    agent token (Codex/Antigravity/Muse: state writes only)
+#   NOTION_API_TOKEN   Notion integration token
+#   NOTION_DATA_SOURCE_ID  master task DB data source id
+#   CF_ACCESS_TEAM_DOMAIN / CF_ACCESS_AUD (optional Cloudflare Access path)
+name = "cloud-local-task-dashboard"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-10-01"
+
+[[kv_namespaces]]
+binding = "TCC_STATE"
+id = "108efeefffab4c4e987ea5d3c3024050"

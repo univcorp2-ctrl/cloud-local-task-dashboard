@@ -1,10 +1,18 @@
 {
   "schemaVersion": 1,
   "canonicalName": "タスクコントロールセンター",
-  "generatedAt": "2026-10-29",
+  "generatedAt": "2026-10-31",
   "registrationUrl": "https://docs.google.com/spreadsheets/d/1O8OoxxzNH91wRFdTjyx56Jr6l-_KIdQjUVFeoliuUVM/edit",
   "safety": "Only publicly linkable UI destinations. Private GitHub, task IDs and secrets must never be included.",
   "links": [
+    {
+      "id": "overview",
+      "name": "今日の全体像（統合ホーム）",
+      "category": "タスク・開発",
+      "url": "https://cloud-local-task-dashboard.pages.dev/#overview",
+      "status": "public",
+      "note": "残量ゲージ・本人/AI/開発タスク・KGI/KPI・活動ログ"
+    },
     {
       "id": "development",
       "name": "開発進捗・次アクション",
@@ -148,6 +156,14 @@
       "url": "https://audit-review.revenue-agent-ops.pages.dev/#applications",
       "status": "preview",
       "note": "検証版。本番ではない"
+    },
+    {
+      "id": "muse-experiments",
+      "name": "SNS実験ダッシュボード（Muse A/B）",
+      "category": "SNS・Muse",
+      "url": "https://estateboard.pages.dev/social-analytics/innovation/",
+      "status": "public",
+      "note": "Drive A/Bログから毎日2回自動同期"
     }
   ]
 }

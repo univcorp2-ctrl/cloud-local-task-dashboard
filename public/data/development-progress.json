@@ -237,6 +237,33 @@
   ],
   "activeProjects": [
     {
+      "id": "tcc-unified-overview-v2",
+      "title": "タスクコントロールセンター統合｜全体像・残量ゲージ・KV状態API・MCP",
+      "priority": "P0",
+      "progressPercent": 80,
+      "confidence": "medium",
+      "executionStatus": "実装・テスト済み（36 vitest + 18 unittest）。本番デプロイと残量push定期ジョブの稼働確認中",
+      "nextAction": "本番 /api/state の残量4媒体が実測で埋まること、Notionタスクの認証表示、MCP接続を他エージェント（Codex/Antigravity/Muse）に展開",
+      "lastActionResult": "KV namespace作成・Pages secrets 4件登録・#overview新設・QuotaGauges・/api/state・/api/mcp・/api/external プロキシ実装。push_quota_state.py で30分ごとの残量送信",
+      "inspectedAt": "2026-10-30T16:05:00.595248+00:00",
+      "phase": "本番反映中",
+      "visibility": "public_alias_only",
+      "links": [
+        {
+          "label": "全体像",
+          "url": "https://cloud-local-task-dashboard.pages.dev/#overview"
+        },
+        {
+          "label": "状態API",
+          "url": "https://cloud-local-task-dashboard.pages.dev/api/state"
+        },
+        {
+          "label": "MCP",
+          "url": "https://cloud-local-task-dashboard.pages.dev/api/mcp"
+        }
+      ]
+    },
+    {
       "id": "gpt-followerchatgpt",
       "title": "GPT Follower｜ChatGPT自動追撃",
       "priority": "P0",
@@ -6610,5 +6637,5 @@
     }
   ],
   "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照",
-  "activeProjectsUpdatedAt": "2026-10-30T02:06:21.710255+00:00"
+  "activeProjectsUpdatedAt": "2026-10-30T16:05:00.595248+00:00"
 }

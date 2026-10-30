@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fallbackSnapshot } from './sample';
 import TokenUsagePanel from './TokenUsagePanel';
-import QuotaStrip from './QuotaStrip';
+import QuotaGauges from './QuotaGauges';
+import OverviewPage from './OverviewPage';
+import ConnectDialog from './ConnectDialog';
+import { captureTokenFromUrl, useControlState, useOwnerToken } from './controlState';
 import { dashboardAppLinks, appCategories } from './appLinks';
 import ManualTasksPanel from './ManualTasksPanel';
 import DevelopmentProgressPanel from './DevelopmentProgressPanel';
@@ -63,9 +66,21 @@ function TaskRow({ task }: { task: ScheduledTask }) {
   );
 }
 
+type Page = 'overview' | 'automation' | 'work' | 'development';
+const pageFromHash = (hash: string): Page => hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
+const pageTitle: Record<Page, [string, string]> = {
+  overview: ['今日の全体像', '本人タスク・AI稼働・残量・KPI・開発進捗を一画面で。'],
+  automation: ['クラウド & ローカル定期タスク', 'AI稼働・トークン消費と自動処理を監視。'],
+  work: ['全タスク・本人対応', 'Notionのタスクをカテゴリ・担当者別に整理。'],
+  development: ['開発進捗・次アクション', '検証ベースの進捗率、次のアクション、実行と結果を可視化。'],
+};
+
 export default function App() {
-  const [activePage, setActivePage] = useState<'automation' | 'work' | 'development'>(() => typeof window !== 'undefined' ? (window.location.hash === '#my-tasks' ? 'work' : window.location.hash === '#automation' ? 'automation' : 'development') : 'development');
-  useEffect(() => { const onHashChange = () => setActivePage(window.location.hash === '#my-tasks' ? 'work' : window.location.hash === '#automation' ? 'automation' : 'development'); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
+  const [activePage, setActivePage] = useState<Page>(() => typeof window !== 'undefined' ? pageFromHash(window.location.hash) : 'overview');
+  useEffect(() => { captureTokenFromUrl(); const onHashChange = () => setActivePage(pageFromHash(window.location.hash)); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
+  const [connectOpen, setConnectOpen] = useState(false);
+  const [ownerToken] = useOwnerToken();
+  const control = useControlState(120_000);
   const [snapshot, setSnapshot] = useState<TaskSnapshot>({ ...fallbackSnapshot, generatedAt: '', agents: [], tasks: [] });
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<'all' | TaskStatus>('all');
@@ -115,6 +130,7 @@ export default function App() {
       <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
         <div className="brand"><span className="brand-mark">☁</span><div><strong>タスクコントロールセンター</strong><small>Task Control Center</small></div></div>
         <nav aria-label="メインナビゲーション">
+          <a className={activePage === 'overview' ? 'active' : ''} href="#overview">◎ <span>⓪ 今日の全体像</span></a>
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
           <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
           <a className={activePage === 'development' ? 'active' : ''} href="#development">▥ <span>③ 開発進捗・次アクション</span></a>
@@ -124,21 +140,21 @@ export default function App() {
               href={app.url} title={app.description} target="_blank" rel="noopener noreferrer">{app.label} ↗</a>)}</div>
           </details>)}
         </nav>
-        <div className="sidebar-foot"><span className="live-dot" /> 60秒ごとに自動更新</div>
+        <div className="sidebar-foot"><span className="live-dot" /> 60秒ごとに自動更新<br /><button type="button" className="sidebar-connect" onClick={() => setConnectOpen(true)}>{ownerToken ? '● 接続済み・設定' : '○ 接続（トークン）'}</button></div>
       </aside>
 
       <main>
         <header className="topbar tcc-compact" id="dashboard">
           <button className="menu-button" onClick={() => setMenuOpen((value) => !value)} aria-label="メニューを開閉">☰</button>
-          <div className="topbar-title"><p className="eyebrow">UNIFIED OPERATIONS</p><h1>{activePage === "automation" ? "クラウド & ローカル定期タスク" : activePage === "development" ? "開発進捗・次アクション" : "全タスク・本人対応"}</h1><p>{activePage === "automation" ? "AI稼働・トークン消費と自動処理を監視。" : activePage === "development" ? "検証ベースの進捗率、次のアクション、実行と結果を可視化。" : "Notionのタスクをカテゴリ・担当者別に整理。"}</p></div>
-          <div className="topbar-right"><QuotaStrip />
+          <div className="topbar-title"><p className="eyebrow">UNIFIED OPERATIONS</p><h1>{pageTitle[activePage][0]}</h1><p>{pageTitle[activePage][1]}</p></div>
+          <div className="topbar-right">{activePage !== 'overview' && <QuotaGauges quotas={control.data?.quotas ?? null} compact />}
           {activePage === 'automation' && <div className="header-actions">
             <span className={loadError ? 'data-state warning' : 'data-state'}><i />{loadError ? '取得失敗' : 'データ接続済み'}</span>
             <button className="refresh-button" onClick={() => void load()} disabled={refreshing}>{refreshing ? '更新中…' : '↻ 更新'}</button>
           </div>}
           </div>
         </header>
-        {activePage === 'automation' ? <>
+        {activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
         <TokenUsagePanel />
         <details className="ops-expanded">
           <summary>☷ 自動実行一覧・リポジトリ・トークン明細を開く <span>{totals.total} タスク</span></summary>
@@ -183,11 +199,18 @@ export default function App() {
           <article className="panel setup-panel" id="setup"><div className="panel-heading"><div><span className="section-kicker">QUICK START</span><h2>データ接続</h2></div></div><p>ローカルPCではインストールスクリプトがOSのタスク管理機能へ自動登録します。クラウド側はGitHub Actionsが15分ごとに収集します。</p><div className="setup-steps"><span>1</span><div><strong>ローカルエージェント</strong><small><code>scripts/install-agent.ps1</code> または <code>scripts/install-agent.sh</code></small></div></div><div className="setup-steps"><span>2</span><div><strong>クラウド連携</strong><small>GitHub / Cloudflare用のSecrets名だけを登録</small></div></div><a className="docs-link" href="https://github.com/univcorp2-ctrl/cloud-local-task-dashboard/blob/main/docs/setup.md">設定ガイドを見る →</a></article>
         </section>
 
-        <footer><span>最終スナップショット: {formatDate(snapshot.generatedAt)}</span><span>Task Control Center v1.1</span></footer>
+        <footer><span>最終スナップショット: {formatDate(snapshot.generatedAt)}</span><span>Task Control Center v2.0</span></footer>
         </details>
         </> : activePage === "development" ? <DevelopmentProgressPanel /> : <ManualTasksPanel />}
       </main>
       {menuOpen && <button className="backdrop" onClick={() => setMenuOpen(false)} aria-label="メニューを閉じる" />}
+      {connectOpen && <ConnectDialog onClose={() => setConnectOpen(false)} />}
+      <nav className="tabbar" aria-label="モバイルナビゲーション">
+        <a className={activePage === 'overview' ? 'active' : ''} href="#overview"><span>◎</span><span>全体像</span></a>
+        <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks"><span>☷</span><span>タスク</span></a>
+        <a className={activePage === 'automation' ? 'active' : ''} href="#automation"><span>⚙</span><span>AI稼働</span></a>
+        <a className={activePage === 'development' ? 'active' : ''} href="#development"><span>▥</span><span>開発</span></a>
+      </nav>
     </div>
   );
 }
