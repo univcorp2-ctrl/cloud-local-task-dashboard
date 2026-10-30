@@ -253,14 +253,43 @@
       "id": "db",
       "title": "不動産DB・銀行融資自動連携",
       "priority": "P0",
-      "progressPercent": 70,
+      "progressPercent": 80,
+      "confidence": "high",
+      "executionStatus": "10/29 本番更新・融資計算・公開照合を確認済み／PR統合と定期運用監査は継続",
+      "nextAction": "未マージ変更のテスト・統合と、3時間定期実行・物件の成約判定の継続監査",
+      "lastActionResult": "10/29：マスター53,243件、公開52,475件、買い候補792件。銀行ライブ同期・Cloudflare公開照合PASS。公開用内部リンク欠落0。ソースの売却確認は0件のため掲載終了と区別。",
+      "inspectedAt": "2026-10-29T07:34:35+00:00",
+      "phase": "本番運用・改善中",
+      "visibility": "public_alias_only",
+      "links": [
+        {
+          "label": "物件DB本番",
+          "url": "https://bukken-customer.pages.dev/"
+        },
+        {
+          "label": "掲載終了・売却情報",
+          "url": "https://bukken-customer.pages.dev/sold-list.html"
+        }
+      ]
+    },
+    {
+      "id": "property-source-api",
+      "title": "物件ソースAPI取得・認証維持",
+      "priority": "P0",
+      "progressPercent": 75,
       "confidence": "medium",
-      "executionStatus": "異常コードあり・E2E未確認",
-      "nextAction": "銀行データ鮮度・物件計算・本番表示の入力から結果までの一致を検証",
-      "lastActionResult": "GitHub構成の棚卸しとPC実行記録の突合を完了。異常コードあり・E2E未確認",
-      "inspectedAt": "2026-10-21T01:41:10.372234+00:00",
-      "phase": "検証段階",
-      "visibility": "public_alias_only"
+      "executionStatus": "10/29 API全件取得・認証保持・重複実行防止の動作を確認済み／認証強制失効時は正規再認証が必要",
+      "nextAction": "認証の長期稼働と定期再取得を監査し、既存の未統合PRのCI・マージ条件を確認",
+      "lastActionResult": "10/29：API269/269ページ・原本53,749件、スクリーニング52,572件。旧Excelバックアップを検証しDrive更新、API・更新系テスト25件PASS。Google側の強制失効は無効化できない。",
+      "inspectedAt": "2026-10-29T07:34:35+00:00",
+      "phase": "本番運用・改善中",
+      "visibility": "public_alias_only",
+      "links": [
+        {
+          "label": "連携データの公開先",
+          "url": "https://bukken-customer.pages.dev/"
+        }
+      ]
     },
     {
       "id": "facebook",
@@ -6561,5 +6590,6 @@
       "inspectedAt": "2026-10-21T01:41:10.372234+00:00"
     }
   ],
-  "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照"
+  "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照",
+  "activeProjectsUpdatedAt": "2026-10-30T02:06:21.710255+00:00"
 }
