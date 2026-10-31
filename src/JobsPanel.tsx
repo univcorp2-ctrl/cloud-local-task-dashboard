@@ -28,6 +28,30 @@ export function useJobRows(data: ControlSnapshot | null): JobRow[] {
   }, [data]);
 }
 
+function JobCard({ j }: { j: JobRow }) {
+  return (
+    <article className={`job s-${STATUS[j.status][1]}${j.enabled ? '' : ' off'}`}>
+            <div className="job-main">
+              <span className={`job-pill s-${STATUS[j.status][1]}`}>{STATUS[j.status][0]}</span>
+              <span className="job-plat">{PLATFORM[j.platform] ?? j.platform}</span>
+              <strong title={j.name}>{j.link ? <a href={j.link} target="_blank" rel="noopener noreferrer">{j.name}</a> : j.name}</strong>
+            </div>
+            <div className="job-meta">
+              <span>⏱ {j.scheduleLabel || j.schedule || '—'}{j.oneShot ? '（1回）' : ''}</span>
+              <span>前回 {j.lastRunAt ? `${fmtJst(j.lastRunAt, true)}（${ago(j.lastRunAt)}${j.durationSeconds !== null ? `・${dur(j.durationSeconds)}` : ''}）` : '—'}</span>
+              <span>次回 {j.enabled && j.nextRunAt ? fmtJst(j.nextRunAt, true) : '—'}</span>
+              {j.model && <span>{j.model}</span>}
+              {j.runsPerWeek !== null && <span>週{j.runsPerWeek}回</span>}
+            </div>
+            {(j.quotaPt !== null || j.sharePct !== null) && <div className="job-cost" title="Claude週枠のうちこのタスクが使った割合（実行回数×実行時間で按分した推定）">
+              <div className="ov-bar"><span style={{ width: `${Math.min(100, (j.quotaPt ?? 0) * 2)}%` }} /></div>
+              <em>週枠 {j.quotaPt ?? '—'}pt（{PLATFORM[j.platform]}全体の{j.sharePct ?? '—'}%・推定）</em>
+            </div>}
+            {j.note && <p className="job-note">{j.note}</p>}
+          </article>
+  );
+}
+
 const order = (j: JobRow) => (j.status === 'running' ? 0 : j.status === 'failed' ? 1 : j.enabled ? 2 : 3);
 
 export default function JobsPanel({ data, connected, onConnect, compact = false }: { data: ControlSnapshot | null; connected: boolean; onConnect: () => void; compact?: boolean }) {
@@ -42,6 +66,7 @@ export default function JobsPanel({ data, connected, onConnect, compact = false 
   const platforms = [...new Set(rows.map((j) => j.platform))];
   const shown = rows.filter((j) => (filter === 'all' || isActive(j)) && (platform === 'all' || j.platform === platform))
     .sort((a, b) => order(a) - order(b) || (b.quotaPt ?? -1) - (a.quotaPt ?? -1) || (Date.parse(a.nextRunAt ?? '') || 9e15) - (Date.parse(b.nextRunAt ?? '') || 9e15));
+  const sections = platforms.slice().sort((a, b) => (a === 'claude' ? -1 : b === 'claude' ? 1 : a.localeCompare(b))).map((p) => [p, shown.filter((j) => j.platform === p)] as const).filter(([, v]) => v.length);
   const list = compact ? shown.filter((j) => j.status === 'running' || j.status === 'failed' || (j.quotaPt ?? 0) >= 1).slice(0, 8) : shown;
 
   return (
@@ -62,28 +87,19 @@ export default function JobsPanel({ data, connected, onConnect, compact = false 
           <div className={failed.length ? 't-ng' : ''}><span>直近が失敗</span><strong>{failed.length}</strong><small>{failed.slice(0, 2).map((j) => j.name.slice(0, 18)).join('・') || 'なし'}</small></div>
           <div><span>次に動く</span><strong className="small">{next[0] ? fmtJst(next[0].nextRunAt, true) : '—'}</strong><small>{next[0]?.name.slice(0, 26) ?? ''}</small></div>
         </div>
-        <div className="jobs-list">
-          {list.map((j) => <article key={`${j.source}:${j.id}`} className={`job s-${STATUS[j.status][1]}${j.enabled ? '' : ' off'}`}>
-            <div className="job-main">
-              <span className={`job-pill s-${STATUS[j.status][1]}`}>{STATUS[j.status][0]}</span>
-              <span className="job-plat">{PLATFORM[j.platform] ?? j.platform}</span>
-              <strong title={j.name}>{j.link ? <a href={j.link} target="_blank" rel="noopener noreferrer">{j.name}</a> : j.name}</strong>
-            </div>
-            <div className="job-meta">
-              <span>⏱ {j.scheduleLabel || j.schedule || '—'}{j.oneShot ? '（1回）' : ''}</span>
-              <span>前回 {j.lastRunAt ? `${fmtJst(j.lastRunAt, true)}（${ago(j.lastRunAt)}${j.durationSeconds !== null ? `・${dur(j.durationSeconds)}` : ''}）` : '—'}</span>
-              <span>次回 {j.enabled && j.nextRunAt ? fmtJst(j.nextRunAt, true) : '—'}</span>
-              {j.model && <span>{j.model}</span>}
-              {j.runsPerWeek !== null && <span>週{j.runsPerWeek}回</span>}
-            </div>
-            {(j.quotaPt !== null || j.sharePct !== null) && <div className="job-cost" title="Claude週枠のうちこのタスクが使った割合（実行回数×実行時間で按分した推定）">
-              <div className="ov-bar"><span style={{ width: `${Math.min(100, (j.quotaPt ?? 0) * 2)}%` }} /></div>
-              <em>週枠 {j.quotaPt ?? '—'}pt（{PLATFORM[j.platform]}全体の{j.sharePct ?? '—'}%・推定）</em>
-            </div>}
-            {j.note && <p className="job-note">{j.note}</p>}
-          </article>)}
-          {list.length === 0 && <p className="ov-note">表示できるタスクはありません。</p>}
-        </div>
+        {compact ? <div className="jobs-list">{list.map((j) => <JobCard key={`${j.source}:${j.id}`} j={j} />)}
+          {list.length === 0 && <p className="ov-note">実行中・失敗・消費の大きいタスクはありません。</p>}</div>
+        : sections.map(([plat, items]) => {
+          const hot = items.filter((j) => j.platform === 'claude' || j.status === 'running' || j.status === 'failed' || !j.enabled);
+          const calm = items.filter((j) => !hot.includes(j));
+          return <div className="jobs-section" key={plat}>
+            <h3>{PLATFORM[plat] ?? plat} <small>{items.length}件{items.filter((j) => j.status === 'failed').length ? `・失敗 ${items.filter((j) => j.status === 'failed').length}` : ''}</small></h3>
+            <div className="jobs-list">{hot.map((j) => <JobCard key={`${j.source}:${j.id}`} j={j} />)}</div>
+            {calm.length > 0 && <details className="jobs-calm"><summary>正常に動いている {calm.length} 件を表示</summary>
+              <div className="jobs-list">{calm.map((j) => <JobCard key={`${j.source}:${j.id}`} j={j} />)}</div></details>}
+          </div>;
+        })}
+        {!compact && shown.length === 0 && <p className="ov-note">表示できるタスクはありません。</p>}
         {!compact && <p className="ov-note">{(data?.jobs ?? []).map((r) => `${r.label}: ${fmtJst(r.observedAt, true)}取得（${ago(r.observedAt)}）`).join('　/　')}</p>}
       </>}
     </section>
