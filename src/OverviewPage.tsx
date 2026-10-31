@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import QuotaGauges from './QuotaGauges';
 import DashboardDirectory from './DashboardDirectory';
+import EarnLabPanel, { type EarnLab } from './EarnLabPanel';
+import SnsPanel, { type EstateParts } from './SnsPanel';
 import { authHeaders, fmtJst, useControlState, useOwnerToken, type ControlSnapshot, type Kpi } from './controlState';
 import type { ScheduledTask, TaskSnapshot } from './types';
 import './overview.css';
@@ -63,6 +65,9 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
   const estate = useJson<External>('/api/external/estateboard', 300_000);
   const revenue = useJson<External>('/api/external/revenue-agent', 300_000);
   const priv = useJson<{ tasks?: PrivateTask[] }>(token ? '/api/private-tasks' : '/api/health', 180_000, true);
+  const earn = useJson<EarnLab>(token ? '/api/private-earnlab' : '/api/health', 300_000, true);
+  const earnLab = token && earn.data && typeof earn.data.total === 'number' ? earn.data : null;
+  const EARN_TARGET = 5_000_000;
   const privateTasks = token && priv.data && Array.isArray(priv.data.tasks) ? priv.data.tasks : null;
 
   const human = useMemo(() => (privateTasks ?? []).filter((t) => !t.completed && isHuman(t))
@@ -79,7 +84,7 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
   const social = estate.data?.parts?.social?.data as { summary?: Record<string, unknown> } | undefined;
   const daiwa = estate.data?.parts?.daiwa?.data as { counts?: Record<string, unknown> } | undefined;
   const rev = revenue.data?.parts?.status?.data as Record<string, unknown> | undefined;
-  const earn = state?.kpis.find((k) => k.id === 'earn-lab-monthly-revenue') ?? null;
+  const earnKpi = state?.kpis.find((k) => k.id === 'earn-lab-monthly-revenue') ?? null;
   const otherKpis = (state?.kpis ?? []).filter((k) => k.id !== 'earn-lab-monthly-revenue');
   const today = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric', weekday: 'short' }).format(Date.now());
   const lowQuota = (state?.quotas ?? []).filter((q) => q.primary && q.primary.remainingPercent !== null && q.freshness !== 'missing' && q.primary.remainingPercent < 30).map((q) => q.label);
@@ -152,8 +157,9 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
       <section className="panel ov-kpis" aria-label="KGI・KPI">
         <div className="panel-heading"><div><span className="section-kicker">KGI / KPI</span><h2>ゴールに対する進み方</h2></div><small>{estate.data ? `外部指標 ${fmtJst(estate.data.fetchedAt)} 取得` : ''}</small></div>
         <div className="ov-kpi-grid">
-          {earn ? (() => { const p = kpiProgress(earn); return <KpiCard label={earn.label + (earn.period ? ` (${earn.period})` : '')} value={earn.actual === null ? '実測なし' : yen(earn.actual)} sub={p.text} bar={p.pct} tone={p.pct === null ? '' : p.pct >= 50 ? 'good' : p.pct >= 20 ? 'mid' : 'low'} link={earn.link} />; })()
-            : <KpiCard label="Earn Lab 月次売上" value={token ? '未登録' : '要接続'} sub={token ? 'MCP set_kpi(id=earn-lab-monthly-revenue) で登録' : '認証後に表示'} tone="" />}
+          {earnLab ? <KpiCard label={`Earn Lab 実入金 (${earnLab.month})`} value={yen(earnLab.cash.paidThisMonth)} sub={`目標 ${yen(EARN_TARGET)}（${((earnLab.cash.paidThisMonth / EARN_TARGET) * 100).toFixed(1)}%）· 累計 ${yen(earnLab.cash.paidTotal)}`} bar={(earnLab.cash.paidThisMonth / EARN_TARGET) * 100} tone={earnLab.cash.paidThisMonth / EARN_TARGET >= 0.5 ? 'good' : earnLab.cash.paidThisMonth / EARN_TARGET >= 0.2 ? 'mid' : 'low'} link="https://app.notion.com/p/40910562e58b811384a2ff02a4b4d4f1" />
+            : earnKpi ? (() => { const p = kpiProgress(earnKpi); return <KpiCard label={earnKpi.label + (earnKpi.period ? ` (${earnKpi.period})` : '')} value={earnKpi.actual === null ? '実測なし' : yen(earnKpi.actual)} sub={p.text} bar={p.pct} tone={p.pct === null ? '' : p.pct >= 50 ? 'good' : p.pct >= 20 ? 'mid' : 'low'} link={earnKpi.link} />; })()
+            : <KpiCard label="Earn Lab 月次売上" value={token ? '取得中' : '要接続'} sub={token ? 'Notion 実験DBから集計' : '認証後に表示'} tone="" />}
           <KpiCard label="Earn Lab 案件" value={rev ? `${num(get(rev, 'metrics.applications')) ?? '—'} 応募 / ${num(get(rev, 'metrics.contracts')) ?? '—'} 受注` : '—'}
             sub={rev ? `検証済み売上 ${yen(num(get(rev, 'metrics.revenue_jpy_verified')))} · ${fmtJst(String(get(rev, 'last_run') ?? ''))}` : '取得中'} link="https://revenue-agent-ops.pages.dev/#applications" />
           <KpiCard label="SNS実験（Muse）" value={exp?.summary ? `${num(exp.summary.total) ?? '—'}テーマ` : '—'}
@@ -166,6 +172,9 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
           {(state?.metrics ?? []).slice(0, 6).map((m) => <KpiCard key={m.id} label={m.label} value={m.value === null ? '—' : `${typeof m.value === 'number' ? m.value.toLocaleString('ja-JP') : m.value}${m.unit ?? ''}`} sub={`${m.source} · ${fmtJst(m.updatedAt)}`} link={m.link} />)}
         </div>
       </section>
+
+      <EarnLabPanel data={earnLab} status={earn.status} target={EARN_TARGET} connected={Boolean(token)} onConnect={onConnect} />
+      <SnsPanel parts={(estate.data?.parts as EstateParts | undefined) ?? null} metrics={state?.metrics ?? []} fetchedAt={estate.data?.fetchedAt} />
 
       <section className="ov-grid2">
         <article className="panel">

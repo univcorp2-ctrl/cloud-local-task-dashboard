@@ -10,6 +10,7 @@ PC収集ジョブと各AIエージェントが書き、ダッシュボードが�
 | `POST /api/mcp` | 必須 | MCP（Streamable HTTP, JSON応答）。tools: `get_state` `set_quota` `set_kpi` `set_metric` `log_event` `agent_heartbeat`、オーナートークンのみ `list_private_tasks` `complete_private_task` |
 | `GET /api/external/estateboard` / `revenue-agent` | 不要 | 他ダッシュボードの公開APIを同一オリジンで中継（KV 5分キャッシュ、CSP connect-src 'self' のため） |
 | `GET/PATCH /api/private-tasks` | オーナー | Notion マスタータスクDB（data source `0f570283-…`）の未完了一覧・完了反映 |
+| `GET /api/private-earnlab` | オーナー | Notion 🧪 Earn Lab 実験DB（`de1e04ae-…`）の集計：状態別件数・実入金（累計/今月/7日）・費用・見込み・進行中一覧・Hiroの手順・最近の更新（KV 5分キャッシュ、`?refresh=1`で再取得） |
 
 ## 残量（quota）レコード
 ```json
@@ -23,7 +24,9 @@ PC収集ジョブと各AIエージェントが書き、ダッシュボードが�
 
 ## 収集経路
 - PC `scripts/run_quota_push.ps1`（タスク `TCC-Quota-Push`、30分ごと）→ `scripts/push_quota_state.py --apply`
-  - Codex: `~/.codex/sessions` の `token_count.rate_limits`、Claude: `~/.claude/usage-dashboard-statusline.json`（statusline bridge）、Antigravity: `state.vscdb`（read-only）
+  - Codex: `~/.codex/sessions` の `token_count.rate_limits`
+  - Claude: アカウント利用量API（`~/.claude/.credentials.json` のOAuthトークンをローカルで読むだけ。期限切れなら `claude -p` を1回走らせてClaude Code自身に更新させる）→ 7日枠・5時間枠
+  - Antigravity: 起動中IDEの language_server `GetUserStatus`（コマンドラインのCSRFトークンをローカルで使用）→ モデル別 quotaInfo（推奨モデル優先、残量の少ない順に最大6件）。IDEを閉じていると前回値
   - Muse: `G:\…\Muse 作業ログ\05_EstateBoard連携\token_status_payload.json`（Museが3時間ごとに更新）
   - トークンは `C:\AI-Agent\Private\tcc-secrets\access.dpapi`（DPAPI）。ログ `G:\…\AI_Agents\Private\automation-control-center\quota-push.log`
 - 他エージェント：Drive `AI_Agents/Private/tcc-agent-mcp.json` の MCP 設定で `set_quota` / `log_event` / `agent_heartbeat` を送る。

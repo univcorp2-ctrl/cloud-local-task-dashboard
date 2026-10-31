@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """Push AI quota observations from this PC to the control-center state API.
 
-Sources (all local/read-only, no LLM calls, no credential stores):
-  * Codex CLI session logs, Claude Code sanitized statusline snapshot, Antigravity usage DB
+Sources (all local, read-only; only percentages leave this machine):
+  * Codex CLI session logs (+ Claude statusline snapshot, legacy Antigravity DB)
     -> via scripts/collect_ai_quotas.merge_observations (unchanged logic)
+  * Claude: the account usage endpoint, called with the OAuth access token Claude Code keeps in
+    ~/.claude/.credentials.json (owner decision 2026-10-31: Claude is used mostly via Cowork/web, so
+    the statusline bridge never observes anything). If the access token is expired the script runs
+    `claude -p` once so Claude Code itself refreshes the credential file; this script never writes it.
+  * Antigravity: the running IDE's local language_server (GetUserStatus -> per-model quotaInfo),
+    using the CSRF token from its own command line. Only works while Antigravity is open.
   * Muse: Google Drive file `…/Muse 作業ログ/05_EstateBoard連携/token_status_payload.json`
     (written by Muse's own token-status-sync job every 3 hours)
 
@@ -20,7 +26,12 @@ import argparse
 import datetime as dt
 import json
 import os
+import re
+import shutil
+import subprocess
 import sys
+import tempfile
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -98,6 +109,127 @@ def muse_quota(path: Path, now: dt.datetime) -> dict | None:
             "staleAfterMinutes": 240, "note": f"plan={plan}" if plan else None}
 
 
+# ----------------------------------------------------------------------------- Claude (OAuth usage)
+CLAUDE_USAGE_URL = "https://api.anthropic.com/api/oauth/usage"
+CLAUDE_WINDOWS = (("seven_day", "weekly", "7日枠"), ("five_hour", "five_hour", "5時間枠"))
+
+
+def read_claude_access(home: Path) -> tuple[str, float]:
+    try:
+        data = json.loads((home / ".claude" / ".credentials.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return "", 0.0
+    oauth = data.get("claudeAiOauth") or {}
+    exp = oauth.get("expiresAt") or 0
+    return str(oauth.get("accessToken") or ""), float(exp / 1000 if exp > 1e12 else exp)
+
+
+def refresh_claude_credentials() -> bool:
+    """Let Claude Code refresh its own credential file (a one-turn, no-tool prompt)."""
+    exe = shutil.which("claude") or shutil.which("claude.exe")
+    if not exe:
+        return False
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            r = subprocess.run([exe, "-p", "Reply with the single word OK.", "--max-turns", "1", "--model", "haiku"],
+                               cwd=d, capture_output=True, text=True, timeout=180, stdin=subprocess.DEVNULL,
+                               creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        return r.returncode == 0
+    except (OSError, subprocess.SubprocessError):
+        return False
+
+
+def claude_quota(home: Path, now: dt.datetime, allow_refresh: bool = True) -> dict | None:
+    token, exp = read_claude_access(home)
+    if not token:
+        return None
+    if exp < time.time() + 60 and allow_refresh:
+        if not refresh_claude_credentials():
+            return None
+        token, exp = read_claude_access(home)
+        if not token or exp < time.time():
+            return None
+    req = urllib.request.Request(CLAUDE_USAGE_URL, headers={"Authorization": "Bearer " + token, "anthropic-beta": "oauth-2025-04-20",
+                                                            "Accept": "application/json", "User-Agent": "TCC-QuotaPush/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=25) as resp:
+            body = json.loads(resp.read().decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, ValueError):
+        return None
+    return claude_windows(body, now)
+
+
+def claude_windows(body: dict, now: dt.datetime) -> dict | None:
+    windows = []
+    for key, kind, label in CLAUDE_WINDOWS:
+        w = body.get(key)
+        if isinstance(w, dict) and isinstance(w.get("utilization"), (int, float)):
+            used = max(0.0, min(100.0, float(w["utilization"])))
+            windows.append({"kind": kind, "label": label, "usedPercent": round(used, 1), "resetsAt": w.get("resets_at")})
+    if not windows:
+        return None
+    return {"provider": "claude", "windows": windows, "observedAt": now.isoformat(),
+            "source": "Claude account usage API (OAuth, local credentials, read-only)", "quality": "measured", "staleAfterMinutes": 90}
+
+
+# ----------------------------------------------------------------------------- Antigravity (local language server)
+def antigravity_endpoints() -> tuple[str, list[str]]:
+    if os.name != "nt":
+        return "", []
+    try:
+        cmd = subprocess.run(["powershell", "-NoProfile", "-Command",
+                              "(Get-CimInstance Win32_Process -Filter \"name='language_server.exe'\" | Where-Object { $_.CommandLine -match 'antigravity' }).CommandLine"],
+                             capture_output=True, text=True, timeout=40, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
+        m = re.search(r"--csrf_token[= ](\S+)", cmd or "")
+        if not m:
+            return "", []
+        ports = subprocess.run(["powershell", "-NoProfile", "-Command",
+                                "Get-NetTCPConnection -State Listen -LocalAddress 127.0.0.1 | Where-Object { (Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue).ProcessName -eq 'language_server' } | ForEach-Object { $_.LocalPort }"],
+                               capture_output=True, text=True, timeout=40, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
+        return m.group(1), re.findall(r"\d+", ports or "")
+    except (OSError, subprocess.SubprocessError):
+        return "", []
+
+
+def antigravity_quota(now: dt.datetime) -> dict | None:
+    csrf, ports = antigravity_endpoints()
+    if not csrf or not ports:
+        return None
+    meta = {"metadata": {"ideName": "antigravity", "extensionName": "antigravity", "locale": "en"}}
+    for port in ports:
+        req = urllib.request.Request(f"http://127.0.0.1:{port}/exa.language_server_pb.LanguageServerService/GetUserStatus",
+                                     data=json.dumps(meta).encode(), method="POST",
+                                     headers={"Content-Type": "application/json", "x-codeium-csrf-token": csrf, "Connect-Protocol-Version": "1"})
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                body = json.loads(resp.read().decode("utf-8"))
+        except (urllib.error.URLError, TimeoutError, ValueError):
+            continue
+        return antigravity_windows(body, now)
+    return None
+
+
+def antigravity_windows(body: dict, now: dt.datetime) -> dict | None:
+    configs = (((body.get("userStatus") or {}).get("cascadeModelConfigData") or {}).get("clientModelConfigs")) or []
+    seen, rows = set(), []
+    for c in configs:
+        q = c.get("quotaInfo") or {}
+        label = str(c.get("label") or "").strip()[:36]
+        frac = q.get("remainingFraction")
+        if not label or label in seen or not isinstance(frac, (int, float)):
+            continue
+        seen.add(label)
+        rows.append((0 if c.get("isRecommended") else 1, float(frac), label, q.get("resetTime")))
+    if not rows:
+        return None
+    rows.sort(key=lambda r: (r[0], r[1]))
+    windows = [{"kind": "model", "label": label, "remainingPercent": round(max(0.0, min(1.0, frac)) * 100, 1), "resetsAt": reset}
+               for _, frac, label, reset in rows[:6]]
+    return {"provider": "antigravity", "windows": windows, "observedAt": now.isoformat(),
+            "source": "Antigravity language_server GetUserStatus (local, per-model quota)", "quality": "measured", "staleAfterMinutes": 180,
+            "note": f"{len(rows)}モデルのうち上位{len(windows)}件を表示"}
+
+
 def find_muse_payload() -> Path | None:
     import glob
     hits = glob.glob(r"G:\*\00.Bukken_Master_DB\Muse*\05_EstateBoard連携\token_status_payload.json")
@@ -125,10 +257,23 @@ def main() -> int:
     ap.add_argument("--appdata", type=Path)
     ap.add_argument("--muse-payload", type=Path, help="override path of Muse token_status_payload.json")
     ap.add_argument("--apply", action="store_true", help="POST to the API (default: print payload only)")
+    ap.add_argument("--no-claude", action="store_true", help="skip the Claude account usage lookup")
+    ap.add_argument("--no-antigravity", action="store_true", help="skip the Antigravity language-server lookup")
     ap.add_argument("--log", type=Path, help="append one status line here")
     args = ap.parse_args()
     now = dt.datetime.now(UTC)
     quotas = local_quotas(args.home, args.appdata, now)
+    live = {}
+    if not args.no_claude:
+        c = claude_quota(args.home, now)
+        if c:
+            live["claude"] = c
+    if not args.no_antigravity:
+        a = antigravity_quota(now)
+        if a:
+            live["antigravity"] = a
+    # live account readings beat the legacy local heuristics for the same provider
+    quotas = [q for q in quotas if q["provider"] not in live] + list(live.values())
     muse = muse_quota(args.muse_payload or find_muse_payload() or Path("/nonexistent"), now)
     if muse:
         quotas.append(muse)

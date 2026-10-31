@@ -40,3 +40,29 @@ class MusePayloadTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LiveSourcesTest(unittest.TestCase):
+    def test_claude_windows_from_usage_payload(self):
+        now = dt.datetime(2026, 10, 31, 7, 10, tzinfo=dt.timezone.utc)
+        q = pqs.claude_windows({"five_hour": {"utilization": 10.0, "resets_at": "2026-10-31T10:30:00Z"},
+                                "seven_day": {"utilization": 80.0, "resets_at": "2026-11-01T12:00:00Z"},
+                                "iguana_necktie": {"utilization": 28.2}, "seven_day_opus": None}, now)
+        self.assertEqual(q["provider"], "claude")
+        self.assertEqual([w["kind"] for w in q["windows"]], ["weekly", "five_hour"])
+        self.assertEqual(q["windows"][0]["usedPercent"], 80.0)
+        self.assertIsNone(pqs.claude_windows({"five_hour": None, "seven_day": None}, now))
+
+    def test_antigravity_windows_prefer_recommended_then_tightest(self):
+        now = dt.datetime(2026, 10, 31, 7, 10, tzinfo=dt.timezone.utc)
+        body = {"userStatus": {"cascadeModelConfigData": {"clientModelConfigs": [
+            {"label": "Claude Sonnet", "quotaInfo": {"remainingFraction": 0.2, "resetTime": "2026-11-01T00:00:00Z"}},
+            {"label": "Gemini 4 Argon (Medium)", "isRecommended": True, "quotaInfo": {"remainingFraction": 0.6827, "resetTime": "2026-11-04T03:06:17Z"}},
+            {"label": "Gemini 4 Argon (Medium)", "quotaInfo": {"remainingFraction": 0.9}},
+            {"label": "No quota model"}]}}}
+        q = pqs.antigravity_windows(body, now)
+        self.assertEqual(q["windows"][0]["label"], "Gemini 4 Argon (Medium)")
+        self.assertEqual(q["windows"][0]["remainingPercent"], 68.3)
+        self.assertEqual(q["windows"][1]["label"], "Claude Sonnet")
+        self.assertEqual(len(q["windows"]), 2)
+        self.assertIsNone(pqs.antigravity_windows({}, now))

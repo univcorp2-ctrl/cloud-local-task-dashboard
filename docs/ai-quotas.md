@@ -1,5 +1,14 @@
 # AI quota collection and display
 
+> **2026-10-31 update (owner decision):** live quotas are collected by `scripts/push_quota_state.py`
+> (task `TCC-Quota-Push`, every 30 min) and stored in the KV state API (`/api/state`).
+> Claude is read from the account usage endpoint with the OAuth token Claude Code keeps in
+> `~/.claude/.credentials.json` (local, read-only; an expired token is refreshed by running
+> `claude -p` once so Claude Code rewrites its own file). Antigravity is read from the running
+> IDE's local language_server (`GetUserStatus` → per-model `quotaInfo`). Codex and Muse as before.
+> Only percentages and reset times leave the PC. The sections below describe the legacy
+> static-catalog path, which remains as a fallback.
+
 Quota telemetry uses local observations only. Run the collector against a private
 copy of the catalog to review its output before publishing:
 
