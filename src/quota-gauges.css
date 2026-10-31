@@ -34,3 +34,6 @@
 .gauge-chip-text small{font-size:9px;color:#8392a5;white-space:nowrap}
 @media(max-width:1200px){.quota-gauges{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.quota-gauges{grid-template-columns:1fr;gap:8px}.gauge-card{padding:12px 14px 10px;gap:8px}.gauge-body{grid-template-columns:84px 1fr;gap:14px}.gauge-ring{width:84px!important;height:84px!important}.gauge-center strong{font-size:22px}.gauge-body dl{gap:5px}.gauge-body dl div{grid-template-columns:52px 1fr}.gauge-body dd{font-size:12px}.quota-gauges.compact{display:none}}
+/* phone overflow guard: long source lines must not widen the page */
+.quota-gauges,.gauge-card,.gauge-body{min-width:0;max-width:100%}
+.gauge-card footer{white-space:normal;overflow-wrap:anywhere}

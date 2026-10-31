@@ -151,3 +151,4 @@ a.ov-kpi:hover{border-color:#9fc1f0;box-shadow:0 6px 18px rgba(23,105,232,.08)}
 @media (max-width:760px){.jobs-tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.job-main strong{white-space:normal}}
 .jobs-section{margin-top:14px}.jobs-section h3{font-size:13px;margin:0 0 8px}.jobs-section h3 small{font-weight:600;color:#6b7a90;margin-left:6px}
 .jobs-calm{margin-top:8px}.jobs-calm summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--blue);padding:6px 0}
+.jobs-panel,.job,.job-meta span,.job-note{min-width:0;overflow-wrap:anywhere}
