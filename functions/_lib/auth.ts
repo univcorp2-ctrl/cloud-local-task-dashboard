@@ -31,10 +31,16 @@ export function safeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+export const OWNER_COOKIE = 'tcc_owner';
+export function cookieToken(request: Request): string {
+  const raw = request.headers.get('Cookie') || '';
+  const m = raw.match(new RegExp('(?:^|;\\s*)' + OWNER_COOKIE + '=([^;]+)'));
+  return m ? decodeURIComponent(m[1]).trim() : '';
+}
 export function bearerOf(request: Request): string {
   const header = request.headers.get('Authorization') || '';
   if (header.startsWith('Bearer ')) return header.slice(7).trim();
-  return (request.headers.get('X-TCC-Token') || '').trim();
+  return (request.headers.get('X-TCC-Token') || '').trim() || cookieToken(request);
 }
 
 export function isConfigured(env: AuthEnv): boolean {

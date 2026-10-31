@@ -38,6 +38,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from collect_ai_quotas import merge_observations  # noqa: E402
+import collect_token_usage as ctu  # noqa: E402
+
+LAST_CLAUDE_USAGE: dict = {}
 
 APPROVED = ("https://cloud-local-task-dashboard.pages.dev",)
 UTC = dt.timezone.utc
@@ -156,6 +159,7 @@ def claude_quota(home: Path, now: dt.datetime, allow_refresh: bool = True) -> di
             body = json.loads(resp.read().decode("utf-8"))
     except (urllib.error.URLError, TimeoutError, ValueError):
         return None
+    LAST_CLAUDE_USAGE.clear(); LAST_CLAUDE_USAGE.update(body)
     return claude_windows(body, now)
 
 
@@ -258,6 +262,9 @@ def main() -> int:
     ap.add_argument("--muse-payload", type=Path, help="override path of Muse token_status_payload.json")
     ap.add_argument("--apply", action="store_true", help="POST to the API (default: print payload only)")
     ap.add_argument("--no-claude", action="store_true", help="skip the Claude account usage lookup")
+    ap.add_argument("--no-usage", action="store_true", help="skip per-task usage attribution")
+    ap.add_argument("--claude-tasks", type=Path, default=Path(r"G:\マイドライブ\AI_Agents\Private\automation-control-center\claude_scheduled_tasks.json"),
+                    help="snapshot of Claude scheduled cloud tasks (name, runsPerWeek, avgSeconds, model)")
     ap.add_argument("--no-antigravity", action="store_true", help="skip the Antigravity language-server lookup")
     ap.add_argument("--log", type=Path, help="append one status line here")
     args = ap.parse_args()
@@ -282,8 +289,16 @@ def main() -> int:
         # Muse's own 3-hourly Drive update is evidence that Muse is alive; report it as such.
         agents.append({"name": "muse", "status": "idle", "currentTask": "Drive token_status_payload を更新 " + parse(muse["observedAt"]).astimezone(JST).strftime("%m/%d %H:%M"),
                        "note": "pc-collector が Drive 更新時刻から推定"})
-    payload = {"actor": "pc-collector", "quotas": quotas, "agents": agents}
-    line = f"{dt.datetime.now(JST).isoformat(timespec='seconds')} | providers={','.join(q['provider'] for q in quotas) or 'none'}"
+    usage = []
+    if not args.no_usage:
+        codex_q = next((q for q in quotas if q["provider"] == "codex"), None)
+        codex_week = next((w.get("usedPercent") for w in (codex_q or {}).get("windows", []) if w.get("kind") == "weekly"), None)
+        for u in (ctu.codex_usage(args.home, now, codex_week),
+                  ctu.claude_usage(LAST_CLAUDE_USAGE or None, args.home, now, args.claude_tasks)):
+            if u:
+                usage.append(u)
+    payload = {"actor": "pc-collector", "quotas": quotas, "agents": agents, "usage": usage}
+    line = f"{dt.datetime.now(JST).isoformat(timespec='seconds')} | providers={','.join(q['provider'] for q in quotas) or 'none'} usage={','.join(u['provider'] + ':' + str(len(u['items'])) for u in usage) or 'none'}"
     if not args.apply:
         print(json.dumps(payload, ensure_ascii=False, indent=1))
         print("DRY RUN " + line)

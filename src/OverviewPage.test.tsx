@@ -22,7 +22,8 @@ test('ゲージは残量%・色・リセットまでの日数・鮮度を表示�
 });
 
 test('未接続では本人タスクの接続案内、接続済みでは本人タスクとKPIを表示する', async () => {
-  const state = { ok: true, generatedAt: new Date(now).toISOString(), updatedAt: null, authenticated: true, scope: 'x', quotas: [muse], agents: [], metrics: [], events: [],
+  let authed = false;
+  const state = { ok: true, generatedAt: new Date(now).toISOString(), updatedAt: null, get authenticated() { return authed; }, scope: 'x', quotas: [muse], agents: [], metrics: [], events: [],
     kpis: [{ id: 'earn-lab-monthly-revenue', label: 'Earn Lab 月次売上', unit: 'JPY', target: 5000000, actual: 120000, period: '2026-11', direction: 'up', updatedAt: new Date(now).toISOString(), source: 'notion' }] };
   vi.stubGlobal('fetch', vi.fn().mockImplementation(async (input: string) => {
     const url = String(input);
@@ -35,6 +36,7 @@ test('未接続では本人タスクの接続案内、接続済みでは本人�
   render(<OverviewPage onConnect={() => undefined} />);
   expect(await screen.findByText('Notionの本人タスクは認証後に表示されます。')).toBeInTheDocument();
   cleanup();
+  authed = true; // owner cookie or stored token
   window.localStorage.setItem(TOKEN_KEY, 'test-token-test-token-test-token');
   render(<OverviewPage onConnect={() => undefined} />);
   expect(await screen.findByText('窓口申込')).toBeInTheDocument();

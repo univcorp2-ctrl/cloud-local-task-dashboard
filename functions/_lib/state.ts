@@ -53,10 +53,19 @@ export interface AgentRecord {
   name: string; status: 'running' | 'idle' | 'blocked' | 'offline';
   currentTask?: string | null; lastSeenAt: string; nextRunAt?: string | null; note?: string | null;
 }
+export interface UsageItem {
+  key: string; label: string; kind: 'scheduled' | 'cli' | 'app' | 'surface' | 'subagent' | 'worker' | 'other';
+  tokens: number | null; sharePercent: number | null; quotaPercent: number | null; runs: number | null; lastAt: string | null; note?: string | null;
+}
+export interface UsageRecord {
+  provider: Provider; window: string; observedAt: string; updatedAt: string; source: string;
+  totalTokens: number | null; quotaUsedPercent: number | null; basis: 'tokens' | 'percent'; items: UsageItem[]; actor: string;
+}
 export interface ControlState {
   version: 1;
   updatedAt: string | null;
   quotas: Record<string, QuotaRecord>;
+  usage: Record<string, UsageRecord>;
   kpis: Record<string, KpiRecord>;
   metrics: Record<string, MetricRecord>;
   agents: Record<string, AgentRecord>;
@@ -71,7 +80,7 @@ const SECRET_LIKE = /\b(?:bearer|api[_ -]?key|secret|token|password)\b\s*[:=]|[\
 export class ValidationError extends Error {}
 
 export function emptyState(): ControlState {
-  return { version: 1, updatedAt: null, quotas: {}, kpis: {}, metrics: {}, agents: {}, events: [] };
+  return { version: 1, updatedAt: null, quotas: {}, usage: {}, kpis: {}, metrics: {}, agents: {}, events: [] };
 }
 
 export async function loadState(kv: KVLike): Promise<ControlState> {
@@ -191,6 +200,31 @@ export function normalizeQuota(input: unknown, actor: string, now = new Date()):
   };
 }
 
+export function normalizeUsage(input: unknown, actor: string, now = new Date()): UsageRecord {
+  if (!input || typeof input !== 'object') throw new ValidationError('usage object required');
+  const x = input as Record<string, unknown>;
+  const provider = oneOf(x.provider, PROVIDERS, 'provider');
+  const raw = Array.isArray(x.items) ? x.items.slice(0, 40) : [];
+  const nonneg = (v: unknown, f: string) => { const n = number(v, f); if (n !== null && n < 0) throw new ValidationError(`${f} must be >= 0`); return n; };
+  const items: UsageItem[] = raw.map((it, i) => {
+    if (!it || typeof it !== 'object') throw new ValidationError(`items[${i}] must be an object`);
+    const r = it as Record<string, unknown>;
+    return {
+      key: text(r.key, `items[${i}].key`, 60, true), label: text(r.label, `items[${i}].label`, 80, true),
+      kind: oneOf(r.kind, ['scheduled', 'cli', 'app', 'surface', 'subagent', 'worker', 'other'] as const, `items[${i}].kind`, 'other'),
+      tokens: nonneg(r.tokens, `items[${i}].tokens`), sharePercent: percent(r.sharePercent, `items[${i}].sharePercent`),
+      quotaPercent: percent(r.quotaPercent, `items[${i}].quotaPercent`), runs: nonneg(r.runs, `items[${i}].runs`),
+      lastAt: isoTime(r.lastAt, `items[${i}].lastAt`), note: text(r.note, `items[${i}].note`, 120) || null,
+    };
+  });
+  const observedAt = isoTime(x.observedAt, 'observedAt', true) as string;
+  return {
+    provider, window: text(x.window, 'window', 16) || '7d', observedAt, updatedAt: now.toISOString(), source: text(x.source, 'source', 120, true),
+    totalTokens: nonneg(x.totalTokens, 'totalTokens'), quotaUsedPercent: percent(x.quotaUsedPercent, 'quotaUsedPercent'),
+    basis: oneOf(x.basis, ['tokens', 'percent'] as const, 'basis', 'tokens'), items, actor: text(actor, 'actor', 40) || 'unknown',
+  };
+}
+
 export function normalizeKpi(input: unknown, actor: string, now = new Date()): KpiRecord {
   if (!input || typeof input !== 'object') throw new ValidationError('kpi object required');
   const x = input as Record<string, unknown>;
@@ -260,9 +294,10 @@ export function normalizeAgent(input: unknown, actor: string, now = new Date()):
 
 // ----------------------------------------------------------------------------- mutations
 export interface IngestPayload {
+  usage?: unknown[];
   quotas?: unknown[]; kpis?: unknown[]; metrics?: unknown[]; events?: unknown[]; agents?: unknown[];
 }
-export interface IngestSummary { quotas: string[]; kpis: string[]; metrics: string[]; events: number; agents: string[] }
+export interface IngestSummary { usage?: string[]; quotas: string[]; kpis: string[]; metrics: string[]; events: number; agents: string[] }
 
 export function applyIngest(state: ControlState, payload: IngestPayload, actor: string, now = new Date()): IngestSummary {
   const summary: IngestSummary = { quotas: [], kpis: [], metrics: [], events: 0, agents: [] };
@@ -278,6 +313,12 @@ export function applyIngest(state: ControlState, payload: IngestPayload, actor: 
     if (existing && Date.parse(existing.observedAt) > Date.parse(record.observedAt)) continue;
     state.quotas[record.provider] = record;
     summary.quotas.push(record.provider);
+  }
+  for (const u of list(payload.usage, 'usage')) {
+    const record = normalizeUsage(u, actor, now);
+    state.usage = state.usage ?? {};
+    state.usage[record.provider] = record;
+    (summary.usage = summary.usage ?? []).push(record.provider);
   }
   for (const k of list(payload.kpis, 'kpis')) {
     const record = normalizeKpi(k, actor, now);
@@ -352,6 +393,7 @@ export function snapshot(state: ControlState, now = Date.now(), full = false) {
     agents: Object.values(state.agents).sort((a, b) => Date.parse(b.lastSeenAt) - Date.parse(a.lastSeenAt))
       .map((a) => full ? a : { name: a.name, status: a.status, lastSeenAt: a.lastSeenAt, nextRunAt: a.nextRunAt ?? null, currentTask: null, note: null }),
     kpis: full ? Object.values(state.kpis).sort(byTime) : [],
+    usage: full ? Object.values(state.usage ?? {}) : [],
     // SNS follower/post-date metrics mirror what the public profiles already show; everything else stays private.
     metrics: Object.values(state.metrics).filter((m) => full || m.group === 'sns').sort(byTime),
     events: full ? state.events.slice(0, 60) : [],

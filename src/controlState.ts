@@ -23,7 +23,10 @@ export interface Kpi { id: string; label: string; unit: string; target: number |
 export interface Metric { id: string; label: string; value: number | string | null; unit?: string | null; updatedAt: string; source: string; link?: string | null; note?: string | null; group?: string | null }
 export interface AgentBeat { name: string; status: 'running' | 'idle' | 'blocked' | 'offline'; currentTask?: string | null; lastSeenAt: string; nextRunAt?: string | null; note?: string | null }
 export interface EventItem { at: string; actor: string; kind: 'info' | 'success' | 'warning' | 'error'; message: string; link?: string | null; topic?: string | null }
+export interface UsageItem { key: string; label: string; kind: string; tokens: number | null; sharePercent: number | null; quotaPercent: number | null; runs: number | null; lastAt: string | null; note?: string | null }
+export interface UsageRecord { provider: string; window: string; observedAt: string; source: string; totalTokens: number | null; quotaUsedPercent: number | null; basis: string; items: UsageItem[] }
 export interface ControlSnapshot {
+  usage?: UsageRecord[];
   ok: boolean; generatedAt: string; updatedAt: string | null; quotas: QuotaView[]; kpis: Kpi[]; metrics: Metric[];
   agents: AgentBeat[]; events: EventItem[]; authenticated: boolean; scope: string;
 }
@@ -39,6 +42,15 @@ export function saveToken(token: string) {
   listeners.forEach((fn) => fn(token));
 }
 let memoryToken = '';
+let serverConnected = false;
+const connListeners = new Set<(v: boolean) => void>();
+/** True when this browser can read private data: a stored token OR the server-side owner cookie. */
+export function useConnected(): boolean {
+  const [token] = useOwnerToken();
+  const [server, setServer] = useState(serverConnected);
+  useEffect(() => { connListeners.add(setServer); return () => { connListeners.delete(setServer); }; }, []);
+  return Boolean(token) || server;
+}
 const listeners = new Set<(token: string) => void>();
 
 /** Consume `?key=` once, then strip it from the URL. */
@@ -48,6 +60,7 @@ export function captureTokenFromUrl(): void {
     const key = url.searchParams.get('key');
     if (key && key.length >= 24) {
       saveToken(key.trim());
+      void fetch('/api/connect?json=1&key=' + encodeURIComponent(key.trim()), { cache: 'no-store', credentials: 'same-origin' }).catch(() => undefined);
       url.searchParams.delete('key');
       window.history.replaceState(null, '', url.pathname + (url.search || '') + url.hash);
     }
@@ -70,12 +83,13 @@ export function useControlState(intervalMs = 60_000) {
   const [token] = useOwnerToken();
   const load = useCallback(async () => {
     try {
-      const response = await fetch('/api/state?t=' + Date.now(), { cache: 'no-store', headers: authHeaders() });
-      if (response.status === 401 || response.status === 403) { saveToken(''); throw new Error('トークンが無効です。再接続してください'); }
+      const response = await fetch('/api/state?t=' + Date.now(), { cache: 'no-store', credentials: 'same-origin', headers: authHeaders() });
+      if (response.status === 401 || response.status === 403) { saveToken(''); serverConnected = false; throw new Error('トークンが無効です。再接続してください'); }
       if (!response.ok) throw new Error('HTTP ' + response.status);
       const body = await response.json() as ControlSnapshot;
       if (!body || !Array.isArray(body.quotas)) throw new Error('invalid state');
       setData(body); setError('');
+      if (body.authenticated !== serverConnected) { serverConnected = Boolean(body.authenticated); connListeners.forEach((fn) => fn(serverConnected)); }
     } catch (e) { setError(e instanceof Error ? e.message : '取得できません'); }
   }, []);
   useEffect(() => {

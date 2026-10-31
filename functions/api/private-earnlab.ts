@@ -18,7 +18,12 @@ const sel = (p: Page, k: string) => p.properties[k]?.select?.name ?? '';
 const num = (p: Page, k: string) => { const v = p.properties[k]?.number; return typeof v === 'number' && Number.isFinite(v) ? v : null; };
 const date = (p: Page, k: string) => p.properties[k]?.date?.start ?? null;
 
-export async function buildEarnLab(pages: Page[], now = new Date()) {
+// 2026-10-31 Hiro: iPhone/Apple 買取・返品系は完了済み→「守りのタスク」へ移管。Earn Labの集計・一覧に載せない。
+export const MOVED_TO_DEFENSE = /モバトリ|Apple返品|Apple在庫|iPhone買取|買取承認済|森森|カード会社への返金/;
+
+export async function buildEarnLab(pagesIn: Page[], now = new Date()) {
+  const moved = pagesIn.filter((p) => MOVED_TO_DEFENSE.test(text(p, '実験名')));
+  const pages = pagesIn.filter((p) => !MOVED_TO_DEFENSE.test(text(p, '実験名')));
   const month = now.toISOString().slice(0, 7);
   const weekAgo = new Date(now.getTime() - 7 * 864e5).toISOString();
   const rows = pages.map((p) => ({
@@ -41,7 +46,7 @@ export async function buildEarnLab(pages: Page[], now = new Date()) {
       .map((r) => ({ id: r.id, url: r.url, name: r.name, state: r.state, step: r.hiroStep.slice(0, 200) })),
     recent: [...rows].sort((a, b) => (b.updatedAt ?? '').localeCompare(a.updatedAt ?? '')).slice(0, 8)
       .map((r) => ({ id: r.id, url: r.url, name: r.name, state: r.state, updatedAt: r.updatedAt, result: r.result })),
-    month,
+    month, movedToDefense: moved.length,
   };
 }
 

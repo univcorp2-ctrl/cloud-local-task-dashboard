@@ -22,6 +22,8 @@ export const TOOLS = [
   { name: 'get_state', description: 'Read the current control-center state: AI quotas (remaining %, reset time, freshness), KPIs, metrics, agent heartbeats and recent events.', inputSchema: obj({}) },
   { name: 'set_quota', description: 'Report an AI provider usage quota. provider: claude|codex|antigravity|muse|chatgpt. windows: [{kind: weekly|five_hour|monthly|model|additional|other, label, remainingPercent or usedPercent, resetsAt ISO, remainingText?}]. observedAt ISO is the time the number was read; never guess percentages.',
     inputSchema: obj({ provider: str('claude|codex|antigravity|muse|chatgpt'), windows: { type: 'array', items: obj({ kind: str('weekly|five_hour|monthly|model|additional|other'), label: str('short label'), remainingPercent: num('0..100'), usedPercent: num('0..100'), resetsAt: str('ISO-8601 reset time'), remainingText: str('e.g. 7.8B') }) }, observedAt: str('ISO-8601 observation time'), source: str('where the number came from'), quality: str('measured|estimated|self_reported'), staleAfterMinutes: num('minutes until this reading counts as stale'), note: str('optional note') }, ['provider', 'windows', 'observedAt', 'source']) },
+  { name: 'set_usage', description: 'Report which tasks consumed a provider\'s quota/tokens in a window. items: [{key,label,kind: scheduled|cli|app|surface|subagent|worker|other, tokens?, sharePercent?, quotaPercent?, runs?, lastAt?}]. Use measured numbers only.',
+    inputSchema: obj({ provider: str('claude|codex|antigravity|muse|chatgpt'), window: str('e.g. 7d'), observedAt: str('ISO-8601'), source: str('data source'), totalTokens: num('total tokens in window'), quotaUsedPercent: num('provider quota used %'), basis: str('tokens|percent'), items: { type: 'array', items: obj({}) } }, ['provider', 'observedAt', 'source', 'items']) },
   { name: 'set_kpi', description: 'Upsert a KPI/KGI with target and actual (e.g. id=earn-lab-monthly-revenue, unit=JPY, target=5000000, actual=120000, period=2026-11).',
     inputSchema: obj({ id: str('kebab-case id'), label: str('display label'), unit: str('JPY|%|件|...'), target: num('target value'), actual: num('actual value'), period: str('e.g. 2026-11 or 2026-W45'), direction: str('up|down (which way is good)'), source: str('data source'), link: str('https link to evidence'), note: str('short note'), group: str('earn-lab|sns|real-estate|dev|...') }, ['id', 'label', 'source']) },
   { name: 'set_metric', description: 'Upsert a simple metric value (number or short string) shown on the dashboard.',
@@ -52,6 +54,7 @@ export async function callTool(ctx: McpContext, name: string, args: Record<strin
     switch (name) {
       case 'get_state': return toolText(snapshot(await loadState(ctx.kv), now.getTime(), true));
       case 'set_quota': return toolText({ ok: true, ...(await write({ quotas: [args] })) });
+      case 'set_usage': return toolText({ ok: true, ...(await write({ usage: [args] })) });
       case 'set_kpi': return toolText({ ok: true, ...(await write({ kpis: [args] })) });
       case 'set_metric': return toolText({ ok: true, ...(await write({ metrics: [args] })) });
       case 'log_event': return toolText({ ok: true, ...(await write({ events: [args] })) });

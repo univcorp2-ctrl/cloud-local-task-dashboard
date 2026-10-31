@@ -134,8 +134,8 @@ export default function App() {
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
           <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
           <a className={activePage === 'development' ? 'active' : ''} href="#development">▥ <span>③ 開発進捗・次アクション</span></a>
-          {appCategories.filter(cat => dashboardAppLinks.some(app => app.category === cat)).map(cat => <details className="sidebar-app-group" key={cat} open={cat === '不動産'}>
-            <summary>⌂ <span>④ {cat}アプリ</span></summary>
+          {appCategories.filter(cat => dashboardAppLinks.some(app => app.category === cat)).map(cat => <details className="sidebar-app-group" key={cat} open>
+            <summary>⌂ <span>{cat}</span></summary>
             <div className="sidebar-app-links">{dashboardAppLinks.filter(app => app.category === cat).map(app => <a key={app.id}
               href={app.url} title={app.description} target="_blank" rel="noopener noreferrer">{app.label} ↗</a>)}</div>
           </details>)}

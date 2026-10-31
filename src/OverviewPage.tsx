@@ -3,7 +3,8 @@ import QuotaGauges from './QuotaGauges';
 import DashboardDirectory from './DashboardDirectory';
 import EarnLabPanel, { type EarnLab } from './EarnLabPanel';
 import SnsPanel, { type EstateParts } from './SnsPanel';
-import { authHeaders, fmtJst, useControlState, useOwnerToken, type ControlSnapshot, type Kpi } from './controlState';
+import UsagePanel from './UsagePanel';
+import { authHeaders, fmtJst, useConnected, useControlState, useOwnerToken, type ControlSnapshot, type Kpi } from './controlState';
 import type { ScheduledTask, TaskSnapshot } from './types';
 import './overview.css';
 
@@ -29,7 +30,7 @@ function useJson<T>(url: string, intervalMs: number, withAuth = false) {
   const [token] = useOwnerToken();
   const load = useCallback(async () => {
     try {
-      const response = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store', headers: withAuth ? authHeaders() : {} });
+      const response = await fetch(url + (url.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store', credentials: 'same-origin', headers: withAuth ? authHeaders() : {} });
       setStatus(response.status);
       if (!response.ok) { setData(null); return; }
       setData(await response.json() as T);
@@ -59,7 +60,7 @@ function kpiProgress(k: Kpi): { pct: number | null; text: string } {
 
 export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
   const { data: state, error: stateError } = useControlState(60_000);
-  const [token] = useOwnerToken();
+  const token = useConnected();
   const tasks = useJson<TaskSnapshot>('/data/tasks.json', 120_000);
   const dev = useJson<DevCatalog>('/data/development-progress.json', 180_000);
   const estate = useJson<External>('/api/external/estateboard', 300_000);
@@ -173,6 +174,7 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
         </div>
       </section>
 
+      <UsagePanel usage={state?.usage ?? []} connected={token} onConnect={onConnect} />
       <EarnLabPanel data={earnLab} status={earn.status} target={EARN_TARGET} connected={Boolean(token)} onConnect={onConnect} />
       <SnsPanel parts={(estate.data?.parts as EstateParts | undefined) ?? null} metrics={state?.metrics ?? []} fetchedAt={estate.data?.fetchedAt} />
 

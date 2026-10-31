@@ -66,3 +66,40 @@ class LiveSourcesTest(unittest.TestCase):
         self.assertEqual(q["windows"][1]["label"], "Claude Sonnet")
         self.assertEqual(len(q["windows"]), 2)
         self.assertIsNone(pqs.antigravity_windows({}, now))
+
+
+class UsageAttributionTest(unittest.TestCase):
+    def test_codex_groups_exec_prompts_and_attributes_quota(self):
+        import collect_token_usage as ctu
+        now = dt.datetime(2026, 10, 31, 10, 0, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as d:
+            home = Path(d); sess = home / ".codex/sessions/2026/10/31"; sess.mkdir(parents=True)
+            def write(name, prompt, total, origin="codex_exec"):
+                lines = [{"type": "session_meta", "payload": {"cwd": "C:\\\\AI-Agent\\\\workspace", "originator": origin, "source": "exec"}},
+                         {"type": "response_item", "payload": {"type": "message", "role": "user", "content": [{"type": "input_text", "text": prompt}]}},
+                         {"type": "event_msg", "timestamp": "2026-10-31T09:00:00Z", "payload": {"type": "token_count", "info": {"total_token_usage": {"total_tokens": total, "input_tokens": total, "cached_input_tokens": 0, "output_tokens": 0}}}}]
+                (sess / name).write_text("\n".join(json.dumps(x) for x in lines), encoding="utf-8")
+            write("a.jsonl", "# 物件スクレイパー修正\nmore", 600)
+            write("b.jsonl", "# 物件スクレイパー修正\nmore", 200)
+            write("c.jsonl", "hello", 200, origin="codex_cli_rs")
+            u = ctu.codex_usage(home, now, 20.0)
+            self.assertEqual(u["totalTokens"], 1000)
+            top = u["items"][0]
+            self.assertEqual(top["label"], "物件スクレイパー修正")
+            self.assertEqual(top["runs"], 2)
+            self.assertEqual(top["sharePercent"], 80.0)
+            self.assertEqual(top["quotaPercent"], 16.0)
+            self.assertEqual(u["items"][1]["kind"], "cli")
+
+    def test_claude_surfaces_and_scheduled_estimate(self):
+        import collect_token_usage as ctu
+        now = dt.datetime(2026, 10, 31, 10, 0, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as d:
+            tf = Path(d) / "t.json"
+            tf.write_text(json.dumps({"tasks": [{"name": "Earn Lab A", "runsPerWeek": 168, "avgSeconds": 420}, {"name": "腸活", "runsPerWeek": 7, "avgSeconds": 30}]}), encoding="utf-8")
+            body = {"seven_day": {"utilization": 87}, "seven_day_breakdown": {"rows": [{"key": "cowork", "display_name": "Cowork", "percent": 92}, {"key": "chat", "display_name": "Chats", "percent": 8}]}}
+            u = ctu.claude_usage(body, Path(d), now, tf)
+            surf = {i["key"]: i for i in u["items"]}
+            self.assertEqual(surf["surface:cowork"]["quotaPercent"], 80.0)
+            a = next(i for i in u["items"] if i["label"] == "Earn Lab A")
+            self.assertGreater(a["sharePercent"], 91)

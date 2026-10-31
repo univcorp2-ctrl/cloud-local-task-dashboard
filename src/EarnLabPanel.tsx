@@ -1,7 +1,7 @@
 import { fmtJst } from './controlState';
 
 export type EarnLab = {
-  generatedAt: string; total: number; byState: Record<string, number>; byVariation: Record<string, number>; month: string;
+  generatedAt: string; total: number; movedToDefense?: number; byState: Record<string, number>; byVariation: Record<string, number>; month: string;
   cash: { paidTotal: number; paidThisMonth: number; paidLast7d: number; costTotal: number; expectedActive: number; paidCount: number };
   active: Array<{ id: string; url: string; name: string; state: string; variation: string; score: number | null; expected: number | null; paid: number | null; nextAction: string; hiroStep: string; updatedAt: string | null; daysToCash: number | null }>;
   hiroSteps: Array<{ id: string; url: string; name: string; state: string; step: string }>;
@@ -21,6 +21,7 @@ export default function EarnLabPanel({ data, status, target, connected, onConnec
       {!connected && <div className="ov-empty"><p>Earn Lab の実入金・テスト状況は認証後に表示されます。</p><button type="button" onClick={onConnect}>接続する</button></div>}
       {connected && !data && <p className="ov-note">{status === null ? '読み込み中…' : `取得できません（${status}）`}</p>}
       {data && <>
+        <p className="ov-note">自律ループ A(:05)・C(:20)・B(:35)・D(:50) が毎時実行。iPhone/Apple買取・返品系は完了済みのため「守りのタスク」へ移管し、ここには含めません。</p>
         <div className="el-goal">
           <div className="el-goal-head"><span>今月の実入金（{data.month}）</span><strong>{yen(data.cash.paidThisMonth)}</strong><small>/ 目標 {yen(target)}（{pct.toFixed(1)}%）</small></div>
           <div className="ov-bar big"><span style={{ width: `${pct}%` }} /></div>
@@ -29,7 +30,7 @@ export default function EarnLabPanel({ data, status, target, connected, onConnec
           <div><span>累計実入金</span><strong>{yen(data.cash.paidTotal)}</strong><small>{data.cash.paidCount}件が入金</small></div>
           <div><span>直近7日</span><strong>{yen(data.cash.paidLast7d)}</strong><small>費用累計 {yen(data.cash.costTotal)}</small></div>
           <div><span>見込み（進行中）</span><strong>{yen(data.cash.expectedActive)}</strong><small>根拠ある見込みのみ</small></div>
-          <div><span>実験数</span><strong>{data.total}</strong><small>{['候補', 'テスト中', '拡大', '縮小', '停止'].map((s) => `${s}${data.byState[s] ?? 0}`).join(' · ')}</small></div>
+          <div><span>実験数{data.movedToDefense ? `（守り移管${data.movedToDefense}件除く）` : ''}</span><strong>{data.total}</strong><small>{['候補', 'テスト中', '拡大', '縮小', '停止'].map((s) => `${s}${data.byState[s] ?? 0}`).join(' · ')}</small></div>
         </div>
         <div className="el-cols">
           <div>
