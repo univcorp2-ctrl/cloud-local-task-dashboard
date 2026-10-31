@@ -153,3 +153,6 @@ a.ov-kpi:hover{border-color:#9fc1f0;box-shadow:0 6px 18px rgba(23,105,232,.08)}
 .jobs-section{margin-top:14px}.jobs-section h3{font-size:13px;margin:0 0 8px}.jobs-section h3 small{font-weight:600;color:#6b7a90;margin-left:6px}
 .jobs-calm{margin-top:8px}.jobs-calm summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--blue);padding:6px 0}
 .jobs-panel,.job,.job-meta span,.job-note{min-width:0;overflow-wrap:anywhere}
+.el-cols>*,.sns-cols>*,.el-list,.el-list li{min-width:0}
+.el-list{grid-template-columns:minmax(0,1fr)}
+@media(max-width:820px){.el-cols,.sns-cols{grid-template-columns:minmax(0,1fr)}}
