@@ -61,11 +61,22 @@ export interface UsageRecord {
   provider: Provider; window: string; observedAt: string; updatedAt: string; source: string;
   totalTokens: number | null; quotaUsedPercent: number | null; basis: 'tokens' | 'percent'; items: UsageItem[]; actor: string;
 }
+export const JOB_PLATFORMS = ['claude', 'codex', 'antigravity', 'muse', 'windows', 'github', 'cloudflare', 'other'] as const;
+export const JOB_STATUSES = ['running', 'success', 'failed', 'paused', 'scheduled', 'ended'] as const;
+export interface JobItem {
+  id: string; name: string; platform: typeof JOB_PLATFORMS[number]; schedule: string; scheduleLabel: string | null;
+  enabled: boolean; oneShot: boolean; status: typeof JOB_STATUSES[number];
+  lastRunAt: string | null; lastFinishedAt: string | null; nextRunAt: string | null; durationSeconds: number | null;
+  model: string | null; runsPerWeek: number | null; category: string | null; note: string | null; link: string | null;
+}
+/** One list per reporting source (e.g. "claude-cloud", "windows:DESKTOP-8H63JO7"); each push replaces that source's list. */
+export interface JobsRecord { source: string; label: string; observedAt: string; updatedAt: string; actor: string; items: JobItem[] }
 export interface ControlState {
   version: 1;
   updatedAt: string | null;
   quotas: Record<string, QuotaRecord>;
   usage: Record<string, UsageRecord>;
+  jobs?: Record<string, JobsRecord>;
   kpis: Record<string, KpiRecord>;
   metrics: Record<string, MetricRecord>;
   agents: Record<string, AgentRecord>;
@@ -225,6 +236,38 @@ export function normalizeUsage(input: unknown, actor: string, now = new Date()):
   };
 }
 
+export function normalizeJobs(input: unknown, actor: string, now = new Date()): JobsRecord {
+  if (!input || typeof input !== 'object') throw new ValidationError('jobs object required');
+  const x = input as Record<string, unknown>;
+  const source = text(x.source, 'source', 60, true);
+  if (!/^[A-Za-z0-9:_.-]+$/.test(source)) throw new ValidationError('source must be [A-Za-z0-9:_.-]');
+  const raw = Array.isArray(x.items) ? x.items : [];
+  if (raw.length > 200) throw new ValidationError('items must be at most 200');
+  const items: JobItem[] = raw.map((it, i) => {
+    if (!it || typeof it !== 'object') throw new ValidationError(`items[${i}] must be an object`);
+    const r = it as Record<string, unknown>;
+    const f = (k: string) => `items[${i}].${k}`;
+    const dur = number(r.durationSeconds, f('durationSeconds'));
+    const rpw = number(r.runsPerWeek, f('runsPerWeek'));
+    return {
+      id: text(r.id, f('id'), 80, true), name: text(r.name, f('name'), 140, true),
+      platform: oneOf(r.platform, JOB_PLATFORMS, f('platform'), 'other'),
+      schedule: text(r.schedule, f('schedule'), 80), scheduleLabel: text(r.scheduleLabel, f('scheduleLabel'), 60) || null,
+      enabled: r.enabled !== false, oneShot: r.oneShot === true,
+      status: oneOf(r.status, JOB_STATUSES, f('status'), 'scheduled'),
+      lastRunAt: isoTime(r.lastRunAt, f('lastRunAt')), lastFinishedAt: isoTime(r.lastFinishedAt, f('lastFinishedAt')),
+      nextRunAt: isoTime(r.nextRunAt, f('nextRunAt')),
+      durationSeconds: dur !== null && dur >= 0 ? Math.round(dur) : null, model: text(r.model, f('model'), 40) || null,
+      runsPerWeek: rpw !== null && rpw >= 0 ? Math.round(rpw * 10) / 10 : null,
+      category: text(r.category, f('category'), 40) || null, note: text(r.note, f('note'), 160) || null, link: link(r.link, f('link')),
+    };
+  });
+  return {
+    source, label: text(x.label, 'label', 60) || source, observedAt: isoTime(x.observedAt, 'observedAt', true) as string,
+    updatedAt: now.toISOString(), actor: text(actor, 'actor', 40) || 'unknown', items,
+  };
+}
+
 export function normalizeKpi(input: unknown, actor: string, now = new Date()): KpiRecord {
   if (!input || typeof input !== 'object') throw new ValidationError('kpi object required');
   const x = input as Record<string, unknown>;
@@ -294,10 +337,10 @@ export function normalizeAgent(input: unknown, actor: string, now = new Date()):
 
 // ----------------------------------------------------------------------------- mutations
 export interface IngestPayload {
-  usage?: unknown[];
+  usage?: unknown[]; jobs?: unknown[];
   quotas?: unknown[]; kpis?: unknown[]; metrics?: unknown[]; events?: unknown[]; agents?: unknown[];
 }
-export interface IngestSummary { usage?: string[]; quotas: string[]; kpis: string[]; metrics: string[]; events: number; agents: string[] }
+export interface IngestSummary { usage?: string[]; jobs?: string[]; quotas: string[]; kpis: string[]; metrics: string[]; events: number; agents: string[] }
 
 export function applyIngest(state: ControlState, payload: IngestPayload, actor: string, now = new Date()): IngestSummary {
   const summary: IngestSummary = { quotas: [], kpis: [], metrics: [], events: 0, agents: [] };
@@ -320,6 +363,15 @@ export function applyIngest(state: ControlState, payload: IngestPayload, actor: 
     state.usage[record.provider] = record;
     (summary.usage = summary.usage ?? []).push(record.provider);
   }
+  for (const j of list(payload.jobs, 'jobs')) {
+    const record = normalizeJobs(j, actor, now);
+    state.jobs = state.jobs ?? {};
+    const existing = state.jobs[record.source];
+    if (existing && Date.parse(existing.observedAt) > Date.parse(record.observedAt)) continue;
+    state.jobs[record.source] = record;
+    (summary.jobs = summary.jobs ?? []).push(record.source);
+  }
+  if (Object.keys(state.jobs ?? {}).length > 20) throw new ValidationError('too many job sources');
   for (const k of list(payload.kpis, 'kpis')) {
     const record = normalizeKpi(k, actor, now);
     state.kpis[record.id] = record;
@@ -369,6 +421,11 @@ export function primaryWindow(record: QuotaRecord): QuotaWindow | null {
   return record.windows[0] ?? null;
 }
 
+export function jobCounts(state: ControlState) {
+  const items = Object.values(state.jobs ?? {}).flatMap((r) => r.items).filter((j) => j.enabled || j.status === 'running');
+  return { total: items.length, running: items.filter((j) => j.status === 'running').length, failed: items.filter((j) => j.status === 'failed').length };
+}
+
 /**
  * `full=false` (anonymous): quotas and agent heartbeats only — percentages and status words.
  * `full=true` (authenticated owner/agent): also KPIs, metrics and the event feed, which may
@@ -394,6 +451,8 @@ export function snapshot(state: ControlState, now = Date.now(), full = false) {
       .map((a) => full ? a : { name: a.name, status: a.status, lastSeenAt: a.lastSeenAt, nextRunAt: a.nextRunAt ?? null, currentTask: null, note: null }),
     kpis: full ? Object.values(state.kpis).sort(byTime) : [],
     usage: full ? Object.values(state.usage ?? {}) : [],
+    jobs: full ? Object.values(state.jobs ?? {}).sort((a, b) => a.source.localeCompare(b.source)) : [],
+    jobCounts: jobCounts(state),
     // SNS follower/post-date metrics mirror what the public profiles already show; everything else stays private.
     metrics: Object.values(state.metrics).filter((m) => full || m.group === 'sns').sort(byTime),
     events: full ? state.events.slice(0, 60) : [],

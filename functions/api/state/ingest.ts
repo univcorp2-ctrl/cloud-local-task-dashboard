@@ -14,7 +14,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (!auth.ok) return jsonResponse({ ok: false, error: auth.error }, auth.status);
   if (!(request.headers.get('Content-Type') || '').includes('application/json')) return jsonResponse({ ok: false, error: 'json_required' }, 415);
   const raw = await request.text();
-  if (raw.length > 60_000) return jsonResponse({ ok: false, error: 'body_too_large' }, 413);
+  if (raw.length > 200_000) return jsonResponse({ ok: false, error: 'body_too_large' }, 413);
   let payload: IngestPayload & { actor?: unknown };
   try { payload = JSON.parse(raw); } catch { return jsonResponse({ ok: false, error: 'invalid_json' }, 400); }
   const actor = typeof payload.actor === 'string' && /^[a-z0-9_.-]{2,40}$/i.test(payload.actor) ? payload.actor : auth.actor;

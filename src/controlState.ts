@@ -25,8 +25,14 @@ export interface AgentBeat { name: string; status: 'running' | 'idle' | 'blocked
 export interface EventItem { at: string; actor: string; kind: 'info' | 'success' | 'warning' | 'error'; message: string; link?: string | null; topic?: string | null }
 export interface UsageItem { key: string; label: string; kind: string; tokens: number | null; sharePercent: number | null; quotaPercent: number | null; runs: number | null; lastAt: string | null; note?: string | null }
 export interface UsageRecord { provider: string; window: string; observedAt: string; source: string; totalTokens: number | null; quotaUsedPercent: number | null; basis: string; items: UsageItem[] }
+export interface JobItem { id: string; name: string; platform: string; schedule: string; scheduleLabel: string | null; enabled: boolean; oneShot: boolean;
+  status: 'running' | 'success' | 'failed' | 'paused' | 'scheduled' | 'ended'; lastRunAt: string | null; lastFinishedAt: string | null; nextRunAt: string | null;
+  durationSeconds: number | null; model: string | null; runsPerWeek: number | null; category: string | null; note: string | null; link: string | null }
+export interface JobsRecord { source: string; label: string; observedAt: string; updatedAt: string; actor: string; items: JobItem[] }
 export interface ControlSnapshot {
   usage?: UsageRecord[];
+  jobs?: JobsRecord[];
+  jobCounts?: { total: number; running: number; failed: number };
   ok: boolean; generatedAt: string; updatedAt: string | null; quotas: QuotaView[]; kpis: Kpi[]; metrics: Metric[];
   agents: AgentBeat[]; events: EventItem[]; authenticated: boolean; scope: string;
 }

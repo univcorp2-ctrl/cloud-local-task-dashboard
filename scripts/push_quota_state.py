@@ -240,6 +240,99 @@ def find_muse_payload() -> Path | None:
     return Path(hits[0]) if len(hits) == 1 else None
 
 
+WIN_SKIP = re.compile(r"GoogleUpdate|GoogleSystem|OneDrive|MicrosoftEdge|Adobe|NVIDIA|Intel|npcap|CCleaner|Opera|Brave|Dropbox|Zoom", re.I)
+WIN_PS = r"""
+$ErrorActionPreference='SilentlyContinue'
+Get-ScheduledTask | Where-Object { $_.TaskPath -notlike '\Microsoft\*' } | ForEach-Object {
+  $i = $_ | Get-ScheduledTaskInfo
+  $t = @($_.Triggers)[0]
+  [pscustomobject]@{ name=$_.TaskName; path=$_.TaskPath; state=[string]$_.State;
+    last=if($i.LastRunTime -and $i.LastRunTime.Year -gt 2000){$i.LastRunTime.ToUniversalTime().ToString('o')}else{$null};
+    next=if($i.NextRunTime -and $i.NextRunTime.Year -gt 2000){$i.NextRunTime.ToUniversalTime().ToString('o')}else{$null};
+    result=[int64]$i.LastTaskResult;
+    rep=if($t -and $t.Repetition -and $t.Repetition.Interval){[string]$t.Repetition.Interval}else{''};
+    kind=if($t){$t.CimClass.CimClassName -replace 'MSFT_Task','' -replace 'Trigger',''}else{''};
+    desc=[string]$_.Description }
+} | ConvertTo-Json -Depth 3 -Compress
+"""
+
+
+def _iso_dur(rep: str) -> str:
+    m = re.match(r"P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?", rep or "")
+    if not m or not any(m.groups()):
+        return ""
+    d, h, mi = (int(x or 0) for x in m.groups())
+    return f"{d}日毎" if d else f"{h}時間毎" if h and not mi else f"{h * 60 + mi}分毎"
+
+
+def windows_jobs(now: dt.datetime) -> dict | None:
+    if os.name != "nt":
+        return None
+    try:
+        out = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", WIN_PS], capture_output=True, text=True,
+                             timeout=90, encoding="utf-8", errors="replace").stdout.strip()
+        rows = json.loads(out) if out else []
+    except (OSError, ValueError, subprocess.TimeoutExpired):
+        return None
+    if isinstance(rows, dict):
+        rows = [rows]
+    items = []
+    for r in rows:
+        name = str(r.get("name") or "")
+        if not name or WIN_SKIP.search(name + str(r.get("path") or "")):
+            continue
+        state, res = str(r.get("state") or ""), int(r.get("result") or 0)
+        if state == "Running" or res == 267009:
+            status = "running"
+        elif state == "Disabled":
+            status = "paused"
+        elif res in (0, 1) and r.get("last"):
+            status = "success"
+        elif res == 267011 or not r.get("last"):
+            status = "scheduled"
+        else:
+            status = "failed"
+        rep = _iso_dur(str(r.get("rep") or ""))
+        kind = str(r.get("kind") or "")
+        label = rep or {"Daily": "毎日", "Weekly": "毎週", "Logon": "ログオン時", "Boot": "起動時", "Time": "1回/時刻"}.get(kind, kind)
+        items.append({"id": (str(r.get("path") or "\\") + name)[:80], "name": name[:140], "platform": "windows",
+                      "schedule": label[:80], "scheduleLabel": label[:60] or None, "enabled": state != "Disabled", "status": status,
+                      "lastRunAt": r.get("last"), "nextRunAt": r.get("next"),
+                      "note": (f"結果コード 0x{res & 0xFFFFFFFF:X}" if status == "failed" else (str(r.get("desc") or "")[:150] or None)),
+                      "category": "Codex" if re.search("codex", name, re.I) else "Antigravity" if re.search("antigravity|gemini", name, re.I) else None})
+    host = re.sub(r"[^A-Za-z0-9_.-]", "", os.environ.get("COMPUTERNAME", "pc"))[:30] or "pc"
+    return {"source": f"windows:{host}", "label": f"Windows PC（{host}）", "observedAt": now.isoformat(), "items": items[:200]}
+
+
+def fetch_state(api: str, token: str) -> dict:
+    req = urllib.request.Request(api + "/api/state", headers={"Authorization": "Bearer " + token, "Accept": "application/json", "User-Agent": "TCC-QuotaPush/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except (urllib.error.URLError, TimeoutError, ValueError):
+        return {}
+
+
+def live_claude_tasks(state: dict, fallback: Path | None) -> list[dict]:
+    """Claude cloud scheduled tasks from the job list the cloud sync publishes (replaces the manual snapshot)."""
+    snap = {}
+    if fallback and fallback.exists():
+        try:
+            snap = {t.get("name"): t for t in json.loads(fallback.read_text(encoding="utf-8")).get("tasks", [])}
+        except (OSError, ValueError):
+            snap = {}
+    out = []
+    for rec in state.get("jobs") or []:
+        if rec.get("source") != "claude-cloud":
+            continue
+        for j in rec.get("items") or []:
+            if not j.get("enabled") or j.get("oneShot") or not j.get("runsPerWeek"):
+                continue
+            secs = j.get("durationSeconds") or (snap.get(j["name"]) or {}).get("avgSeconds") or 300
+            out.append({"name": j["name"], "runsPerWeek": j["runsPerWeek"], "avgSeconds": secs, "model": j.get("model"), "lastRunAt": j.get("lastRunAt")})
+    return out
+
+
 def post(api: str, token: str, payload: dict) -> dict:
     req = urllib.request.Request(api + "/api/state/ingest", data=json.dumps(payload, ensure_ascii=False).encode("utf-8"), method="POST",
                                  headers={"Authorization": "Bearer " + token, "Content-Type": "application/json", "Accept": "application/json",
@@ -265,6 +358,7 @@ def main() -> int:
     ap.add_argument("--no-usage", action="store_true", help="skip per-task usage attribution")
     ap.add_argument("--claude-tasks", type=Path, default=Path(r"G:\マイドライブ\AI_Agents\Private\automation-control-center\claude_scheduled_tasks.json"),
                     help="snapshot of Claude scheduled cloud tasks (name, runsPerWeek, avgSeconds, model)")
+    ap.add_argument("--no-jobs", action="store_true", help="skip Windows Task Scheduler job list")
     ap.add_argument("--no-antigravity", action="store_true", help="skip the Antigravity language-server lookup")
     ap.add_argument("--log", type=Path, help="append one status line here")
     args = ap.parse_args()
@@ -289,21 +383,27 @@ def main() -> int:
         # Muse's own 3-hourly Drive update is evidence that Muse is alive; report it as such.
         agents.append({"name": "muse", "status": "idle", "currentTask": "Drive token_status_payload を更新 " + parse(muse["observedAt"]).astimezone(JST).strftime("%m/%d %H:%M"),
                        "note": "pc-collector が Drive 更新時刻から推定"})
+    token = os.environ.get("TCC_ACCESS_TOKEN") or os.environ.get("TCC_AGENT_TOKEN") or ""
+    state = fetch_state(args.api_base, token) if token else {}
+    jobs = []
+    if not args.no_jobs:
+        w = windows_jobs(now)
+        if w:
+            jobs.append(w)
     usage = []
     if not args.no_usage:
         codex_q = next((q for q in quotas if q["provider"] == "codex"), None)
         codex_week = next((w.get("usedPercent") for w in (codex_q or {}).get("windows", []) if w.get("kind") == "weekly"), None)
         for u in (ctu.codex_usage(args.home, now, codex_week),
-                  ctu.claude_usage(LAST_CLAUDE_USAGE or None, args.home, now, args.claude_tasks)):
+                  ctu.claude_usage(LAST_CLAUDE_USAGE or None, args.home, now, args.claude_tasks, live_claude_tasks(state, args.claude_tasks) or None)):
             if u:
                 usage.append(u)
-    payload = {"actor": "pc-collector", "quotas": quotas, "agents": agents, "usage": usage}
-    line = f"{dt.datetime.now(JST).isoformat(timespec='seconds')} | providers={','.join(q['provider'] for q in quotas) or 'none'} usage={','.join(u['provider'] + ':' + str(len(u['items'])) for u in usage) or 'none'}"
+    payload = {"actor": "pc-collector", "quotas": quotas, "agents": agents, "usage": usage, "jobs": jobs}
+    line = f"{dt.datetime.now(JST).isoformat(timespec='seconds')} | providers={','.join(q['provider'] for q in quotas) or 'none'} usage={','.join(u['provider'] + ':' + str(len(u['items'])) for u in usage) or 'none'} jobs={','.join(j['source'] + ':' + str(len(j['items'])) for j in jobs) or 'none'}"
     if not args.apply:
         print(json.dumps(payload, ensure_ascii=False, indent=1))
         print("DRY RUN " + line)
         return 0
-    token = os.environ.get("TCC_ACCESS_TOKEN") or os.environ.get("TCC_AGENT_TOKEN") or ""
     if not token:
         raise SystemExit("TCC_ACCESS_TOKEN/TCC_AGENT_TOKEN missing from environment")
     if not quotas:

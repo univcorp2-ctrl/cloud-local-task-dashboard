@@ -152,7 +152,7 @@ def claude_code_cli(home: Path, now: dt.datetime) -> list[dict]:
              "runs": len(v["runs"]), "lastAt": v["lastAt"]} for k, v in sorted(per.items(), key=lambda kv: -kv[1]["tokens"])]
 
 
-def claude_usage(usage_body: dict | None, home: Path, now: dt.datetime, tasks_file: Path | None) -> dict | None:
+def claude_usage(usage_body: dict | None, home: Path, now: dt.datetime, tasks_file: Path | None, live_tasks: list[dict] | None = None) -> dict | None:
     if not usage_body:
         return None
     weekly = (usage_body.get("seven_day") or {}).get("utilization")
@@ -170,8 +170,8 @@ def claude_usage(usage_body: dict | None, home: Path, now: dt.datetime, tasks_fi
                       "tokens": None, "sharePercent": float(pct), "quotaPercent": round(float(pct) * weekly / 100.0, 1) if weekly is not None else None,
                       "runs": None, "lastAt": None, "note": "Anthropic計測の7日内訳"})
     # scheduled cloud tasks: estimated split of the Cowork surface by runs x run time
-    tasks = []
-    if tasks_file and tasks_file.exists():
+    tasks = list(live_tasks or [])
+    if not tasks and tasks_file and tasks_file.exists():
         try:
             tasks = json.loads(tasks_file.read_text(encoding="utf-8")).get("tasks", [])
         except (OSError, ValueError):
@@ -186,11 +186,11 @@ def claude_usage(usage_body: dict | None, home: Path, now: dt.datetime, tasks_fi
         items.append({"key": "sched:" + clean(t.get("name", ""), 40), "label": clean(t.get("name", ""), 60), "kind": "scheduled", "tokens": None,
                       "sharePercent": round(share_total, 1), "quotaPercent": round(share_total * weekly / 100.0, 1) if weekly is not None else None,
                       "runs": int(t.get("runsPerWeek") or 0), "lastAt": t.get("lastRunAt"),
-                      "note": f"推定（週{int(t.get('runsPerWeek') or 0)}回×平均{int(t.get('avgSeconds') or 0)}秒・{t.get('model', '')}）"})
+                      "note": f"推定（週{int(t.get('runsPerWeek') or 0)}回×{'直近' if live_tasks else '平均'}{int(t.get('avgSeconds') or 0)}秒・{t.get('model') or ''}）"})
     for c in claude_code_cli(home, now)[:5]:
         items.append({**c, "sharePercent": None, "quotaPercent": None, "note": "PC上のCLI（Claude Code面に含まれる）"})
     if not items:
         return None
     return {"provider": "claude", "window": "7d", "observedAt": now.isoformat(), "basis": "percent",
-            "source": "Claude account usage seven_day_breakdown + scheduled-task estimate", "totalTokens": None,
+            "source": "Claude account usage seven_day_breakdown + scheduled-task estimate" + (" (live job list)" if live_tasks else " (snapshot file)"), "totalTokens": None,
             "quotaUsedPercent": weekly, "items": items[:40]}

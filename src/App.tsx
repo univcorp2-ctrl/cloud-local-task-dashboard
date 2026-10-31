@@ -9,6 +9,8 @@ import { dashboardAppLinks, appCategories } from './appLinks';
 import ManualTasksPanel from './ManualTasksPanel';
 import DevelopmentProgressPanel from './DevelopmentProgressPanel';
 import OperationsOverview from './OperationsOverview';
+import JobsPanel from './JobsPanel';
+import { useConnected } from './controlState';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
 const statusLabel: Record<TaskStatus, string> = {
@@ -80,6 +82,7 @@ export default function App() {
   useEffect(() => { captureTokenFromUrl(); const onHashChange = () => setActivePage(pageFromHash(window.location.hash)); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
   const [connectOpen, setConnectOpen] = useState(false);
   const [ownerToken] = useOwnerToken();
+  const connected = useConnected();
   const control = useControlState(120_000);
   const [snapshot, setSnapshot] = useState<TaskSnapshot>({ ...fallbackSnapshot, generatedAt: '', agents: [], tasks: [] });
   const [query, setQuery] = useState('');
@@ -140,7 +143,7 @@ export default function App() {
               href={app.url} title={app.description} target="_blank" rel="noopener noreferrer">{app.label} ↗</a>)}</div>
           </details>)}
         </nav>
-        <div className="sidebar-foot"><span className="live-dot" /> 60秒ごとに自動更新<br /><button type="button" className="sidebar-connect" onClick={() => setConnectOpen(true)}>{ownerToken ? '● 接続済み・設定' : '○ 接続（トークン）'}</button></div>
+        <div className="sidebar-foot"><span className="live-dot" /> 60秒ごとに自動更新<br /><button type="button" className="sidebar-connect" onClick={() => setConnectOpen(true)}>{ownerToken || connected ? '● 接続済み・設定' : '○ 接続（トークン）'}</button></div>
       </aside>
 
       <main>
@@ -155,9 +158,10 @@ export default function App() {
           </div>
         </header>
         {activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
+        <JobsPanel data={control.data ?? null} connected={connected} onConnect={() => setConnectOpen(true)} />
         <TokenUsagePanel />
         <details className="ops-expanded">
-          <summary>☷ 自動実行一覧・リポジトリ・トークン明細を開く <span>{totals.total} タスク</span></summary>
+          <summary>☷ 旧インベントリ（10/20時点の固定データ・名前非表示）・リポジトリ一覧を開く <span>{totals.total} 件</span></summary>
         <section className="kpi-grid" aria-label="主要指標">
           <KpiCard tone="blue" label="総タスク数" value={totals.total} note={`${snapshot.agents.filter((agent) => agent.status === 'online').length} エージェント接続`} icon="▤" />
           <KpiCard tone="green" label="実行中" value={totals.running} note="リアルタイム監視" icon="▶" />

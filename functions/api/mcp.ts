@@ -19,7 +19,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const auth = await authorize(request, env);
   if (!auth.ok) return jsonResponse(rpcError(null, -32001, auth.error), auth.status, { 'WWW-Authenticate': 'Bearer' });
   const raw = await request.text();
-  if (raw.length > 60_000) return jsonResponse(rpcError(null, -32600, 'body too large'), 413);
+  if (raw.length > 200_000) return jsonResponse(rpcError(null, -32600, 'body too large'), 413);
   let message: unknown;
   try { message = JSON.parse(raw); } catch { return jsonResponse(rpcError(null, -32700, 'parse error'), 400); }
   const actorName = (request.headers.get('X-TCC-Agent') || '').replace(/[^a-z0-9_.-]/gi, '').slice(0, 40) || auth.actor;
