@@ -78,3 +78,24 @@ export const jsonResponse = (data: unknown, status = 200, extra: Record<string, 
       ...extra,
     },
   });
+
+/** Coarse device family from the User-Agent (no identifiers), for "is the owner connected?" checks. */
+export function deviceFamily(request: Request): string {
+  const ua = request.headers.get('User-Agent') || '';
+  if (/iPhone/.test(ua)) return 'iPhone';
+  if (/iPad|Macintosh.*Mobile/.test(ua)) return 'iPad';
+  if (/Android/.test(ua)) return 'Android';
+  if (/Windows/.test(ua)) return 'Windows';
+  if (/Macintosh/.test(ua)) return 'Mac';
+  return 'other';
+}
+
+export const OWNER_SEEN_KEY = 'tcc:owner:lastseen:v1';
+export interface OwnerSeen { at: string; device: string; path: string; via: string }
+
+/** Remember that the owner's browser reached a private endpoint (timestamp + device family only). */
+export async function recordOwnerSeen(kv: { put(k: string, v: string, o?: { expirationTtl?: number }): Promise<void> } | undefined, request: Request, via: string): Promise<void> {
+  if (!kv) return;
+  const seen: OwnerSeen = { at: new Date().toISOString(), device: deviceFamily(request), path: new URL(request.url).pathname, via };
+  try { await kv.put(OWNER_SEEN_KEY, JSON.stringify(seen), { expirationTtl: 60 * 60 * 24 * 30 }); } catch { /* best effort */ }
+}

@@ -4,7 +4,7 @@
  *   PATCH /api/private-tasks  {id, completed:true}  -> mark complete + audit line on the page
  * Auth: owner bearer token (TCC_ACCESS_TOKEN) or a verified Cloudflare Access JWT. Fails closed.
  */
-import { authorize, jsonResponse, type AuthEnv } from '../_lib/auth';
+import { authorize, jsonResponse, recordOwnerSeen, type AuthEnv } from '../_lib/auth';
 import { completeTask, listTasks, NotionError, type NotionEnv } from '../_lib/notion';
 import { applyIngest, loadState, saveState } from '../_lib/state';
 
@@ -17,6 +17,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const auth = await authorize(request, env);
   if (!auth.ok) return authFailure(auth.status, auth.error);
   if (auth.actor !== 'owner') return jsonResponse({ error: 'owner_token_required' }, 403);
+  await recordOwnerSeen(env.TCC_STATE, request, auth.via);
   try {
     const showCompleted = new URL(request.url).searchParams.get('showCompleted') === 'true';
     return jsonResponse(await listTasks(env, showCompleted));
