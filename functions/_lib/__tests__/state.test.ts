@@ -37,6 +37,7 @@ describe('ingest + snapshot', () => {
     expect(loaded.events).toHaveLength(120);
     const anon = snapshot(loaded, now.getTime(), false);
     expect(anon.kpis).toEqual([]);
+    expect(anon.metrics).toEqual([]);
     expect(anon.events).toEqual([]);
     expect(anon.quotas.find((q) => q.provider === 'muse')?.primary?.remainingPercent).toBe(67);
     expect(anon.quotas.find((q) => q.provider === 'claude')?.freshness).toBe('missing');

@@ -352,7 +352,8 @@ export function snapshot(state: ControlState, now = Date.now(), full = false) {
     agents: Object.values(state.agents).sort((a, b) => Date.parse(b.lastSeenAt) - Date.parse(a.lastSeenAt))
       .map((a) => full ? a : { name: a.name, status: a.status, lastSeenAt: a.lastSeenAt, nextRunAt: a.nextRunAt ?? null, currentTask: null, note: null }),
     kpis: full ? Object.values(state.kpis).sort(byTime) : [],
-    metrics: full ? Object.values(state.metrics).sort(byTime) : [],
+    // SNS follower/post-date metrics mirror what the public profiles already show; everything else stays private.
+    metrics: Object.values(state.metrics).filter((m) => full || m.group === 'sns').sort(byTime),
     events: full ? state.events.slice(0, 60) : [],
     scope: full ? 'authenticated_control_state' : 'public_quota_and_heartbeat_only',
     authenticated: full,
