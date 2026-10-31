@@ -295,7 +295,7 @@ def windows_jobs(now: dt.datetime) -> dict | None:
         rep = _iso_dur(str(r.get("rep") or ""))
         kind = str(r.get("kind") or "")
         one_shot = kind == "Time" and not rep
-        stale = bool(r.get("last")) and parse(r["last"]) < now - dt.timedelta(days=2)
+        stale = (parse(r.get("last")) or now) < now - dt.timedelta(days=2)
         if one_shot and not r.get("next") and (status == "success" or (status == "failed" and stale)):
             status = "ended"
         label = rep or {"Daily": "毎日", "Weekly": "毎週", "Logon": "ログオン時", "Boot": "起動時", "Time": "1回/時刻"}.get(kind, kind)
