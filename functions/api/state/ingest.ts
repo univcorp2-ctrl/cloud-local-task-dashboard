@@ -21,7 +21,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   try {
     const state = await loadState(env.TCC_STATE);
     const summary = applyIngest(state, payload, actor);
-    await saveState(env.TCC_STATE, state);
+    await saveState(env.TCC_STATE, state, summary.jobs ?? []);
     return jsonResponse({ ok: true, actor, applied: summary, updatedAt: state.updatedAt });
   } catch (error) {
     if (error instanceof ValidationError) return jsonResponse({ ok: false, error: 'validation', message: error.message }, 400);

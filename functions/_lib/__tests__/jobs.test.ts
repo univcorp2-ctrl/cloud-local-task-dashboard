@@ -25,3 +25,17 @@ describe('jobs ingest', () => {
     expect(() => applyIngest(state, { jobs: [{ source: 'x', observedAt: now.toISOString(), items: [item({ status: 'weird' })] }] }, 'a', now)).toThrow();
   });
 });
+
+describe('jobs storage', () => {
+  it('keeps each source under its own key so writers do not clobber each other', async () => {
+    const { MemoryKV } = await import('../kv');
+    const { loadState, saveState } = await import('../state');
+    const kv = new MemoryKV();
+    const a = await loadState(kv); const b = await loadState(kv); // two concurrent readers
+    const sa = applyIngest(a, { jobs: [{ source: 'claude-cloud', observedAt: now.toISOString(), items: [item()] }] }, 'x', now);
+    const sb = applyIngest(b, { jobs: [{ source: 'windows:pc', observedAt: now.toISOString(), items: [item({ id: 'w1', platform: 'windows' })] }] }, 'y', now);
+    await saveState(kv, a, sa.jobs); await saveState(kv, b, sb.jobs);
+    const merged = await loadState(kv);
+    expect(Object.keys(merged.jobs!).sort()).toEqual(['claude-cloud', 'windows:pc']);
+  });
+});

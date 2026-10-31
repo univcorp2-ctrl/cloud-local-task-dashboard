@@ -94,20 +94,39 @@ export function emptyState(): ControlState {
   return { version: 1, updatedAt: null, quotas: {}, usage: {}, kpis: {}, metrics: {}, agents: {}, events: [] };
 }
 
+export const JOBS_PREFIX = 'tcc:jobs:';
+/** Sources that are always read even if KV list() lags behind a first write. */
+const KNOWN_JOB_SOURCES = ['claude-cloud'];
+
 export async function loadState(kv: KVLike): Promise<ControlState> {
   const raw = await kv.get(STATE_KEY);
-  if (!raw) return emptyState();
-  try {
-    const parsed = JSON.parse(raw) as Partial<ControlState>;
-    return { ...emptyState(), ...parsed, version: 1 };
-  } catch {
-    return emptyState();
+  let state = emptyState();
+  if (raw) {
+    try { state = { ...emptyState(), ...(JSON.parse(raw) as Partial<ControlState>), version: 1 }; } catch { state = emptyState(); }
   }
+  // Job lists live under their own keys so independent reporters (cloud sync, each PC) never overwrite each other.
+  const names = new Set<string>(KNOWN_JOB_SOURCES.map((s) => JOBS_PREFIX + s));
+  if (kv.list) {
+    try { for (const k of (await kv.list({ prefix: JOBS_PREFIX })).keys) names.add(k.name); } catch { /* list unavailable: known keys only */ }
+  }
+  const jobs: Record<string, JobsRecord> = { ...(state.jobs ?? {}) };
+  for (const name of names) {
+    const v = await kv.get(name);
+    if (!v) continue;
+    try { const rec = JSON.parse(v) as JobsRecord; if (!jobs[rec.source] || Date.parse(jobs[rec.source].observedAt) <= Date.parse(rec.observedAt)) jobs[rec.source] = rec; } catch { /* skip */ }
+  }
+  state.jobs = jobs;
+  return state;
 }
 
-export async function saveState(kv: KVLike, state: ControlState): Promise<void> {
+export async function saveState(kv: KVLike, state: ControlState, touchedJobSources: string[] = []): Promise<void> {
   state.updatedAt = new Date().toISOString();
-  await kv.put(STATE_KEY, JSON.stringify(state));
+  for (const source of touchedJobSources) {
+    const rec = state.jobs?.[source];
+    if (rec) await kv.put(JOBS_PREFIX + source, JSON.stringify(rec));
+  }
+  const { jobs: _jobs, ...rest } = state;
+  await kv.put(STATE_KEY, JSON.stringify(rest));
 }
 
 // ----------------------------------------------------------------------------- validators

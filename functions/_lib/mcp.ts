@@ -49,7 +49,7 @@ export async function callTool(ctx: McpContext, name: string, args: Record<strin
   const write = async (payload: Parameters<typeof applyIngest>[1]) => {
     const state = await loadState(ctx.kv);
     const summary = applyIngest(state, payload, ctx.actorName, now);
-    await saveState(ctx.kv, state);
+    await saveState(ctx.kv, state, summary.jobs ?? []);
     return summary;
   };
   try {
