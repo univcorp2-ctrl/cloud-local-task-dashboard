@@ -294,9 +294,12 @@ def windows_jobs(now: dt.datetime) -> dict | None:
             status = "failed"
         rep = _iso_dur(str(r.get("rep") or ""))
         kind = str(r.get("kind") or "")
+        one_shot = kind == "Time" and not rep
+        if one_shot and not r.get("next") and status == "success":
+            status = "ended"
         label = rep or {"Daily": "毎日", "Weekly": "毎週", "Logon": "ログオン時", "Boot": "起動時", "Time": "1回/時刻"}.get(kind, kind)
         items.append({"id": (str(r.get("path") or "\\") + name)[:80], "name": name[:140], "platform": "windows",
-                      "schedule": label[:80], "scheduleLabel": label[:60] or None, "enabled": state != "Disabled", "status": status,
+                      "schedule": label[:80], "scheduleLabel": label[:60] or None, "enabled": state != "Disabled", "oneShot": one_shot, "status": status,
                       "lastRunAt": r.get("last"), "nextRunAt": r.get("next"),
                       "note": (f"結果コード 0x{res & 0xFFFFFFFF:X}" if status == "failed" else (str(r.get("desc") or "")[:150] or None)),
                       "category": "Codex" if re.search("codex", name, re.I) else "Antigravity" if re.search("antigravity|gemini", name, re.I) else None})

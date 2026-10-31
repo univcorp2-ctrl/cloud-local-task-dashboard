@@ -34,12 +34,13 @@ export default function JobsPanel({ data, connected, onConnect, compact = false 
   const rows = useJobRows(data);
   const [filter, setFilter] = useState<'active' | 'all'>('active');
   const [platform, setPlatform] = useState('all');
-  const active = rows.filter((j) => j.enabled || j.status === 'running');
+  const isActive = (j: JobRow) => (j.enabled && j.status !== 'ended') || j.status === 'running';
+  const active = rows.filter(isActive);
   const running = rows.filter((j) => j.status === 'running');
   const failed = active.filter((j) => j.status === 'failed');
   const next = [...active].filter((j) => j.nextRunAt && Date.parse(j.nextRunAt) > Date.now()).sort((a, b) => Date.parse(a.nextRunAt!) - Date.parse(b.nextRunAt!));
   const platforms = [...new Set(rows.map((j) => j.platform))];
-  const shown = rows.filter((j) => (filter === 'all' || j.enabled || j.status === 'running') && (platform === 'all' || j.platform === platform))
+  const shown = rows.filter((j) => (filter === 'all' || isActive(j)) && (platform === 'all' || j.platform === platform))
     .sort((a, b) => order(a) - order(b) || (b.quotaPt ?? -1) - (a.quotaPt ?? -1) || (Date.parse(a.nextRunAt ?? '') || 9e15) - (Date.parse(b.nextRunAt ?? '') || 9e15));
   const list = compact ? shown.filter((j) => j.status === 'running' || j.status === 'failed' || (j.quotaPt ?? 0) >= 1).slice(0, 8) : shown;
 

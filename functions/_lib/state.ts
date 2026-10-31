@@ -441,7 +441,7 @@ export function primaryWindow(record: QuotaRecord): QuotaWindow | null {
 }
 
 export function jobCounts(state: ControlState) {
-  const items = Object.values(state.jobs ?? {}).flatMap((r) => r.items).filter((j) => j.enabled || j.status === 'running');
+  const items = Object.values(state.jobs ?? {}).flatMap((r) => r.items).filter((j) => (j.enabled && j.status !== 'ended') || j.status === 'running');
   return { total: items.length, running: items.filter((j) => j.status === 'running').length, failed: items.filter((j) => j.status === 'failed').length };
 }
 
