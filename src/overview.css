@@ -1,5 +1,6 @@
 /* Overview home: one glance = today's focus, quota gauges, three lanes, KPIs, activity, sources. */
-.overview{display:grid;gap:14px}
+.overview{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.overview>*{min-width:0}
 .ov-focus{padding:16px 20px}
 .ov-focus-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
 .ov-focus h2{margin:2px 0 0;font-size:18px;line-height:1.35;color:#0f1f35;letter-spacing:-.02em}
