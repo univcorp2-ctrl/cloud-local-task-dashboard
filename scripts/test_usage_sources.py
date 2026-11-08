@@ -11,6 +11,16 @@ NOW = dt.datetime(2026, 11, 8, 4, tzinfo=dt.timezone.utc)
 
 
 class UsageSourcesTest(unittest.TestCase):
+    def test_recovers_garbled_codex_title_from_exact_request_id(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'running'
+            path.mkdir()
+            request_id = '41210562e58b81a0b244fb1d206d63d3'
+            (path / f'p1_{request_id}.md').write_text('# 【TCC】AI別使用状況の修正\nprivate body', encoding='utf-8')
+            event = {'type': 'response_item', 'payload': {'type': 'message', 'role': 'user', 'content': [
+                {'text': f'# ?TCC?AI????????\nNotion: https://app.notion.com/p/{request_id}'}]}}
+            self.assertEqual(ctu._first_user_line(event, Path(d)), '【TCC】AI別使用状況の修正')
+
     def test_codex_window_uses_deltas_and_skips_injected_instructions(self):
         with tempfile.TemporaryDirectory() as d:
             folder = Path(d) / '.codex/sessions'

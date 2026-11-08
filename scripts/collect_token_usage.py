@@ -34,7 +34,7 @@ def clean(text: str, limit: int = 60) -> str:
     return text[:limit] or "(無題)"
 
 
-def _first_user_line(event: dict) -> str | None:
+def _first_user_line(event: dict, queue_root: Path = Path(r"C:\AI-Agent\queue\codex")) -> str | None:
     p = event.get("payload") or {}
     if event.get("type") != "response_item" or p.get("type") != "message" or p.get("role") != "user":
         return None
@@ -45,6 +45,19 @@ def _first_user_line(event: dict) -> str | None:
         for line in t.splitlines():
             line = line.strip().lstrip("#").strip()
             if line:
+                if line.count('?') > max(3, len(line) * .2):
+                    # Recover only a title from the exact existing request, never its body.
+                    match = re.search(r'https://app\.notion\.com/p/([0-9a-f]{32})\b', t)
+                    if match:
+                        for folder in ('running', 'done', 'pending'):
+                            for path in (queue_root / folder).glob(f'*{match[1]}.md'):
+                                try:
+                                    with path.open(encoding='utf-8-sig') as fh:
+                                        title = fh.readline().strip().lstrip('#').strip()
+                                    if title and title.count('?') <= 3:
+                                        return title
+                                except (OSError, UnicodeError):
+                                    pass
                 return line
     return None
 

@@ -243,6 +243,7 @@ def find_muse_payload() -> Path | None:
 WIN_SKIP = re.compile(r"GoogleUpdate|GoogleSystem|OneDrive|MicrosoftEdge|Adobe|NVIDIA|Intel|npcap|CCleaner|Opera|Brave|Dropbox|Zoom", re.I)
 WIN_PS = r"""
 $ErrorActionPreference='SilentlyContinue'
+[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 Get-ScheduledTask | Where-Object { $_.TaskPath -notlike '\Microsoft\*' } | ForEach-Object {
   $i = $_ | Get-ScheduledTaskInfo
   $t = @($_.Triggers)[0]

@@ -253,13 +253,13 @@
       "id": "tcc-unified-overview-v2",
       "title": "タスクコントロールセンター統合｜全体像・残量ゲージ・KV状態API・MCP",
       "priority": "P0",
-      "progressPercent": 80,
-      "confidence": "medium",
-      "executionStatus": "実装・テスト済み（36 vitest + 18 unittest）。本番デプロイと残量push定期ジョブの稼働確認中",
-      "nextAction": "本番 /api/state の残量4媒体が実測で埋まること、Notionタスクの認証表示、MCP接続を他エージェント（Codex/Antigravity/Muse）に展開",
-      "lastActionResult": "KV namespace作成・Pages secrets 4件登録・#overview新設・QuotaGauges・/api/state・/api/mcp・/api/external プロキシ実装。push_quota_state.py で30分ごとの残量送信",
-      "inspectedAt": "2026-10-30T16:05:00.595248+00:00",
-      "phase": "本番反映中",
+      "progressPercent": 90,
+      "confidence": "本番API・定期ジョブ・画面確認済み。未提供のタスク別実測は補完しない",
+      "executionStatus": "4AI usageの本番保存を確認。Claude現行一覧・品質ラベル・4AI平均を表示",
+      "nextAction": "Museがタスク別実測を提供した時に照合。Claude定期タスク按分は推定のまま扱う",
+      "lastActionResult": "UI/API44テスト・Python収集28テスト・agent2テスト・lint/build PASS。定期ジョブ終了0、新しい可視コンソール0件",
+      "inspectedAt": "2026-11-08T03:56:19.543145+00:00",
+      "phase": "4AIの利用量可視化を公開・実ジョブの保存を検証",
       "visibility": "public_alias_only",
       "links": [
         {
@@ -6637,5 +6637,5 @@
     }
   ],
   "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照",
-  "activeProjectsUpdatedAt": "2026-10-30T16:05:00.595248+00:00"
+  "activeProjectsUpdatedAt": "2026-11-08T03:56:19.715355+00:00"
 }

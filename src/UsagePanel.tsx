@@ -36,14 +36,14 @@ export default function UsagePanel({ usage, quotas = [], connected, onConnect }:
       {PROVIDERS.map(provider => {
         const u = usage.find(u => u.provider === provider);
         const stale = u && Date.now() - Date.parse(u.observedAt) > 3 * 86400000;
-        const tasks = u?.items.filter(i => i.kind !== 'surface') ?? [];
+        const tasks = u?.items.filter(i => i.kind !== 'surface' && !i.note?.includes('・停止中')) ?? [];
         return <article key={provider} className="us-card">
           <header><strong>{LABELS[provider]}</strong><small>週枠使用 {pct(u?.quotaUsedPercent)} · 観測 {fmtJst(u?.observedAt)}{stale ? ' · 旧データ' : ''}</small></header>
           {!tasks.length ? <p className="ov-note">未計測 · タスク別の記録待ち</p> : <div className="us-table-wrap"><table className="us-table">
             <thead><tr><th>タスク名 / 品質</th><th>トークン</th><th>AI内シェア</th><th>AI週枠に対する%</th><th>最終実行</th></tr></thead>
-            <tbody>{[...tasks].sort((a, b) => (b.quotaPercent ?? b.tokens ?? -1) - (a.quotaPercent ?? a.tokens ?? -1)).map(i => <tr key={i.key}>
+            <tbody>{[...tasks].sort((a, b) => (b.quotaPercent ?? -1) - (a.quotaPercent ?? -1) || (b.tokens ?? -1) - (a.tokens ?? -1)).map(i => <tr key={i.key}>
               <td><strong>{i.label}</strong><small>{QUALITY[i.quality ?? u?.quality ?? ''] ?? '品質未取得'}</small><small>{i.note}</small></td>
-              <td>{i.tokens == null ? '未計測' : i.tokens.toLocaleString('ja-JP')}</td><td>{pct(i.sharePercent)}</td><td>{pct(i.quotaPercent)}</td><td>{fmtJst(i.lastAt)}</td>
+              <td data-label="トークン">{i.tokens == null ? '未計測' : i.tokens.toLocaleString('ja-JP')}</td><td data-label="AI内シェア">{pct(i.sharePercent)}</td><td data-label="AI週枠に対する%">{pct(i.quotaPercent)}</td><td data-label="最終実行">{fmtJst(i.lastAt)}</td>
             </tr>)}</tbody>
           </table></div>}
           {!!u?.items.some(i => i.kind === 'surface') && <details><summary>面別の内訳（タスクと重複）</summary>{u.items.filter(i => i.kind === 'surface').map(i => <p key={i.key}>{i.label} · {pct(i.sharePercent)} · {QUALITY[i.quality ?? 'measured']}</p>)}</details>}
