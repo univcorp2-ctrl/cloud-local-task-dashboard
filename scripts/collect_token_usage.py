@@ -269,7 +269,7 @@ def antigravity_usage(home: Path, now: dt.datetime, weekly_used: float | None,
                         continue
                     if identity:
                         seen.add(identity)
-                    engine = str(e.get("engine") or e.get("job") or "")
+                    engine = str(e.get("engine") or e.get("job") or ("commerce-autopilot" if path == commerce_file else ""))
                     key = engine if engine in ("daily-content-engine", "commerce-autopilot") else "interactive"
                     rows.append({"key": key, "label": key if key != "interactive" else "対話", "kind": "scheduled" if key != "interactive" else "cli",
                                  "tokens": tokens, "lastAt": at.isoformat(), "estimated": "estimat" in basis})

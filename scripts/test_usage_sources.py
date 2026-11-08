@@ -64,11 +64,13 @@ class UsageSourcesTest(unittest.TestCase):
                 {'at': NOW.isoformat(), 'event': 'agy_call', 'engine': 'daily-content-engine', 'input_tokens': 100, 'output_tokens': 10},
                 {'at': NOW.isoformat(), 'event': 'published', 'engine': 'daily-content-engine', 'article': 'a', 'input_tokens': 100, 'output_tokens': 10, 'token_basis': 'actual_audit; original generation in agy_call records'},
                 {'at': NOW.isoformat(), 'event': 'error', 'engine': 'commerce-autopilot', 'input_tokens': 20, 'output_tokens': 5},
+                {'at': NOW.isoformat(), 'event': 'draft_only', 'article': 'legacy', 'input_tokens': 5},
                 {'at': '2026-10-01T00:00:00Z', 'event': 'published', 'input_tokens': 999}]
             path.write_text('\n'.join(json.dumps(e) for e in events))
             u = ctu.antigravity_usage(Path(d), NOW, 2.5, path)
-        self.assertEqual(u['totalTokens'], 135)
+        self.assertEqual(u['totalTokens'], 140)
         self.assertEqual(len(u['items']), 2)
+        self.assertEqual(next(i['tokens'] for i in u['items'] if i['key'] == 'commerce-autopilot'), 30)
         self.assertEqual(u['basis'], 'tokens')
 
     def test_muse_total_preserves_source_time(self):
