@@ -161,3 +161,5 @@ a.ov-kpi:hover{border-color:#9fc1f0;box-shadow:0 6px 18px rgba(23,105,232,.08)}
 .ov-usage .us-grid{grid-template-columns:minmax(0,1fr)}.us-overall strong{white-space:nowrap}.us-table{table-layout:fixed}.us-table th:first-child{width:36%}.us-table th:last-child{width:18%}
 @media(max-width:1100px){.us-overall{grid-template-columns:repeat(2,minmax(0,1fr))}.us-overall article:first-child{grid-column:1/-1}}
 @media(max-width:600px){.us-table,.us-table tbody{display:block}.us-table thead{display:none}.us-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-bottom:1px solid #e8edf4;padding:8px 0}.us-table td{display:block;min-width:0!important;border:0}.us-table td:first-child{grid-column:1/-1}.us-table td[data-label]::before{content:attr(data-label);display:block;font-size:10px;font-weight:600;color:#64748b;margin-bottom:3px}}
+/* Override the legacy global table minimum so mobile cards retain every metric. */
+.us-table{min-width:0;max-width:100%}
