@@ -96,3 +96,11 @@ Equivalent package scripts are `npm run lint`, `npm test`, `npm run build`.
 Tests use synthetic homes and databases, including malformed/missing sources,
 zero fractions, latest-per-category selection, stale snapshots, ISO resets,
 read-only database preservation, weekly-only Claude input and UI availability.
+
+## 2026-11-08: quota push and four-AI overview
+
+`TCC-Quota-Push` keeps the existing 30-minute cadence and sends quotas plus usage for four providers independently. A usage collector failure records only provider and exception type and leaves other collectors running. Missing source data is not synthesized; its prior timestamp remains available for freshness checks. Secret values come from the existing owner DPAPI path only and are never written into payloads, source control or diagnostics.
+
+The scheduled action uses `pythonw.exe scripts/run_quota_push.pyw`, which starts PowerShell with CREATE_NO_WINDOW. Its runner starts Git and Python with CreateNoWindow, and Python's own child processes also use CREATE_NO_WINDOW. Registration is in `scripts/register_quota_push_task.ps1`; preserve the existing runtime checkout and cadence. The run log remains the existing private Drive quota-push.log. Quota refresh does not redeploy the site. Verify the real scheduled action, process descendants and zero new visible console windows before reporting background execution as verified.
+
+Overview shows the equally weighted four-AI weekly utilization average, each observation timestamp and reset countdown. Stale/missing observations suppress the average. Antigravity's independent model windows use their maximum utilization and are explicitly labelled as model quota, rather than assumed to be a common token budget.

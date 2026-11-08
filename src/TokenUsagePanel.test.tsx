@@ -18,7 +18,7 @@ const snapshot = {
       tokens: { '24h': null, '7d': null, '30d': null } },
   ],
 };
-beforeEach(() => { vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => snapshot })); });
+beforeEach(() => { snapshot.generatedAt = new Date().toISOString(); vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: async () => snapshot })); });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 
 test('makes the top-consuming execution and measured denominator visible', async () => {
@@ -54,4 +54,14 @@ test('does not fabricate figures when API fails', async () => {
   render(<TokenUsagePanel />);
   expect(await screen.findByRole('alert')).toHaveTextContent('計測データを取得できません');
   expect(screen.queryByText('5,052,660')).toBeNull();
+});
+
+test('collapses data older than three days and labels its actual date', async () => {
+  snapshot.generatedAt = '2026-01-01T00:00:00Z';
+  render(<TokenUsagePanel />);
+  const toggle = await screen.findByRole('button', { name: /旧データ（1\/1時点・参考）/ });
+  expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  expect(screen.queryByRole('region', { name: 'トークン使用率と全体比率' })).toBeNull();
+  fireEvent.click(toggle);
+  expect(screen.getByRole('region', { name: 'トークン使用率と全体比率' })).toBeInTheDocument();
 });

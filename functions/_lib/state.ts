@@ -54,10 +54,12 @@ export interface AgentRecord {
   currentTask?: string | null; lastSeenAt: string; nextRunAt?: string | null; note?: string | null;
 }
 export interface UsageItem {
+  quality?: 'measured' | 'estimated' | 'self_reported';
   key: string; label: string; kind: 'scheduled' | 'cli' | 'app' | 'surface' | 'subagent' | 'worker' | 'other';
   tokens: number | null; sharePercent: number | null; quotaPercent: number | null; runs: number | null; lastAt: string | null; note?: string | null;
 }
 export interface UsageRecord {
+  quality?: 'measured' | 'estimated' | 'self_reported';
   provider: Provider; window: string; observedAt: string; updatedAt: string; source: string;
   totalTokens: number | null; quotaUsedPercent: number | null; basis: 'tokens' | 'percent'; items: UsageItem[]; actor: string;
 }
@@ -245,6 +247,7 @@ export function normalizeUsage(input: unknown, actor: string, now = new Date()):
       tokens: nonneg(r.tokens, `items[${i}].tokens`), sharePercent: percent(r.sharePercent, `items[${i}].sharePercent`),
       quotaPercent: percent(r.quotaPercent, `items[${i}].quotaPercent`), runs: nonneg(r.runs, `items[${i}].runs`),
       lastAt: isoTime(r.lastAt, `items[${i}].lastAt`), note: text(r.note, `items[${i}].note`, 120) || null,
+      quality: oneOf(r.quality, ['measured', 'estimated', 'self_reported'] as const, 'quality', 'estimated'),
     };
   });
   const observedAt = isoTime(x.observedAt, 'observedAt', true) as string;
@@ -252,6 +255,7 @@ export function normalizeUsage(input: unknown, actor: string, now = new Date()):
     provider, window: text(x.window, 'window', 16) || '7d', observedAt, updatedAt: now.toISOString(), source: text(x.source, 'source', 120, true),
     totalTokens: nonneg(x.totalTokens, 'totalTokens'), quotaUsedPercent: percent(x.quotaUsedPercent, 'quotaUsedPercent'),
     basis: oneOf(x.basis, ['tokens', 'percent'] as const, 'basis', 'tokens'), items, actor: text(actor, 'actor', 40) || 'unknown',
+    quality: oneOf(x.quality, ['measured', 'estimated', 'self_reported'] as const, 'quality', 'estimated'),
   };
 }
 

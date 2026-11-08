@@ -1,46 +1,56 @@
-import { fmtJst, type UsageRecord } from './controlState';
+import { fmtJst, untilReset, type QuotaView, type UsageRecord } from './controlState';
 
-const KIND: Record<string, string> = { scheduled: '定期', cli: 'CLI', app: 'アプリ', surface: '面', subagent: 'サブ', worker: 'Worker', other: '他' };
-const fmtTok = (n: number | null) => n === null ? '' : n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${Math.round(n / 1e3)}k` : `${n}`;
+const PROVIDERS = ['claude', 'codex', 'antigravity', 'muse'];
+const LABELS: Record<string, string> = { claude: 'Claude', codex: 'Codex', antigravity: 'Antigravity', muse: 'Muse' };
+const QUALITY: Record<string, string> = { measured: '実測', estimated: '推定', self_reported: '自己申告' };
+const pct = (n: number | null | undefined) => n == null ? '未計測' : `${n.toFixed(1)}%`;
 
-export default function UsagePanel({ usage, connected, onConnect }: { usage: UsageRecord[]; connected: boolean; onConnect: () => void }) {
-  const byProvider = ['claude', 'codex', 'antigravity', 'muse'].map((p) => usage.find((u) => u.provider === p)).filter((u): u is UsageRecord => Boolean(u));
-  // one ranking across providers by "points of that provider's weekly quota" (each AI has its own quota)
-  const ranking = byProvider.flatMap((u) => u.items.filter((i) => i.kind !== 'surface' && i.quotaPercent !== null).map((i) => ({ ...i, provider: u.provider })))
-    .sort((a, b) => (b.quotaPercent ?? 0) - (a.quotaPercent ?? 0)).slice(0, 10);
-  return (
-    <section className="panel ov-usage" aria-label="タスク別トークン消費">
-      <div className="panel-heading"><div><span className="section-kicker">TOKEN SPEND</span><h2>どのタスクが何%使っているか（直近7日）</h2></div></div>
-      {!connected && <div className="ov-empty"><p>タスク別の消費内訳は認証後に表示されます。</p><button type="button" onClick={onConnect}>接続する</button></div>}
-      {connected && byProvider.length === 0 && <p className="ov-note">内訳を収集中です（PCの30分ジョブが次に送信します）。</p>}
-      {ranking.length > 0 && <>
-        <h3 className="us-h">全体ランキング（各AIの週枠を何ポイント使ったか）</h3>
-        <ol className="us-rank">
-          {ranking.map((i) => <li key={i.provider + i.key}>
-            <span className={`us-prov ${i.provider}`}>{i.provider}</span><span className="us-kind">{KIND[i.kind] ?? i.kind}</span>
-            <strong title={i.note ?? ''}>{i.label}</strong>
-            <div className="us-bar"><span style={{ width: `${Math.min(100, i.quotaPercent ?? 0)}%` }} /></div>
-            <em>{(i.quotaPercent ?? 0).toFixed(1)}pt</em>
-          </li>)}
-        </ol>
-      </>}
-      <div className="us-grid">
-        {byProvider.map((u) => (
-          <article key={u.provider} className="us-card">
-            <header><strong>{u.provider}</strong><small>週枠使用 {u.quotaUsedPercent ?? '—'}%{u.totalTokens ? ` · ${fmtTok(u.totalTokens)} tok` : ''} · {fmtJst(u.observedAt)}</small></header>
-            <ul>
-              {u.items.slice(0, 12).map((i) => <li key={i.key}>
-                <span className="us-kind">{KIND[i.kind] ?? i.kind}</span>
-                <span className="us-label" title={i.note ?? ''}>{i.label}</span>
-                <span className="us-num">{i.sharePercent !== null ? `${i.sharePercent.toFixed(1)}%` : fmtTok(i.tokens)}</span>
-                <small>{[i.tokens !== null && i.sharePercent !== null ? `${fmtTok(i.tokens)} tok` : '', i.runs !== null ? `${i.runs}回` : '', i.note ?? ''].filter(Boolean).join(' · ')}</small>
-              </li>)}
-            </ul>
-            <footer>{u.source}</footer>
-          </article>
-        ))}
-      </div>
-      <p className="ov-note">Claudeの「面」はAnthropic計測の実数。Claude定期タスク別は「週の実行回数×平均実行時間」で面の消費を按分した推定。Codexはセッションログの実トークン。Antigravity・Museはタスク別の記録が提供元に無いため総量のみ。</p>
-    </section>
-  );
+export function summarizeQuotas(quotas: QuotaView[]) {
+  const rows = PROVIDERS.map(provider => {
+    const q = quotas.find(q => q.provider === provider);
+    const windows = q?.windows.filter(w => w.kind === (provider === 'antigravity' ? 'model' : 'weekly')) ?? [];
+    const w = [...windows].sort((a, b) => (b.usedPercent ?? -1) - (a.usedPercent ?? -1))[0];
+    const used = w?.usedPercent ?? null;
+    const valid = q?.freshness === 'fresh' && used !== null;
+    return { provider, q, w, used, valid };
+  });
+  return { rows, average: rows.every(r => r.valid) ? rows.reduce((sum, r) => sum + r.used!, 0) / 4 : null };
+}
+
+export default function UsagePanel({ usage, quotas = [], connected, onConnect }: {
+  usage: UsageRecord[]; quotas?: QuotaView[]; connected: boolean; onConnect: () => void;
+}) {
+  const { rows, average } = summarizeQuotas(quotas);
+  return <section className="panel ov-usage" aria-label="タスク別トークン消費">
+    <div className="panel-heading"><div><span className="section-kicker">TOKEN SPEND · 7 DAYS</span><h2>AI全体・タスク別の使用状況</h2></div></div>
+    <div className="us-overall" aria-label="4AIの週次枠使用率">
+      <article><span>全体</span><strong>{pct(average)}</strong><small>4AI平均</small></article>
+      {rows.map(({ provider, q, w, used, valid }) => <article key={provider}>
+        <span>{LABELS[provider]}</span><strong>{pct(used)}</strong>
+        <small>{provider === 'antigravity' ? 'モデル枠最大' : '週次枠'} · {q ? QUALITY[q.quality] : '未計測'}{!valid && used !== null ? '・旧観測（平均対象外）' : ''}</small>
+        <small>{untilReset(w?.resetsAt, Date.now()).text}</small><small>観測 {fmtJst(q?.observedAt)}</small>
+      </article>)}
+    </div>
+    <p className="ov-note">4AI平均は各AIの使用枠%を等しく平均した指標です。トークン総数に対する割合ではありません。欠損・古い観測がある間は平均を未計測とします。Antigravityはモデル枠の最大値を使います。</p>
+    {!connected ? <div className="ov-empty"><p>タスク別の消費内訳は認証後に表示されます。</p><button type="button" onClick={onConnect}>接続する</button></div> : <div className="us-grid">
+      {PROVIDERS.map(provider => {
+        const u = usage.find(u => u.provider === provider);
+        const stale = u && Date.now() - Date.parse(u.observedAt) > 3 * 86400000;
+        const tasks = u?.items.filter(i => i.kind !== 'surface') ?? [];
+        return <article key={provider} className="us-card">
+          <header><strong>{LABELS[provider]}</strong><small>週枠使用 {pct(u?.quotaUsedPercent)} · 観測 {fmtJst(u?.observedAt)}{stale ? ' · 旧データ' : ''}</small></header>
+          {!tasks.length ? <p className="ov-note">未計測 · タスク別の記録待ち</p> : <div className="us-table-wrap"><table className="us-table">
+            <thead><tr><th>タスク名 / 品質</th><th>トークン</th><th>AI内シェア</th><th>AI週枠に対する%</th><th>最終実行</th></tr></thead>
+            <tbody>{[...tasks].sort((a, b) => (b.quotaPercent ?? b.tokens ?? -1) - (a.quotaPercent ?? a.tokens ?? -1)).map(i => <tr key={i.key}>
+              <td><strong>{i.label}</strong><small>{QUALITY[i.quality ?? u?.quality ?? ''] ?? '品質未取得'}</small><small>{i.note}</small></td>
+              <td>{i.tokens == null ? '未計測' : i.tokens.toLocaleString('ja-JP')}</td><td>{pct(i.sharePercent)}</td><td>{pct(i.quotaPercent)}</td><td>{fmtJst(i.lastAt)}</td>
+            </tr>)}</tbody>
+          </table></div>}
+          {!!u?.items.some(i => i.kind === 'surface') && <details><summary>面別の内訳（タスクと重複）</summary>{u.items.filter(i => i.kind === 'surface').map(i => <p key={i.key}>{i.label} · {pct(i.sharePercent)} · {QUALITY[i.quality ?? 'measured']}</p>)}</details>}
+          {u && <footer>{u.source}</footer>}
+        </article>;
+      })}
+    </div>}
+    <p className="ov-note">AI内シェアはそのAIの記録範囲を分母とします。週枠への帰属は按分推定で、提供元の課金・枠消費の実測ではありません。Claude定期タスクはCowork+Otherをruns×時間で按分します。面別・CLI・定期タスクは重複するため合算しません。Museは自己申告で、内訳が無い場合は全体のみ表示します。</p>
+  </section>;
 }

@@ -33,6 +33,7 @@ export default function TokenUsagePanel() {
   const [period, setPeriod] = useState<Window>('30d');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -67,8 +68,11 @@ export default function TokenUsagePanel() {
 
   const leader = breakdown.known[0];
   const leaderShare = leader ? percent(leader.tokens[period] ?? 0, breakdown.total) : 0;
+  const old = data !== null && (!Number.isFinite(Date.parse(data.generatedAt)) || Date.now() - Date.parse(data.generatedAt) > 3 * 86400000);
 
   return <section className="panel spend-panel" id="token-usage" aria-label="自動化タスクのトークン消費ランキング">
+    {old && <button type="button" className="spend-legacy-toggle" aria-expanded={expanded} onClick={() => setExpanded(v => !v)}>旧データ（{new Date(data.generatedAt).toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo', month: 'numeric', day: 'numeric' })}時点・参考）{expanded ? 'を閉じる' : 'を表示'}</button>}
+    <div className={old ? 'spend-legacy' : undefined} hidden={old && !expanded}>
     <div className="spend-heading">
       <div><span className="section-kicker">AUTOMATION COST CONCENTRATION</span><h2>自動化のトークン消費ランキング</h2></div>
       <div className="spend-period" role="group" aria-label="消費量の集計期間">
@@ -114,5 +118,6 @@ export default function TokenUsagePanel() {
       シェアの分母は連携済み処理で計測されたトークンのみ。 全リポジトリ・全定期タスクの消費率ではありません。記録なしは使用量ゼロの証明ではありません。
       <span>最終更新 {new Date(data.generatedAt).toLocaleString('ja-JP')} {loading ? '・更新中' : ''}</span>
     </div>}
+    </div>
   </section>;
 }

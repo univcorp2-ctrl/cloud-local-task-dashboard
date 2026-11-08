@@ -36,7 +36,7 @@ export default function UsageDonut({ slices, total, coverage }: { slices: Slice[
         </svg>
       </div>
       <div className="spend-donut-legend">
-        {groups.slice(0, 5).map((slice, index) => <div className="spend-legend-row" key={slice.id}>
+        {groups.map((slice, index) => <div className="spend-legend-row" key={slice.id}>
           <span className="spend-legend-dot" style={{ background: colors[index % colors.length] }} />
           <span className="spend-legend-name" title={slice.label}>{slice.label}</span>
           <strong>{total ? pretty(slice.tokens / total * 100) : '—'}</strong>

@@ -6,14 +6,16 @@
 param([string]$TaskName = "TCC-Quota-Push", [int]$Minutes = 30, [switch]$Remove)
 $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$Runner = Join-Path $RepoRoot "scripts\run_quota_push.ps1"
+$Runner = Join-Path $RepoRoot "scripts\run_quota_push.pyw"
 if ($Remove) {
   if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) { Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false; Write-Host "[OK] removed $TaskName" }
   return
 }
 if (-not (Test-Path $Runner)) { throw "runner not found: $Runner" }
 if (Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue) { Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false }
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$Runner`"" -WorkingDirectory $RepoRoot
+$Pythonw = Join-Path (Split-Path (Get-Command python.exe -ErrorAction Stop).Source -Parent) 'pythonw.exe'
+if (-not (Test-Path $Pythonw)) { throw 'pythonw.exe not found beside python.exe' }
+$action = New-ScheduledTaskAction -Execute $Pythonw -Argument "`"$Runner`"" -WorkingDirectory $RepoRoot
 $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).Date -RepetitionInterval (New-TimeSpan -Minutes $Minutes) -RepetitionDuration (New-TimeSpan -Days 3650)
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Minutes 10) -MultipleInstances IgnoreNew
 Register-ScheduledTask -TaskName $TaskName -Action $action -Trigger $trigger -Settings $settings -Description "AI残量(Codex/Claude/Antigravity/Muse)をTask Control Center APIへ30分ごとにpush" -RunLevel Limited | Out-Null

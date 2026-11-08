@@ -11,11 +11,35 @@ function DecodeLocalSecret([string]$path) {
 }
 $root = Split-Path $PSScriptRoot -Parent
 $log = 'G:\マイドライブ\AI_Agents\Private\automation-control-center\quota-push.log'
-try { git -C $root pull --ff-only --quiet origin main 2>$null | Out-Null } catch { }
+function InvokeHidden([string]$exe, [string]$arguments) {
+  $info = New-Object Diagnostics.ProcessStartInfo
+  $info.FileName = $exe
+  $info.Arguments = $arguments
+  $info.WorkingDirectory = $root
+  $info.UseShellExecute = $false
+  $info.CreateNoWindow = $true
+  $info.RedirectStandardOutput = $true
+  $info.RedirectStandardError = $true
+  $process = New-Object Diagnostics.Process
+  $process.StartInfo = $info
+  [void]$process.Start()
+  $stdout = $process.StandardOutput.ReadToEndAsync()
+  $stderr = $process.StandardError.ReadToEndAsync()
+  $process.WaitForExit()
+  if ($stdout.Result) { Write-Output $stdout.Result }
+  # Do not expose arbitrary diagnostics from authenticated tools.
+  $code = $process.ExitCode
+  $process.Dispose()
+  if ($code -ne 0) { throw "background child failed ($code)" }
+}
+try { InvokeHidden 'git.exe' 'pull --ff-only --quiet origin main' | Out-Null } catch { }
 $env:TCC_ACCESS_TOKEN = DecodeLocalSecret 'C:\AI-Agent\Private\tcc-secrets\access.dpapi'
 try {
-  & python (Join-Path $PSScriptRoot 'push_quota_state.py') --apply --log $log
-  if ($LASTEXITCODE -ne 0) { throw "push exited $LASTEXITCODE" }
+  $collector = Join-Path $PSScriptRoot 'push_quota_state.py'
+  InvokeHidden 'python.exe' ('"' + $collector + '" --apply --log "' + $log + '"')
+} catch {
+  Add-Content -Encoding UTF8 -LiteralPath $log -Value ((Get-Date -Format o) + ' | quota-push failed; inspect source availability / authentication')
+  throw
 } finally {
   Remove-Item Env:TCC_ACCESS_TOKEN -ErrorAction SilentlyContinue
 }

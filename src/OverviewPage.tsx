@@ -185,7 +185,7 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
       </section>
 
       <JobsPanel data={state} connected={token} onConnect={onConnect} compact />
-      <UsagePanel usage={state?.usage ?? []} connected={token} onConnect={onConnect} />
+      <UsagePanel usage={state?.usage ?? []} quotas={state?.quotas ?? []} connected={token} onConnect={onConnect} />
       <EarnLabPanel data={earnLab} status={earn.status} target={EARN_TARGET} connected={Boolean(token)} onConnect={onConnect} />
       <SnsPanel parts={(estate.data?.parts as EstateParts | undefined) ?? null} metrics={state?.metrics ?? []} fetchedAt={estate.data?.fetchedAt} />
 

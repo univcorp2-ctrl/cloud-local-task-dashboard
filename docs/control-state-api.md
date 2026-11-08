@@ -37,3 +37,9 @@ PC収集ジョブと各AIエージェントが書き、ダッシュボードが�
 ## KPI例（Earn Lab）
 `set_kpi {"id":"earn-lab-monthly-revenue","label":"Earn Lab 月次売上","unit":"JPY","target":5000000,"actual":120000,"period":"2026-11","source":"notion 現金化DB"}`
 → 全体像の「ゴールに対する進み方」で目標比％バー表示。
+
+## 2026-11-08: set_usage / set_jobs contract
+
+MCP `set_usage` and ingest `usage[]` replace a provider's window attribution with `provider`, `window`, `observedAt`, `source`, `basis: tokens|percent`, nullable `totalTokens` / `quotaUsedPercent`, `quality: measured|estimated|self_reported`, and at most 40 items. Each item accepts `key`, `label`, `kind`, nullable `tokens`, `sharePercent`, `quotaPercent`, `runs`, `lastAt`, `note`, and its own `quality`. Quality survives normalization and authenticated readback; unspecified quality defaults conservatively to estimated. Anonymous snapshots omit all usage rows. Percentages use 0..100; missing values must be null. Token counts and quota attribution may have different quality: document that quota attribution is estimated even when tokens are measured. Surface and task rows overlap.
+
+`set_jobs` and ingest `jobs[]` replace a source's list, including an explicit empty list. `claude-cloud` items supply `name`, `enabled`, `runsPerWeek`, `durationSeconds`, `lastRunAt`, `lastFinishedAt`, `model`; record `observedAt` is the original list observation time. It must not be refreshed just by reading or copying a snapshot. Usage estimation keeps disabled tasks at zero, leaves missing durations unknown, and labels observations older than 48 hours. The collector GET uses the same process-local owner token as POST; no token is logged. Refreshing jobs does not itself execute any Claude task.

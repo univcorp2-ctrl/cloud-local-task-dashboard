@@ -270,7 +270,7 @@ def windows_jobs(now: dt.datetime) -> dict | None:
         return None
     try:
         out = subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", WIN_PS], capture_output=True, text=True,
-                             timeout=90, encoding="utf-8", errors="replace").stdout.strip()
+                             timeout=90, encoding="utf-8", errors="replace", creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout.strip()
         rows = json.loads(out) if out else []
     except (OSError, ValueError, subprocess.TimeoutExpired):
         return None
@@ -317,24 +317,23 @@ def fetch_state(api: str, token: str) -> dict:
         return {}
 
 
-def live_claude_tasks(state: dict, fallback: Path | None) -> list[dict]:
+def live_claude_tasks(state: dict, fallback: Path | None) -> list[dict] | None:
     """Claude cloud scheduled tasks from the job list the cloud sync publishes (replaces the manual snapshot)."""
-    snap = {}
-    if fallback and fallback.exists():
-        try:
-            snap = {t.get("name"): t for t in json.loads(fallback.read_text(encoding="utf-8")).get("tasks", [])}
-        except (OSError, ValueError):
-            snap = {}
-    out = []
     for rec in state.get("jobs") or []:
         if rec.get("source") != "claude-cloud":
             continue
-        for j in rec.get("items") or []:
-            if not j.get("enabled") or j.get("oneShot") or not j.get("runsPerWeek"):
-                continue
-            secs = j.get("durationSeconds") or (snap.get(j["name"]) or {}).get("avgSeconds") or 300
-            out.append({"name": j["name"], "runsPerWeek": j["runsPerWeek"], "avgSeconds": secs, "model": j.get("model"), "lastRunAt": j.get("lastRunAt")})
-    return out
+        return [{**j, "observedAt": rec.get("observedAt")} for j in rec.get("items") or []]
+    return None
+
+
+def weekly_used(quotas: list[dict], provider: str) -> float | None:
+    q = next((q for q in quotas if q["provider"] == provider), {})
+    windows = q.get("windows", [])
+    if provider != "antigravity":
+        windows = [w for w in windows if w.get("kind") == "weekly"]
+    values = [w.get("usedPercent") if w.get("usedPercent") is not None else 100 - w["remainingPercent"]
+              for w in windows if w.get("usedPercent") is not None or w.get("remainingPercent") is not None]
+    return max(values) if values else None
 
 
 def post(api: str, token: str, payload: dict) -> dict:
@@ -379,7 +378,8 @@ def main() -> int:
             live["antigravity"] = a
     # live account readings beat the legacy local heuristics for the same provider
     quotas = [q for q in quotas if q["provider"] not in live] + list(live.values())
-    muse = muse_quota(args.muse_payload or find_muse_payload() or Path("/nonexistent"), now)
+    muse_path = args.muse_payload or find_muse_payload()
+    muse = muse_quota(muse_path or Path("/nonexistent"), now)
     if muse:
         quotas.append(muse)
     agents = [{"name": "pc-collector", "status": "running", "currentTask": "AI残量を収集してAPIへ送信"}]
@@ -395,22 +395,34 @@ def main() -> int:
         if w:
             jobs.append(w)
     usage = []
+    usage_errors = []
     if not args.no_usage:
-        codex_q = next((q for q in quotas if q["provider"] == "codex"), None)
-        codex_week = next((w.get("usedPercent") for w in (codex_q or {}).get("windows", []) if w.get("kind") == "weekly"), None)
-        for u in (ctu.codex_usage(args.home, now, codex_week),
-                  ctu.claude_usage(LAST_CLAUDE_USAGE or None, args.home, now, args.claude_tasks, live_claude_tasks(state, args.claude_tasks) or None)):
-            if u:
-                usage.append(u)
+        collectors = {
+            "codex": lambda: ctu.codex_usage(args.home, now, weekly_used(quotas, "codex")),
+            "claude": lambda: ctu.claude_usage(LAST_CLAUDE_USAGE or None, args.home, now, args.claude_tasks, live_claude_tasks(state, args.claude_tasks)),
+            "antigravity": lambda: ctu.antigravity_usage(args.home, now, weekly_used(quotas, "antigravity")),
+            "muse": lambda: ctu.muse_usage(muse_path, now, weekly_used(quotas, "muse")),
+        }
+        for provider, collect in collectors.items():
+            try:
+                u = collect()
+                if u:
+                    usage.append(u)
+            except Exception as exc:
+                # Exception messages may contain local source data: log type only.
+                print(f"usage {provider}: {type(exc).__name__}", file=sys.stderr)
+                usage_errors.append(f"{provider}:{type(exc).__name__}")
     payload = {"actor": "pc-collector", "quotas": quotas, "agents": agents, "usage": usage, "jobs": jobs}
     line = f"{dt.datetime.now(JST).isoformat(timespec='seconds')} | providers={','.join(q['provider'] for q in quotas) or 'none'} usage={','.join(u['provider'] + ':' + str(len(u['items'])) for u in usage) or 'none'} jobs={','.join(j['source'] + ':' + str(len(j['items'])) for j in jobs) or 'none'}"
+    if usage_errors:
+        line += " | usage_errors=" + ','.join(usage_errors)
     if not args.apply:
         print(json.dumps(payload, ensure_ascii=False, indent=1))
         print("DRY RUN " + line)
         return 0
     if not token:
         raise SystemExit("TCC_ACCESS_TOKEN/TCC_AGENT_TOKEN missing from environment")
-    if not quotas:
+    if not (quotas or usage or jobs):
         line += " | nothing to send"
     else:
         result = post(args.api_base, token, payload)

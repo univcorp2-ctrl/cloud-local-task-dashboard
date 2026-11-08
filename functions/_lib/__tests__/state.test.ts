@@ -1,8 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { MemoryKV } from '../kv';
-import { applyIngest, emptyState, loadState, normalizeQuota, quotaFreshness, saveState, snapshot, ValidationError } from '../state';
+import { applyIngest, emptyState, loadState, normalizeQuota, normalizeUsage, quotaFreshness, saveState, snapshot, ValidationError } from '../state';
 
 const now = new Date('2026-10-31T01:00:00+09:00');
+
+it('preserves usage quality and null measurements through ingest and authenticated readback', () => {
+  const usage = { provider: 'muse', observedAt: now.toISOString(), source: 'Drive report', quality: 'self_reported',
+    items: [{ key: 'muse-total', label: 'Muse全体', quality: 'self_reported', tokens: null, quotaPercent: 100 }] };
+  const normalized = normalizeUsage(usage, 'pc', now);
+  expect(normalized.quality).toBe('self_reported');
+  expect(normalized.items[0].quality).toBe('self_reported');
+  expect(normalized.items[0].tokens).toBeNull();
+  expect(() => normalizeUsage({ ...usage, quality: 'fabricated' }, 'pc', now)).toThrow(ValidationError);
+});
 
 describe('quota normalization', () => {
   it('derives remaining from used and rejects future observations', () => {

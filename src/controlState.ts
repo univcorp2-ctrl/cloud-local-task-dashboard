@@ -23,8 +23,8 @@ export interface Kpi { id: string; label: string; unit: string; target: number |
 export interface Metric { id: string; label: string; value: number | string | null; unit?: string | null; updatedAt: string; source: string; link?: string | null; note?: string | null; group?: string | null }
 export interface AgentBeat { name: string; status: 'running' | 'idle' | 'blocked' | 'offline'; currentTask?: string | null; lastSeenAt: string; nextRunAt?: string | null; note?: string | null }
 export interface EventItem { at: string; actor: string; kind: 'info' | 'success' | 'warning' | 'error'; message: string; link?: string | null; topic?: string | null }
-export interface UsageItem { key: string; label: string; kind: string; tokens: number | null; sharePercent: number | null; quotaPercent: number | null; runs: number | null; lastAt: string | null; note?: string | null }
-export interface UsageRecord { provider: string; window: string; observedAt: string; source: string; totalTokens: number | null; quotaUsedPercent: number | null; basis: string; items: UsageItem[] }
+export interface UsageItem { key: string; label: string; kind: string; tokens: number | null; sharePercent: number | null; quotaPercent: number | null; runs: number | null; lastAt: string | null; note?: string | null; quality?: 'measured' | 'estimated' | 'self_reported' }
+export interface UsageRecord { provider: string; window: string; observedAt: string; source: string; totalTokens: number | null; quotaUsedPercent: number | null; basis: string; items: UsageItem[]; quality?: 'measured' | 'estimated' | 'self_reported' }
 export interface JobItem { id: string; name: string; platform: string; schedule: string; scheduleLabel: string | null; enabled: boolean; oneShot: boolean;
   status: 'running' | 'success' | 'failed' | 'paused' | 'scheduled' | 'ended'; lastRunAt: string | null; lastFinishedAt: string | null; nextRunAt: string | null;
   durationSeconds: number | null; model: string | null; runsPerWeek: number | null; category: string | null; note: string | null; link: string | null }
