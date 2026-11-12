@@ -3,7 +3,7 @@ import { appCategories, dashboardAppLinks } from './appLinks';
 test('real-estate launcher contains four approved destinations', () => {
   const realEstate = dashboardAppLinks.filter(x => x.category === '不動産');
   expect(realEstate.map(x => x.url)).toEqual([
-    '/tools/portfolio-equity-5y.html',
+    '/tools/portfolio-equity-5y',
     'https://bukken-customer.pages.dev/',
     'https://estateboard.pages.dev/',
     'https://shinchiku-land-viewer.univcorp2.workers.dev/',
