@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   quality:
@@ -82,6 +83,25 @@ jobs:
           git add public/data/tasks.json
           git diff --cached --quiet || git commit -m 'chore: refresh cloud task snapshot'
           git push
+      - name: Heartbeat check (zero AI tokens)
+        # 15分ごとに定期タスクの停止・失敗を判定。Telegramは /api/heartbeat 側が送る（TELEGRAM_PROXY_SECRET がPagesに登録済みの場合）。
+        # 未登録の間は、件数だけを書いたIssueを1本だけ開いて知らせる（タスク名は公開リポジトリに出さない）。
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          body=$(curl -sS -m 30 'https://cloud-local-task-dashboard.pages.dev/api/heartbeat?notify=1')
+          echo "$body"
+          alert=$(echo "$body" | python3 -c "import sys,json;print(json.load(sys.stdin).get('alert'))" 2>/dev/null)
+          notified=$(echo "$body" | python3 -c "import sys,json;print(json.load(sys.stdin).get('notified'))" 2>/dev/null)
+          counts=$(echo "$body" | python3 -c "import sys,json;c=json.load(sys.stdin)['counts'];print(f\"失敗{c['failed']}件／停止{c['stale']}件／未実行{c['overdue']}件／収集元停止{c['staleSources']}件（監視{c['watched']}件）\")" 2>/dev/null)
+          open=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search 'in:title "[heartbeat]"' --json number -q '.[0].number')
+          if [ "$alert" = "True" ] && [ "$notified" = "no_channel" ] && [ -z "$open" ]; then
+            gh issue create -R "$GITHUB_REPOSITORY" --title "[heartbeat] 定期タスクに停止・失敗あり" --body "$counts 詳細: https://cloud-local-task-dashboard.pages.dev/#automation"
+          elif [ "$alert" = "False" ] && [ -n "$open" ]; then
+            gh issue close -R "$GITHUB_REPOSITORY" "$open" --comment "復旧を確認しました。"
+          fi
+          exit 0
       - uses: actions/upload-artifact@v4
         with:
           name: task-snapshot
