@@ -20,6 +20,8 @@ export const dashboardAppLinks: DashboardAppLink[] = [
   { id: 'earnlab-dash', label: 'Earn Lab ダッシュボード', category: 'Earn Lab', url: 'https://app.notion.com/p/40910562e58b811384a2ff02a4b4d4f1', description: 'Notion正本' },
   { id: 'earnlab-db', label: 'Earn Lab 実験DB', category: 'Earn Lab', url: 'https://app.notion.com/p/b2ab0ef9cd664a43836d26fd057bbcdb', description: '全実験' },
   { id: 'revenue-agent', label: '求人応募エージェント', category: 'Earn Lab', url: 'https://revenue-agent-ops.pages.dev/#applications', description: 'Revenue Agent Ops' },
+  { id: 'bukken-best10', label: '物件ベスト10レポート', category: '不動産',
+    url: 'https://claude.ai/artifact/Px8P2EauNB5Sj3b37JbFhc', description: '毎日3回更新の仕入れ候補（写真・資料請求・仕切り値つき・要ログイン）' },
   { id: 'property-equity-5y', label: '保有不動産｜5年残債・資金余力', category: '不動産',
     url: '/tools/portfolio-equity-5y', description: 'CSV/JSONを端末内で読み込む残債・売却・担保・現金分析（非公開データを送信しない）' },
   { id: 'bukken-customer', label: '物件管理・顧客', category: '不動産',

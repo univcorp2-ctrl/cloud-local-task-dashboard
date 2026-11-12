@@ -1,8 +1,9 @@
 import { expect, test } from 'vitest';
 import { appCategories, dashboardAppLinks } from './appLinks';
-test('real-estate launcher contains four approved destinations', () => {
+test('real-estate launcher contains five approved destinations', () => {
   const realEstate = dashboardAppLinks.filter(x => x.category === '不動産');
   expect(realEstate.map(x => x.url)).toEqual([
+    'https://claude.ai/artifact/Px8P2EauNB5Sj3b37JbFhc',
     '/tools/portfolio-equity-5y',
     'https://bukken-customer.pages.dev/',
     'https://estateboard.pages.dev/',

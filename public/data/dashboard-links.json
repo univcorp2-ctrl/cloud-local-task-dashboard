@@ -70,6 +70,14 @@
       "note": "ChatGPT Sitesログインが必要"
     },
     {
+      "id": "bukken-best10",
+      "name": "🏠 物件ベスト10レポート（毎日 7:47／12:47／17:47 更新）",
+      "category": "不動産",
+      "url": "https://claude.ai/artifact/Px8P2EauNB5Sj3b37JbFhc",
+      "status": "login",
+      "note": "Claudeの非公開ページ。本人ログインが必要。写真・Drive資料・売出日数・資料請求・仕切り値の状況つき"
+    },
+    {
       "id": "capital",
       "name": "Bukken DB・キャピタル",
       "category": "不動産",
