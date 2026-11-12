@@ -25,3 +25,21 @@ test('一覧は検索可能でユーザー追加リンクから登録台帳へ�
   expect(screen.queryByText('Bukken DB・キャピタル')).not.toBeInTheDocument();
   expect(screen.getByText('SNS Studio')).toBeInTheDocument();
 });
+
+test('☆でお気に入りに追加するとトップのお気に入り欄に出て、もう一度押すと外れる',async()=>{
+  window.localStorage.clear();
+  vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({
+    schemaVersion:1,registrationUrl:'',
+    links:[{id:'bukken-best10',name:'物件ベスト10レポート',category:'不動産',
+      url:'https://claude.ai/artifact/Px8P2EauNB5Sj3b37JbFhc',status:'login',note:'要ログイン'}]
+  })}));
+  render(<><DashboardDirectory mode="pinned"/><DashboardDirectory/></>);
+  fireEvent.click(screen.getByText('🔗 統合Webアプリ一覧・リンク追加'));
+  const star=await screen.findByRole('button',{name:'お気に入りに追加：物件ベスト10レポート'});
+  expect(screen.queryByText('⭐ お気に入り')).not.toBeInTheDocument();
+  fireEvent.click(star);
+  expect(await screen.findByText('⭐ お気に入り')).toBeInTheDocument();
+  expect(JSON.parse(window.localStorage.getItem('tcc.favoriteLinks.v1')??'[]')).toEqual(['bukken-best10']);
+  fireEvent.click(screen.getAllByRole('button',{name:'お気に入りから外す：物件ベスト10レポート'})[0]);
+  expect(screen.queryByText('⭐ お気に入り')).not.toBeInTheDocument();
+});

@@ -8,6 +8,14 @@
 .tcc-directory-controls a{font-size:12px;text-decoration:none;color:#1452b1;font-weight:700;white-space:nowrap;background:#eef5ff;padding:9px 12px;border-radius:9px}
 .tcc-directory-group h3{margin:15px 0 7px;font-size:12px;color:#365b85}
 .tcc-directory-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.tcc-directory-item{position:relative;min-width:0;display:flex}
+.tcc-directory-item>a{flex:1;padding:11px 40px 11px 13px;text-decoration:none;min-width:0;border:1px solid #dde8f3;border-radius:9px;background:#f9fbff;color:#173961}
+.tcc-directory-item>a:hover{background:#eff6ff;border-color:#a7c7ee}
+.tcc-directory-item>a>span{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tcc-fav{position:absolute;top:4px;right:4px;width:32px;height:32px;border:0;border-radius:8px;background:transparent;font-size:18px;line-height:1;color:#9aa9ba;cursor:pointer}
+.tcc-fav:hover{background:#eef5ff}.tcc-fav.on{color:#e0a100}
+.tcc-directory-pinned .tcc-directory-item>a{background:#fff;border-color:#ecd9a4}
+.tcc-directory-favs{border-color:#f3c84b;background:#fff8e1}
 .tcc-directory-grid>a{padding:11px 13px;text-decoration:none;min-width:0;border:1px solid #dde8f3;border-radius:9px;background:#f9fbff;color:#173961}
 .tcc-directory-grid>a:hover{background:#eff6ff;border-color:#a7c7ee}
 .tcc-directory-grid>a>span{display:flex;align-items:center;justify-content:space-between;gap:8px}
