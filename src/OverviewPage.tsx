@@ -118,6 +118,8 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
 
       <QuotaGauges quotas={state?.quotas ?? null} onConnect={onConnect} />
 
+      <DashboardDirectory mode="pinned" />
+
       <section className="ov-grid3">
         <article className="panel ov-col">
           <div className="panel-heading"><div><span className="section-kicker">HUMAN</span><h2>本人がやること</h2></div><a className="ov-more" href="#my-tasks">全タスク →</a></div>

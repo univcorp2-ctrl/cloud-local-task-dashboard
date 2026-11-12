@@ -6,6 +6,30 @@
   "safety": "Only publicly linkable UI destinations. Private GitHub, task IDs and secrets must never be included.",
   "links": [
     {
+      "id": "funding-map",
+      "name": "💰 資金調達マップ（最新 11/12版）",
+      "category": "資金調達",
+      "url": "https://drive.google.com/file/d/1JPMRGF-78f7XW6ABA4wEJdyMa5KTFiV0/view",
+      "status": "login",
+      "note": "補助金・助成金・奨励金・制度融資・保証協会・出資。Googleログインが必要"
+    },
+    {
+      "id": "funding-map-xlsx",
+      "name": "資金調達マップ（Excel版）",
+      "category": "資金調達",
+      "url": "https://drive.google.com/file/d/1qJ64KXBeVBXcxCyZvdtf9lSEQaD-jfaY/view",
+      "status": "login",
+      "note": "同じ内容の表。並べ替え・絞り込み用"
+    },
+    {
+      "id": "funding-seido-map",
+      "name": "もらえる・調達できる制度マップ（11月版）",
+      "category": "資金調達",
+      "url": "https://claude.ai/artifact/VRgK82Sc7F5eBhBLYUWj9L",
+      "status": "login",
+      "note": "Claudeの非公開ページ。本人ログインが必要"
+    },
+    {
       "id": "overview",
       "name": "今日の全体像（統合ホーム）",
       "category": "タスク・開発",

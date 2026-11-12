@@ -13,7 +13,7 @@ function safeUrl(value:unknown) {
   try {const url=new URL(String(value));return url.protocol==='https:'&&!url.username&&!url.password;}
   catch{return false;}
 }
-export default function DashboardDirectory(){
+export default function DashboardDirectory({mode='directory'}:{mode?:'directory'|'pinned'}){
   const [data,setData]=useState<Directory|null>(null);
   const [query,setQuery]=useState('');
   const [error,setError]=useState(false);
@@ -32,7 +32,18 @@ export default function DashboardDirectory(){
   },[]);
   const found=useMemo(()=>(data?.links||[]).filter(x=>
     [x.name,x.category,x.note,x.id].some(v=>v.toLowerCase().includes(query.toLowerCase()))),[data,query]);
-  const groups=useMemo(()=>Array.from(new Set(found.map(x=>x.category))),[found]);
+  const PINNED='資金調達';
+  const pinned=useMemo(()=>(data?.links||[]).filter(x=>x.category===PINNED),[data]);
+  const groups=useMemo(()=>Array.from(new Set(found.map(x=>x.category))).filter(c=>c!==PINNED),[found]);
+  if(mode==='pinned')return pinned.length>0?<section className="tcc-directory" aria-label="資金調達リンク"><div className="tcc-directory-pinned" aria-label="資金調達（最優先リンク）">
+      <h3>💰 資金調達（最優先）</h3>
+      <div className="tcc-directory-grid">
+        {pinned.map(x=><a href={x.url} key={x.id} target="_blank" rel="noopener noreferrer" title={x.note}>
+          <span><strong>{x.name}</strong><span aria-hidden="true">↗</span></span>
+          <small>{labels[x.status]} · {x.note}</small>
+        </a>)}
+      </div>
+    </div></section>:null;
   return <section className="tcc-directory" aria-label="統合Webダッシュボード一覧">
     <details>
       <summary><strong>🔗 統合Webアプリ一覧・リンク追加</strong>

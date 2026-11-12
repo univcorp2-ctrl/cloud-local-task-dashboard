@@ -16,3 +16,6 @@
 .tcc-directory-note{margin:13px 0 4px;font-size:11px;color:#667d95;line-height:1.55}
 @media(max-width:860px){.tcc-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:550px){.tcc-directory-grid{grid-template-columns:1fr}.tcc-directory summary span{width:100%}.tcc-directory-controls{flex-direction:column;align-items:stretch}.tcc-directory-controls a{text-align:center}}
+.tcc-directory-pinned{margin:0 0 10px;padding:12px 15px;border:1px solid #f0d58a;border-radius:12px;background:#fffbea}
+.tcc-directory-pinned h3{margin:0 0 8px;font-size:13px;color:#7a5200}
+.tcc-directory-pinned .tcc-directory-grid>a{background:#fff;border-color:#ecd9a4}

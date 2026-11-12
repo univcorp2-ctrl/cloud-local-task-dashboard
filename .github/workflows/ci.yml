@@ -36,6 +36,28 @@ jobs:
       - name: Test collector
         run: python -m unittest discover -s agent -p 'test_*.py'
 
+  deploy-pages:
+    # main への push でビルド結果を Cloudflare Pages へ反映する（公開リポジトリのため Actions は無料枠）。
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: quality
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 pages deploy dist --project-name cloud-local-task-dashboard --branch main --commit-dirty=true
+
   refresh-cloud-snapshot:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
