@@ -9,9 +9,9 @@
       "id": "funding-map",
       "name": "💰 資金調達マップ（最新 11/12版）",
       "category": "資金調達",
-      "url": "https://drive.google.com/file/d/1JPMRGF-78f7XW6ABA4wEJdyMa5KTFiV0/view",
+      "url": "https://claude.ai/artifact/STZZiakbBrMtB9dEtjj4ao",
       "status": "login",
-      "note": "補助金・助成金・奨励金・制度融資・保証協会・出資。Googleログインが必要"
+      "note": "補助金・助成金・奨励金・制度融資・保証協会・出資。Claudeの非公開ページ（本人ログインで開く）"
     },
     {
       "id": "funding-map-xlsx",
@@ -19,7 +19,7 @@
       "category": "資金調達",
       "url": "https://drive.google.com/file/d/1qJ64KXBeVBXcxCyZvdtf9lSEQaD-jfaY/view",
       "status": "login",
-      "note": "同じ内容の表。並べ替え・絞り込み用"
+      "note": "同じ内容の表。並べ替え・絞り込み用。Googleドライブ（bukken511のアカウントでログイン）"
     },
     {
       "id": "funding-seido-map",
