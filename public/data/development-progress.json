@@ -277,6 +277,25 @@
       ]
     },
     {
+      "id": "property-equity-5y",
+      "title": "保有物件の残債・売却余力・空き担保・現金活用｜5年分析",
+      "priority": "P1",
+      "progressPercent": 65,
+      "confidence": "medium",
+      "executionStatus": "分析HTML実装・テスト済み、実物件データ投入・Cloudflare本番反映は未検証",
+      "nextAction": "Cloudflare Pagesへデプロイ→本番URL HTTP200・TCCリンク動作確認→保有物件の実原本と照合",
+      "lastActionResult": "ローカルPlaywrightで3物件架空サンプル・KPI・6年時点・シナリオ切替・XSS表示をPASS。実額は未投入",
+      "inspectedAt": "2026-11-12T04:55:00Z",
+      "phase": "実装・公開検証中",
+      "visibility": "public_alias_only",
+      "links": [
+        {
+          "label": "5年残債・空き担保シミュレーター",
+          "url": "https://cloud-local-task-dashboard.pages.dev/tools/portfolio-equity-5y.html"
+        }
+      ]
+    },
+    {
       "id": "db",
       "title": "不動産DB・銀行融資自動連携",
       "priority": "P0",
@@ -6656,5 +6675,5 @@
     }
   ],
   "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照",
-  "activeProjectsUpdatedAt": "2026-11-10T08:09:34.521978+00:00"
+  "activeProjectsUpdatedAt": "2026-11-12T04:55:00Z"
 }
