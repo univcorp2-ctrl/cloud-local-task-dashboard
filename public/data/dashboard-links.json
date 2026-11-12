@@ -57,7 +57,7 @@
       "id": "property-equity-5y",
       "name": "保有不動産・5年残債／資金余力分析",
       "category": "不動産",
-      "url": "https://cloud-local-task-dashboard.pages.dev/tools/portfolio-equity-5y.html",
+      "url": "https://cloud-local-task-dashboard.pages.dev/tools/portfolio-equity-5y",
       "status": "public",
       "note": "HTML計算エンジン。物件情報はブラウザ内だけで入力・試算、公開JSONへ出さない"
     },
