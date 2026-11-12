@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "canonicalName": "タスクコントロールセンター",
-  "generatedAt": "2026-10-31",
+  "generatedAt": "2026-11-12",
   "registrationUrl": "https://docs.google.com/spreadsheets/d/1O8OoxxzNH91wRFdTjyx56Jr6l-_KIdQjUVFeoliuUVM/edit",
   "safety": "Only publicly linkable UI destinations. Private GitHub, task IDs and secrets must never be included.",
   "links": [
@@ -52,6 +52,14 @@
       "url": "https://bukken-customer.pages.dev/capital",
       "status": "partial",
       "note": "根拠データの完全連携は未確認"
+    },
+    {
+      "id": "property-equity-5y",
+      "name": "保有不動産・5年残債／資金余力分析",
+      "category": "不動産",
+      "url": "https://cloud-local-task-dashboard.pages.dev/tools/portfolio-equity-5y.html",
+      "status": "public",
+      "note": "HTML計算エンジン。物件情報はブラウザ内だけで入力・試算、公開JSONへ出さない"
     },
     {
       "id": "daiwa",
