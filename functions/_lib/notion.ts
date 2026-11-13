@@ -9,6 +9,7 @@ const DONE_STATUSES = ['✅ 完了', '完了', '🟢 完了'];
 interface NotionPage {
   id: string;
   url: string;
+  last_edited_time?: string;
   properties: Record<string, {
     title?: Array<{ plain_text?: string }>;
     rich_text?: Array<{ plain_text?: string }>;
@@ -16,6 +17,7 @@ interface NotionPage {
     checkbox?: boolean;
     number?: number | null;
     date?: { start: string } | null;
+    url?: string | null;
   }>;
 }
 export interface PrivateTask {
@@ -23,6 +25,8 @@ export interface PrivateTask {
   owner: string; executor: string; assignedAi: string; autonomy: string; due: string | null;
   nextAction: string; humanAction: string; whyHuman: string; executionStatus: string;
   cashDistance: string; order: number | null; completed: boolean;
+  goal?: string; doneCriteria?: string; wbsSummary?: string;
+  evidenceUrl?: string | null; freshness?: string; linkStatus?: string; lastEditedAt?: string | null;
 }
 export interface TaskListResult { generatedAt: string; source: 'Notion'; truncated: boolean; showCompleted: boolean; tasks: PrivateTask[] }
 export class NotionError extends Error { constructor(public code: string, public status: number) { super(code); } }
@@ -64,6 +68,13 @@ export function toTask(page: NotionPage): PrivateTask {
     executionStatus: optionOf(page, '実行状況') || '未設定',
     cashDistance: optionOf(page, '現金化距離'),
     order: typeof page.properties['実行順位']?.number === 'number' ? page.properties['実行順位']!.number : null,
+    goal: titleOf(page, '目的・ゴール'),
+    doneCriteria: titleOf(page, '完了条件'),
+    wbsSummary: titleOf(page, 'WBSサマリー'),
+    evidenceUrl: page.properties['実装正本URL']?.url ?? page.properties['元タスクリンク']?.url ?? null,
+    freshness: optionOf(page, '情報鮮度') || '要確認',
+    linkStatus: optionOf(page, '連携状態') || '未照合',
+    lastEditedAt: page.last_edited_time ?? null,
     completed: Boolean(page.properties['完了']?.checkbox || DONE_STATUSES.includes(status)),
   };
 }

@@ -10,6 +10,7 @@ import ManualTasksPanel from './ManualTasksPanel';
 import DevelopmentProgressPanel from './DevelopmentProgressPanel';
 import OperationsOverview from './OperationsOverview';
 import JobsPanel from './JobsPanel';
+import CaseBoard from './CaseBoard';
 import { useConnected } from './controlState';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
@@ -68,9 +69,10 @@ function TaskRow({ task }: { task: ScheduledTask }) {
   );
 }
 
-type Page = 'overview' | 'automation' | 'work' | 'development';
-const pageFromHash = (hash: string): Page => hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
+type Page = 'cases' | 'overview' | 'automation' | 'work' | 'development';
+const pageFromHash = (hash: string): Page => hash === '#cases' || hash === '' ? 'cases' : hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
 const pageTitle: Record<Page, [string, string]> = {
+  cases: ['案件・タスク進捗', 'カテゴリー別・担当AI・停止理由・次の一手。'],
   overview: ['今日の全体像', '本人タスク・AI稼働・残量・KPI・開発進捗を一画面で。'],
   automation: ['クラウド & ローカル定期タスク', 'AI稼働・トークン消費と自動処理を監視。'],
   work: ['全タスク・本人対応', 'Notionのタスクをカテゴリ・担当者別に整理。'],
@@ -133,6 +135,7 @@ export default function App() {
       <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
         <div className="brand"><span className="brand-mark">☁</span><div><strong>タスクコントロールセンター</strong><small>Task Control Center</small></div></div>
         <nav aria-label="メインナビゲーション">
+          <a className={activePage === 'cases' ? 'active' : ''} href="#cases">▤ <span>◎ 案件・タスク管制</span></a>
           <a className={activePage === 'overview' ? 'active' : ''} href="#overview">◎ <span>⓪ 今日の全体像</span></a>
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
           <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
@@ -157,7 +160,7 @@ export default function App() {
           </div>}
           </div>
         </header>
-        {activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
+        {activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
         <JobsPanel data={control.data ?? null} connected={connected} onConnect={() => setConnectOpen(true)} />
         <TokenUsagePanel />
         <details className="ops-expanded">
@@ -210,6 +213,7 @@ export default function App() {
       {menuOpen && <button className="backdrop" onClick={() => setMenuOpen(false)} aria-label="メニューを閉じる" />}
       {connectOpen && <ConnectDialog onClose={() => setConnectOpen(false)} />}
       <nav className="tabbar" aria-label="モバイルナビゲーション">
+        <a className={activePage === 'cases' ? 'active' : ''} href="#cases"><span>▤</span><span>案件進捗</span></a>
         <a className={activePage === 'overview' ? 'active' : ''} href="#overview"><span>◎</span><span>全体像</span></a>
         <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks"><span>☷</span><span>タスク</span></a>
         <a className={activePage === 'automation' ? 'active' : ''} href="#automation"><span>⚙</span><span>AI稼働</span></a>
