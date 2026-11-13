@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "canonicalName": "タスクコントロールセンター",
-  "generatedAt": "2026-11-12",
+  "generatedAt": "2026-11-13",
   "registrationUrl": "https://docs.google.com/spreadsheets/d/1O8OoxxzNH91wRFdTjyx56Jr6l-_KIdQjUVFeoliuUVM/edit",
   "safety": "Only publicly linkable UI destinations. Private GitHub, task IDs and secrets must never be included.",
   "links": [
@@ -71,11 +71,11 @@
     },
     {
       "id": "bukken-best10",
-      "name": "🏠 物件ベスト10レポート（毎日 7:47／12:47／17:47 更新）",
+      "name": "🏠 物件ベスト10レポート【物件の正本・全AI共通】（毎日 7:47／12:47／17:47 更新）",
       "category": "不動産",
       "url": "https://claude.ai/artifact/Px8P2EauNB5Sj3b37JbFhc",
       "status": "login",
-      "note": "Claudeの非公開ページ。本人ログインが必要。写真・Drive資料・売出日数・資料請求・仕切り値の状況つき"
+      "note": "物件の提案・ランキングはここ1か所（総合点v2＝Notion統一物件マスターDBの総合点と同じ式）。Muse・Codex・Antigravityも別フォーマットを作らずここを更新する。Claudeの非公開ページ（本人ログインが必要）"
     },
     {
       "id": "capital",
