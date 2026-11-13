@@ -5,7 +5,7 @@
 import { authorize, jsonResponse, recordOwnerSeen, type AuthEnv } from '../_lib/auth';
 import { notionConfig, NotionError, type NotionEnv } from '../_lib/notion';
 
-interface Env extends AuthEnv, NotionEnv { TCC_STATE?: KVNamespace; NOTION_ACTION_LOG_DATA_SOURCE_ID?: string; NOTION_PIPELINE_DATA_SOURCE_ID?: string }
+interface Env extends AuthEnv, NotionEnv { TCC_STATE?: KVNamespace; NOTION_ACTION_LOG_DATA_SOURCE_ID?: string; NOTION_PIPELINE_DATA_SOURCE_ID?: string; NOTION_PARTNERS_DATA_SOURCE_ID?: string }
 type Prop = { title?: Array<{plain_text?:string}>; rich_text?: Array<{plain_text?:string}>; select?: {name:string}|null; date?: {start:string}|null; url?:string|null; number?:number|null };
 type Page = {id:string; url:string; last_edited_time?:string; properties:Record<string,Prop>};
 const str=(p:Page,k:string)=>(p.properties[k]?.title??p.properties[k]?.rich_text??[]).map(x=>x.plain_text??'').join('');
@@ -32,6 +32,7 @@ async function rows(token:string, sourceId:string):Promise<{items:Page[];truncat
 }
 const actionSource='6f2d699d-3351-412f-8906-9c59c9c056a1';
 const pipelineSource='8809b4a7-383a-4ae7-90ce-722a9a6d6a0e';
+const partnersSource='e390c315-397f-4cff-ab2a-796b1d978f4c';
 export const onRequestGet:PagesFunction<Env>=async({request,env})=>{
   const auth=await authorize(request,env);
   if(!auth.ok)return jsonResponse({error:auth.error},auth.status);
@@ -60,7 +61,17 @@ export const onRequestGet:PagesFunction<Env>=async({request,env})=>{
       replyCount:p.properties['返信数']?.number??null
     }))
   })).catch(e=>({ok:false as const,error:e instanceof Error?e.message:'source_unavailable',items:[]}));
-  return new Response(JSON.stringify({generatedAt:new Date().toISOString(),actions,pipeline,channels:{
+  const partners=await rows(token,env.NOTION_PARTNERS_DATA_SOURCE_ID??partnersSource).then(d=>({
+    ok:true as const,truncated:d.truncated,items:d.items.map(p=>({
+      id:p.id,url:p.url,company:str(p,'会社名'),kind:opt(p,'種別'),pattern:opt(p,'パターン'),
+      channel:opt(p,'経路'),stage:opt(p,'段階'),assignedAi:opt(p,'担当AI'),
+      need:str(p,'紹介物件・案件'),response:str(p,'返信要旨'),
+      benefit:str(p,'相手の本業が強くなる点'),sentAt:date(p,'送信日'),
+      nextFollowupAt:date(p,'次回フォロー日'),threadUrl:url(p,'GmailスレッドURL'),
+      updatedAt:p.last_edited_time??null
+    }))
+  })).catch(e=>({ok:false as const,error:e instanceof Error?e.message:'source_unavailable',items:[]}));
+  return new Response(JSON.stringify({generatedAt:new Date().toISOString(),actions,pipeline,partners,channels:{
     gmail:{mode:'notion-action-log-only',directSync:false},
     messenger:{mode:'not-connected',directSync:false},
     line:{mode:'not-connected',directSync:false}

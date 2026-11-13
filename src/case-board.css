@@ -67,3 +67,10 @@
 .case-board .cb-footer{font-size:10px;color:#6e8096;line-height:1.6;padding:8px 2px 18px}
 @media(max-width:960px){.case-board .cb-case>summary{grid-template-columns:minmax(180px,1fr) auto 100px}.case-board .cb-progress{display:none}}
 @media(max-width:680px){.case-board{gap:10px}.case-board .cb-hero{padding:17px;display:block}.case-board .cb-hero h2{font-size:20px}.case-board .cb-hero-side{margin-top:12px;display:flex;align-items:center;justify-content:space-between;text-align:left}.case-board .cb-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.case-board .cb-metrics>div{padding:12px}.case-board .cb-metrics strong{font-size:24px}.case-board .cb-tabs button{font-size:11px}.case-board .cb-list{padding:10px}.case-board .cb-filters{flex-wrap:wrap}.case-board .cb-filters select{flex:1}.case-board .cb-filters input{flex-basis:100%}.case-board .cb-case>summary{grid-template-columns:minmax(0,1fr) auto;gap:9px}.case-board .cb-case-title{grid-column:1/-1}.case-board .cb-owner{font-size:10px;text-align:right}.case-board .cb-owner:last-child:not(:nth-child(3)){display:none}.case-board .cb-case-body{grid-template-columns:1fr}.case-board .cb-channel-grid{grid-template-columns:1fr}.case-board .cb-section-head{display:block}.case-board .cb-section-head>a{display:inline-block;margin-top:6px}}
+
+.case-board .cb-secondary-head{margin-top:18px;padding-top:17px;border-top:1px solid #e7edf5}
+.case-board .cb-media-row{display:flex;align-items:center;flex-wrap:wrap;gap:7px 13px;border:1px solid #e5edf5;border-radius:10px;padding:12px 14px;font-size:11px;color:#5f728a;background:#fcfdff}
+.case-board .cb-media-row a{color:#175ea9;font-weight:750;text-decoration:none;min-width:135px}
+.case-board .cb-media-row span{background:#f0f5fc;padding:5px 8px;border-radius:7px}
+.case-board .cb-media-row small{width:100%;font-size:11px;line-height:1.5;color:#40556e}
+.case-board .cb-connect{display:inline-flex;margin:6px 12px 0 0;padding:8px 12px;background:#1769e8;color:#fff;border:0;border-radius:8px;cursor:pointer;font-size:12px;font-weight:750}
