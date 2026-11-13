@@ -120,10 +120,10 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
       <div className="cb-hero-side"><button onClick={()=>void reload()} type="button">↻ 最新データを確認</button><small>Notion取得 {age(updated)}</small></div>
     </section>
     <div className="cb-metrics">{stats.map(([name,note,desc])=><div key={name}><span>{name}</span><strong>{note}</strong><small>{desc}</small></div>)}</div>
-    <div className="cb-categories" role="group" aria-label="カテゴリで絞り込み">
+    {tab==='tasks'&&<div className="cb-categories" role="group" aria-label="カテゴリで絞り込み">
       <button className={category==='all'?'selected':''} onClick={()=>setCategory('all')}>全カテゴリ <b>{all.length||'—'}</b></button>
       {types.map(cat=><button key={cat} className={cat===category?'selected':''} onClick={()=>setCategory(cat)}>{cat}<b>{all.filter(t=>t.category===cat).length}</b></button>)}
-    </div>
+    </div>}
     <div className="cb-tabs" role="tablist" aria-label="業務の種類">
       {([['tasks','案件・マイタスク'],['materials','物件・資料請求'],['pipeline','顧客・営業・成約'],['channels','メール・LINE・Messenger']] as const).map(([key,label])=>
         <button type="button" role="tab" aria-selected={tab===key} key={key} className={tab===key?'active':''} onClick={()=>setTab(key)}>{label}</button>)}
@@ -143,7 +143,7 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
       {filtered.map(t=>{const owner=ballOwner(t);const done=milestone(t.wbsSummary);
         return <details className="cb-case" key={t.id}>
           <summary><span className="cb-case-title"><strong>{t.title}</strong><small>{t.category} · {t.priority}</small></span>
-            <span className={'cb-chip '+labelClass(t.executionStatus||t.status)}>{t.executionStatus||t.status}</span>
+            <span className={'cb-chip '+labelClass(t.executionStatus||t.status)}>{t.executionStatus==='実行中'?'DB記録：実行中':t.executionStatus||t.status}</span>
             <span className="cb-owner"><small>ボール</small><b>{owner}</b></span>
             <span className="cb-progress"><small>進捗</small><b>{done?`${done.percent}%`:'未計測'}</b>{done&&<span className="cb-track"><i style={{width:done.percent+'%'}} /></span>}</span></summary>
           <div className="cb-case-body">
@@ -189,6 +189,6 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
       </div>
       <p className="cb-alert">誰からのニーズか・何を依頼されたか・最後の返信・ボールの持ち主を完全に表示するには、各媒体の正規API／認証済み取り込みと共通案件IDの照合が未完了です。未接続を0件と表示しません。</p>
     </section>}
-    <footer className="cb-footer">個人情報を公開JSONに保存しません。正本：既存Notion DB。画面は読み取り専用・認証必須。実行ログなしの「稼働中」や推定進捗は使用しません。</footer>
+    <footer className="cb-footer">個人情報を公開JSONに保存しません。正本：既存Notion DB。画面は読み取り専用・認証必須。「実行中」はNotion台帳上の申告であり実稼働を保証しません。未検証進捗は数値化しません。</footer>
   </div>;
 }
