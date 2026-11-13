@@ -15,12 +15,16 @@ type Action = {id:string;url:string;title:string;propertyId:string;action:string
 type Stream = {id:string;url:string;title:string;stage:string;actor:string;responsible:string;
   lastAction:string;updatedAt:string|null;verifiedAt:string|null;nextAction:string;due:string|null;
   blocker:string;humanDecision:string;evidenceUrl:string|null;contactCount:number|null;replyCount:number|null};
+type Partner = {id:string;url:string;company:string;kind:string;pattern:string;channel:string;stage:string;
+  assignedAi:string;need:string;response:string;benefit:string;sentAt:string|null;
+  nextFollowupAt:string|null;threadUrl:string|null;updatedAt:string|null};
 type Source<T> = {ok:boolean;truncated?:boolean;error?:string;items:T[]};
-type Flow = {generatedAt:string;actions:Source<Action>;pipeline:Source<Stream>};
+type Flow = {generatedAt:string;actions:Source<Action>;pipeline:Source<Stream>;partners?:Source<Partner>};
 type Filters = 'all'|'hiro'|'blocked'|'unassigned'|'active';
 const MASTER='https://app.notion.com/p/5f61a18de1f84eac84ac355126311f8b';
 const PIPELINE='https://app.notion.com/p/67cfe9e3503444dc9e5aab80d47fa0ea';
 const ACTION='https://app.notion.com/p/cebac40892384fc691fdea575e741ef2';
+const PARTNERS='https://app.notion.com/p/8511fde8f57b467f870265dff7dd0e9a';
 const BALLS=['Hiro','Claude','Codex','Antigravity','Muse','ChatGPT通常チャット','外部・相手先','担当未割当'];
 const CHECK=/^(?:✅|☑|\[x\]|\[X\])\s*/;
 const OPEN=/^(?:☐|□|⬜|\[ \])\s*/;
@@ -96,6 +100,10 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
   ).sort(sortTask),[all,category,actor,filter,query]);
   const actions=useMemo(()=>[...(flow?.actions.items??[])].sort((a,b)=>String(b.occurredAt??'').localeCompare(String(a.occurredAt??''))),[flow]);
   const streams=useMemo(()=>[...(flow?.pipeline.items??[])].sort((a,b)=>Number(Boolean(b.humanDecision||b.blocker))-Number(Boolean(a.humanDecision||a.blocker))),[flow]);
+  const partners=useMemo(()=>[...(flow?.partners?.items??[])].sort((a,b)=>{
+    const aStop=/断り|終了/.test(a.stage)?1:0, bStop=/断り|終了/.test(b.stage)?1:0;
+    return aStop-bStop || (a.nextFollowupAt??'9999').localeCompare(b.nextFollowupAt??'9999')
+  }),[flow]);
   const requests=useMemo(()=>{
     const byId=new Map<string,Action[]>();
     for(const a of actions) {const id=a.propertyId||a.listingUrl||a.title;if(!byId.has(id))byId.set(id,[]);byId.get(id)!.push(a)}
@@ -170,6 +178,24 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
     </section>}
     {tab==='pipeline'&&<section className="cb-list">
       <div className="cb-section-head"><div><h3>顧客紹介・売り先・アライアンス・AI商材</h3><p>営業ストリームの接触・返信・交渉・入金。個別の顧客リストとの紐付けがないものは「未紐付け」とします。</p></div><a href={PIPELINE} target="_blank" rel="noreferrer">営業パイプライン正本 ↗</a></div>
+      <div className="cb-section-head cb-secondary-head"><div><h3>会社別：仕入れ営業・顧客紹介・アライアンス</h3><p>相手先ごとの要望、返信、次回フォロー日、担当AIを正本から表示します。媒体の実受信とは別です。</p></div><a href={PARTNERS} target="_blank" rel="noreferrer">会社別DB正本 ↗</a></div>
+      {flow?.partners?.ok?partners.map(p=><details className="cb-case" key={p.id}>
+        <summary>
+          <span className="cb-case-title"><strong>{p.company||'会社名未登録'}</strong><small>{p.kind||'種別未登録'} · {p.channel||'媒体未登録'} · 最終更新 {age(p.updatedAt)}</small></span>
+          <span className={'cb-chip '+labelClass(p.stage)}>{p.stage||'段階未登録'}</span>
+          <span className="cb-owner"><small>ボール</small><b>{p.assignedAi||'担当未割当'}</b></span>
+          <span className="cb-owner"><small>次回フォロー</small><b>{p.nextFollowupAt?.slice(0,10)||'未設定'}</b></span>
+        </summary>
+        <div className="cb-case-body">
+          <div><small>相手のニーズ・紹介案件</small><p>{p.need||'記録なし'}</p></div>
+          <div><small>返信・反応</small><p>{p.response||'反応未登録（未返信と断定しない）'}</p></div>
+          <div><small>価値提案・協業パターン</small><p>{p.benefit||'未登録'} ／ {p.pattern||'分類なし'}</p></div>
+          <div><small>送信・フォロー</small><p>{p.sentAt?.slice(0,10)||'送信日未記録'} → {p.nextFollowupAt?.slice(0,10)||'次回日付未設定'}{p.stage.includes('断り')?' ／ 連絡禁止': ''}</p></div>
+          <div className="cb-links"><a href={p.url} target="_blank" rel="noreferrer">相手先のNotion記録 ↗</a>{p.threadUrl&&<a href={p.threadUrl} target="_blank" rel="noreferrer">Gmailスレッド ↗</a>}</div>
+        </div>
+      </details>):<p className="cb-alert">会社別営業DB：{flow?.partners?.error||'未取得（0件と見なさない）'}</p>}
+      {flow?.partners?.ok&&partners.length===0&&<p className="cb-empty">会社別データなし（登録件数0の可能性）。</p>}
+      <div className="cb-section-head cb-secondary-head"><div><h3>ストリーム全体：接触・返信・受注・入金</h3><p>会社別記録と全体の活動KPIを混同しません。</p></div></div>
       {flow?.pipeline.ok?streams.map(s=><details className="cb-case" key={s.id}>
         <summary><span className="cb-case-title"><strong>{s.title}</strong><small>{s.responsible||'担当タスク未設定'} · {age(s.updatedAt)}</small></span>
           <span className={'cb-chip '+labelClass(s.stage)}>{s.stage||'段階不明'}</span>
@@ -187,6 +213,8 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
         <div><strong>Messenger</strong><span className="cb-chip cb-negative">受信箱との直接同期未確認</span><p>過去のMessenger自動化システムは存在。ただし本画面への顧客別返信データ連携は未検証。</p><a href="https://app.notion.com/p/3fe10562e58b8162a842de13ef041be8" target="_blank" rel="noreferrer">既存システム台帳 ↗</a></div>
         <div><strong>LINE</strong><span className="cb-chip cb-negative">受信箱との直接同期未確認</span><p>LINE公式・個人LINEを混同しません。実受信・送信の確認は元システムの証拠IDが必要です。</p><a href="https://app.notion.com/p/40310562e58b811fb3c3e8859dcd2e66" target="_blank" rel="noreferrer">LINE実機監査 ↗</a></div>
       </div>
+      <div className="cb-section-head cb-secondary-head"><div><h3>媒体が分かっている会社別の接触記録</h3><p>Notion営業DBの「経路」で絞った既存履歴です。Gmail・Messenger・LINEの全受信箱を読んだ結果ではありません。</p></div><a href={PARTNERS} target="_blank" rel="noreferrer">会社別DB ↗</a></div>
+      {flow?.partners?.ok?partners.filter(p=>p.channel).map(p=><div className="cb-media-row" key={p.id}><a href={p.url} target="_blank" rel="noreferrer">{p.company||'相手先名未記録'}</a><span>{p.channel}</span><span>{p.stage||'状況未登録'}</span><span>担当：{p.assignedAi||'未割当'}</span>{p.need&&<small>依頼：{p.need}</small>}{p.response&&<small>反応：{p.response}</small>}</div>):<p className="cb-alert">媒体別営業履歴：{flow?.partners?.error||'未取得'}</p>}
       <p className="cb-alert">誰からのニーズか・何を依頼されたか・最後の返信・ボールの持ち主を完全に表示するには、各媒体の正規API／認証済み取り込みと共通案件IDの照合が未完了です。未接続を0件と表示しません。</p>
     </section>}
     <footer className="cb-footer">個人情報を公開JSONに保存しません。正本：既存Notion DB。画面は読み取り専用・認証必須。「実行中」はNotion台帳上の申告であり実稼働を保証しません。未検証進捗は数値化しません。</footer>

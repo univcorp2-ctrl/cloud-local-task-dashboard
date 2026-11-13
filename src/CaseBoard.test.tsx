@@ -32,3 +32,24 @@ test('認証なしでは実タスクを掲載せず失敗理由を表示',async(
  expect(await screen.findByText(/接続が必要です/)).toBeInTheDocument();
  expect(screen.queryByText('戸建て仕入れ')).not.toBeInTheDocument();
 });
+
+test('営業先の会社別ニーズ・返信・担当・送信禁止を媒体別に表示',async()=>{
+ vi.stubGlobal('fetch',vi.fn().mockImplementation(async(input:string)=>{
+   if(String(input).includes('private-workflows'))return {ok:true,json:async()=>({generatedAt:'2026-11-13T09:00:00Z',
+     actions:{ok:true,items:[]},pipeline:{ok:true,items:[]},partners:{ok:true,items:[{
+       id:'p1',url:'https://www.notion.so/p1',company:'提携テスト会社',kind:'協業先開拓',pattern:'A 民泊・旅館運営',
+       channel:'メール',stage:'断り（連絡禁止）',assignedAi:'Muse',need:'収益物件の紹介希望',response:'不要と返信あり',benefit:'紹介する',
+       sentAt:'2026-11-11',nextFollowupAt:null,threadUrl:null,updatedAt:'2026-11-13T09:00:00Z'
+     }]}})};
+   return {ok:true,json:async()=>({tasks:[task],generatedAt:'2026-11-13T09:00:00Z'})};
+ }));
+ render(<CaseBoard onConnect={()=>undefined}/>);
+ fireEvent.click(screen.getByRole('tab',{name:'顧客・営業・成約'}));
+ expect(await screen.findByText('提携テスト会社')).toBeInTheDocument();
+ fireEvent.click(screen.getByText('提携テスト会社'));
+ expect(screen.getByText('収益物件の紹介希望')).toBeInTheDocument();
+ expect(screen.getAllByText(/連絡禁止/).length).toBeGreaterThan(0);
+ fireEvent.click(screen.getByRole('tab',{name:'メール・LINE・Messenger'}));
+ expect(screen.getByText('提携テスト会社')).toBeInTheDocument();
+ expect(screen.getByText(/反応：不要と返信あり/)).toBeInTheDocument();
+});
