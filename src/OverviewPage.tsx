@@ -3,6 +3,7 @@ import QuotaGauges from './QuotaGauges';
 import DashboardDirectory from './DashboardDirectory';
 import EarnLabPanel, { type EarnLab } from './EarnLabPanel';
 import SnsPanel, { type EstateParts } from './SnsPanel';
+import WhatsAppPanel from './WhatsAppPanel';
 import UsagePanel from './UsagePanel';
 import JobsPanel from './JobsPanel';
 import { authHeaders, fmtJst, useConnected, useControlState, useOwnerToken, type ControlSnapshot, type Kpi } from './controlState';
@@ -190,6 +191,7 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
       <UsagePanel usage={state?.usage ?? []} quotas={state?.quotas ?? []} connected={token} onConnect={onConnect} />
       <EarnLabPanel data={earnLab} status={earn.status} target={EARN_TARGET} connected={Boolean(token)} onConnect={onConnect} />
       <SnsPanel parts={(estate.data?.parts as EstateParts | undefined) ?? null} metrics={state?.metrics ?? []} fetchedAt={estate.data?.fetchedAt} />
+      <WhatsAppPanel events={state?.events ?? []} connected={token} />
 
       <section className="ov-grid2">
         <article className="panel">
