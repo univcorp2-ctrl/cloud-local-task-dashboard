@@ -72,24 +72,40 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
   const [query,setQuery]=useState('');
   const [tab,setTab]=useState<'tasks'|'materials'|'pipeline'|'channels'>('tasks');
   const [updated,setUpdated]=useState('');
+  const [showCompleted,setShowCompleted]=useState(false);
+  const [completionBusy,setCompletionBusy]=useState<string|null>(null);
+  const [completionNotice,setCompletionNotice]=useState('');
   const reload=useCallback(async()=>{
     try{
       const [taskResp,flowResp]=await Promise.all([
-        fetch('/api/private-tasks',{headers:authHeaders(),credentials:'same-origin',cache:'no-store'}),
+        fetch('/api/private-tasks'+(showCompleted?'?showCompleted=true':''),{headers:authHeaders(),credentials:'same-origin',cache:'no-store'}),
         fetch('/api/private-workflows',{headers:authHeaders(),credentials:'same-origin',cache:'no-store'})
       ]);
       if(!taskResp.ok)throw new Error(taskResp.status===401?'接続が必要です（認証トークンを確認）':
         taskResp.status===503?'Notion接続設定が未完了（HTTP 503）':`タスク取得エラー HTTP ${taskResp.status}`);
       const taskData=await taskResp.json() as {tasks?:Task[];generatedAt?:string;truncated?:boolean};
       if(!Array.isArray(taskData.tasks))throw new Error('Notionタスクの形式を確認できません');
-      setTasks(taskData.tasks.filter(x=>!x.completed));
+      setTasks(taskData.tasks);
       setUpdated(taskData.generatedAt??new Date().toISOString());
       if(flowResp.ok){setFlow(await flowResp.json() as Flow)}else{setFlow(null)}
       setError(taskData.truncated?'タスクの一部のみ取得しました。件数を全件と扱わないでください。':'');
     }catch(e){setTasks(null);setFlow(null);setError(e instanceof Error?e.message:'データを取得できません')}
-  },[]);
+  },[showCompleted]);
   useEffect(()=>{void reload();const id=window.setInterval(()=>void reload(),120000);return()=>window.clearInterval(id)},[reload,token]);
-  const all=useMemo(()=>tasks??[],[tasks]);
+  const all=useMemo(()=>(tasks??[]).filter(t=>showCompleted||!t.completed),[tasks,showCompleted]);
+  async function markCompleted(t:Task){
+    if(t.completed||completionBusy)return;
+    setCompletionBusy(t.id);setCompletionNotice('');
+    try{
+      const response=await fetch('/api/private-tasks',{method:'PATCH',headers:authHeaders({'Content-Type':'application/json'}),credentials:'same-origin',body:JSON.stringify({id:t.id,completed:true})});
+      if(!response.ok)throw new Error(`Notion保存に失敗（HTTP ${response.status}）。完了扱いにしていません。`);
+      const result=await response.json() as {ok?:boolean;auditLogged?:boolean};
+      if(!result.ok)throw new Error('Notionから完了の確認を取得できませんでした。');
+      setTasks(prev=>prev?.map(x=>x.id===t.id?{...x,completed:true}:x)??null);
+      setCompletionNotice(result.auditLogged===false?'Notionの完了は保存されましたが監査追記は未確認です。':'Notionに完了を保存しました。完了済み表示から確認できます。');
+    }catch(err){setCompletionNotice(err instanceof Error?err.message:'完了更新に失敗しました。');}
+    finally{setCompletionBusy(null)}
+  }
   const types=useMemo(()=>[...new Set([...categories,...all.map(t=>t.category||'🔍 要確認')])].filter(c=>all.some(t=>t.category===c)),[all]);
   const filtered=useMemo(()=>all.filter(t=>(category==='all'||t.category===category)&&
     (actor==='all'||ballOwner(t)===actor)&&
@@ -138,8 +154,9 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
     </div>
     {!tasks && <div className="cb-alert" role="alert"><strong>案件の実データは認証後にのみ表示されます。</strong><p>{error||'Notionから読み込み中です。'}</p><button type="button" className="cb-connect" onClick={onConnect}>接続・認証設定を開く</button> <a href={MASTER} target="_blank" rel="noreferrer">Notion正本を開く ↗</a></div>}
     {error&&tasks&&<p className="cb-alert" role="alert">{error}</p>}
+    {completionNotice&&<p className="cb-alert" role="status">{completionNotice}</p>}
     {tab==='tasks'&&<section className="cb-list">
-      <div className="cb-toolbar"><div className="cb-filters">
+      <div className="cb-toolbar"><button type="button" className="cb-completed-toggle" aria-pressed={showCompleted} onClick={()=>setShowCompleted(v=>!v)}>{showCompleted?'完了済みを隠す':'☑ 完了済みを表示'}</button><div className="cb-filters">
         <select aria-label="ボールを持つ人" value={actor} onChange={e=>setActor(e.target.value)}>
           <option value="all">すべての担当</option>{BALLS.map(b=><option key={b} value={b}>{b}</option>)}</select>
         <select aria-label="作業状態" value={filter} onChange={e=>setFilter(e.target.value as Filters)}>
@@ -150,7 +167,7 @@ export default function CaseBoard({onConnect}:{onConnect:()=>void}){
         <span>表示 {tasks?filtered.length:'—'}件</span></div>
       {filtered.map(t=>{const owner=ballOwner(t);const done=milestone(t.wbsSummary);
         return <details className="cb-case" key={t.id}>
-          <summary><span className="cb-case-title"><strong>{t.title}</strong><small>{t.category} · {t.priority}</small></span>
+          <summary><label className="cb-complete-box" title="Notionで完了にする"><input type="checkbox" aria-label={t.title+'を完了'} checked={t.completed} disabled={Boolean(completionBusy)||t.completed} onClick={event=>event.stopPropagation()} onChange={()=>void markCompleted(t)}/></label><span className="cb-case-title"><strong>{t.title}</strong><small>{t.category} · {t.priority}</small></span>
             <span className={'cb-chip '+labelClass(t.executionStatus||t.status)}>{t.executionStatus==='実行中'?'DB記録：実行中':t.executionStatus||t.status}</span>
             <span className="cb-owner"><small>ボール</small><b>{owner}</b></span>
             <span className="cb-progress"><small>進捗</small><b>{done?`${done.percent}%`:'未計測'}</b>{done&&<span className="cb-track"><i style={{width:done.percent+'%'}} /></span>}</span></summary>

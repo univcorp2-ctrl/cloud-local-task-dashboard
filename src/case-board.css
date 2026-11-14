@@ -74,3 +74,12 @@
 .case-board .cb-media-row span{background:#f0f5fc;padding:5px 8px;border-radius:7px}
 .case-board .cb-media-row small{width:100%;font-size:11px;line-height:1.5;color:#40556e}
 .case-board .cb-connect{display:inline-flex;margin:6px 12px 0 0;padding:8px 12px;background:#1769e8;color:#fff;border:0;border-radius:8px;cursor:pointer;font-size:12px;font-weight:750}
+
+/* iPhone one-tap completion: the check is independent of opening case details. */
+.case-board .cb-case>summary{grid-template-columns:32px minmax(220px,1fr) minmax(85px,auto) minmax(96px,auto) 85px}
+.case-board .cb-complete-box{display:flex;align-items:center;justify-content:center;min-width:30px;min-height:40px;cursor:pointer}
+.case-board .cb-complete-box input{width:23px;height:23px;accent-color:#128260;cursor:pointer;touch-action:manipulation}
+.case-board .cb-complete-box input:disabled{opacity:.65;cursor:default}
+.case-board .cb-completed-toggle{border:1px solid #abc4e8;background:#eff6ff;color:#1754a2;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:750;white-space:nowrap;cursor:pointer;touch-action:manipulation}
+@media(max-width:960px){.case-board .cb-case>summary{grid-template-columns:32px minmax(160px,1fr) auto 100px}}
+@media(max-width:680px){.case-board .cb-toolbar{flex-wrap:wrap}.case-board .cb-completed-toggle{flex:1 1 100%;min-height:44px}.case-board .cb-case>summary{grid-template-columns:35px minmax(0,1fr) auto;gap:8px;padding:10px}.case-board .cb-case-title{grid-column:auto}.case-board .cb-complete-box{grid-column:1;grid-row:1}.case-board .cb-complete-box input{width:27px;height:27px}.case-board .cb-owner{grid-column:2/4;text-align:left}.case-board .cb-progress{display:none}}

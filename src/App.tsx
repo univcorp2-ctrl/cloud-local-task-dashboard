@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fallbackSnapshot } from './sample';
 import TokenUsagePanel from './TokenUsagePanel';
-import QuotaGauges from './QuotaGauges';
+import QuotaStrip from './QuotaStrip';
 import OverviewPage from './OverviewPage';
 import ConnectDialog from './ConnectDialog';
 import { captureTokenFromUrl, useControlState, useOwnerToken } from './controlState';
@@ -153,7 +153,7 @@ export default function App() {
         <header className="topbar tcc-compact" id="dashboard">
           <button className="menu-button" onClick={() => setMenuOpen((value) => !value)} aria-label="メニューを開閉">☰</button>
           <div className="topbar-title"><p className="eyebrow">UNIFIED OPERATIONS</p><h1>{pageTitle[activePage][0]}</h1><p>{pageTitle[activePage][1]}</p></div>
-          <div className="topbar-right">{activePage !== 'overview' && <QuotaGauges quotas={control.data?.quotas ?? null} compact />}
+          <div className="topbar-right"><QuotaStrip quotas={control.data?.quotas ?? null} />
           {activePage === 'automation' && <div className="header-actions">
             <span className={loadError ? 'data-state warning' : 'data-state'}><i />{loadError ? '取得失敗' : 'データ接続済み'}</span>
             <button className="refresh-button" onClick={() => void load()} disabled={refreshing}>{refreshing ? '更新中…' : '↻ 更新'}</button>

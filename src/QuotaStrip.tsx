@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Quota } from './QuotaRow';
+import type { QuotaView } from './controlState';
 type Catalog = { quotas?: Quota[] };
 const SERVICES = [
   {name:'Claude',provider:'Claude Code CLI',kind:'7日枠'},
@@ -30,7 +31,7 @@ export function untilReset(when: string | null | undefined, now: number): string
   const days = Math.floor(minutes/1440), hours = Math.ceil((minutes-days*1440)/60);
   return days ? 'あと'+days+'日'+(hours ? hours+'時間':'') : 'あと'+hours+'時間';
 }
-export default function QuotaStrip() {
+export default function QuotaStrip({ quotas = null }: { quotas?: QuotaView[] | null }) {
   const [data,setData] = useState<Catalog|null>(null);
   const [now,setNow] = useState(Date.now());
   useEffect(()=>{
@@ -50,20 +51,23 @@ export default function QuotaStrip() {
   },[]);
   const entries=SERVICES.map(({name,provider,kind})=>{
     const q=data?.quotas?.find(x=>x.provider===provider);
+    const live=quotas?.find(x=>x.provider===name.toLowerCase());
+    const weekly=live?.windows.find(w=>w.kind==='weekly') ?? (live?.primary?.kind==='weekly'?live.primary:null);
+    const liveValid=Boolean(live && weekly && weekly.remainingPercent!==null && live.freshness!=='missing');
     const observed=q?.observedAt?Date.parse(q.observedAt):NaN;
     const age=Number.isFinite(observed)?now-observed:Infinity;
     const recent=age>=-300000&&age<=86400000&&q?.quality!=='unavailable';
-    const seven=recent?left(q?.weeklyUsedPercent):null;
+    const seven=liveValid?(weekly?.remainingPercent??null):(recent?left(q?.weeklyUsedPercent):null);
     const five=recent?left(q?.usedPercent,q?.remainingPercent):null;
     const isModel=name==='Antigravity', isMuse=name==='Muse';
     // Never present model-specific limits as a weekly balance.
-    const value=isModel||isMuse?five:(seven ?? five);
+    const value=seven ?? (isModel||isMuse ? (recent ? five : null) : null);
     const label=isModel?'モデル残量':seven!==null?'7日残量':five!==null?'5時間残量':'残量';
-    const reset=isModel||isMuse?q?.resetAt:seven!==null?q?.weeklyResetAt:q?.resetAt;
-    const resetLabel=recent&&reset&&Date.parse(reset)>now?untilReset(reset,now):'更新日不明';
-    const state=value===null?'未取得':age>1800000||q?.quality==='stale'?'前回値':q?.quality==='estimated'?'推定':'実測';
+    const reset=liveValid ? weekly?.resetsAt : (seven!==null?q?.weeklyResetAt:q?.resetAt);
+    const resetLabel=(liveValid||recent)&&reset&&Date.parse(reset)>now?untilReset(reset,now):'更新日不明';
+    const state=value===null?'未取得':liveValid?(live?.freshness==='stale'?'前回値':live?.quality==='estimated'?'推定':'実測'):(age>1800000||q?.quality==='stale'?'前回値':q?.quality==='estimated'?'推定':'実測');
     // Stale data is shown clearly as historical, not live; ancient records remain unknown.
-    return {name,observed,recent,seven,five,value,label,state,resetLabel,resetKind:kind,tone:quotaTone(value),evidence:q?.evidence||'',quality:q?.quality||'unavailable'};
+    return {name,observed:liveValid?Date.parse(live?.observedAt??''):observed,recent:liveValid||recent,seven,five,value,label,state,resetLabel,resetKind:kind,tone:quotaTone(value),evidence:liveValid?(live?.source??''):(q?.evidence||''),quality:liveValid?(live?.quality??'measured'):(q?.quality||'unavailable')};
   });
   return <section className="quota-strip" aria-label="AI別 7日間利用枠の残量" role="group">
     <time className="quota-clock" dateTime={new Date(now).toISOString()} aria-label="今日の日付と日本時間"><span>{day.format(now)}</span><strong>{clock.format(now)}</strong></time>
