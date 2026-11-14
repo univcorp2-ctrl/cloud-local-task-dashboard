@@ -53,3 +53,18 @@ test('営業先の会社別ニーズ・返信・担当・送信禁止を媒体�
  expect(screen.getByText('提携テスト会社')).toBeInTheDocument();
  expect(screen.getByText(/反応：不要と返信あり/)).toBeInTheDocument();
 });
+
+
+test('one-tap case checkbox saves through owner API and hides only after server success',async()=>{
+  let patches=0;
+  vi.stubGlobal('fetch',vi.fn().mockImplementation(async(input:string,init?:RequestInit)=>{
+    if(init?.method==='PATCH') { patches+=1; return {ok:true,json:async()=>({ok:true,auditLogged:true})}; }
+    if(String(input).includes('private-workflows')) return {ok:true,json:async()=>({actions:{ok:true,items:[]},pipeline:{ok:true,items:[]}})};
+    return {ok:true,json:async()=>({tasks:[task],generatedAt:new Date().toISOString()})};
+  }));
+  render(<CaseBoard onConnect={()=>undefined}/>);
+  const tick=await screen.findByRole('checkbox');
+  fireEvent.click(tick);
+  await waitFor(()=>expect(patches).toBe(1));
+  await waitFor(()=>expect(screen.queryByText(task.title)).toBeNull());
+});

@@ -73,3 +73,16 @@ test('preserves last measured weekly quota with an honest previous-value label f
   expect(screen.getByText('前回値')).toBeInTheDocument();
   expect(screen.getAllByText(/あと3日|あと4日/).length).toBeGreaterThan(0);
 });
+
+
+test('fresh state API weekly quota overrides outdated catalog and never substitutes a 5h balance', async () => {
+  const observedAt = new Date().toISOString();
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ok:true,json:async()=>({quotas:[
+    {provider:'Claude Code CLI',usedPercent:2,weeklyUsedPercent:8,observedAt:'2026-10-29T00:00:00Z',quality:'stale'}
+  ]})}));
+  render(<QuotaStrip quotas={[{provider:'claude',label:'Claude',observedAt,source:'state-api',quality:'measured',staleAfterMinutes:30,freshness:'fresh',ageMinutes:1,primary:null,
+    windows:[{kind:'weekly',label:'7d',remainingPercent:29,usedPercent:71,resetsAt:new Date(Date.now()+2*86400000).toISOString()}]
+  }]} />);
+  expect(await screen.findByText('29%')).toBeInTheDocument();
+  expect(screen.queryByText('92%')).not.toBeInTheDocument();
+});
