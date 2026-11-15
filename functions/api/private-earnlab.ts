@@ -4,10 +4,11 @@
  * experiments with their next action. Cached in KV for 5 minutes. Never public.
  */
 import { authorize, jsonResponse, type AuthEnv } from '../_lib/auth';
+import { buildCategories } from '../_lib/earnlab-ev';
 
 interface Env extends AuthEnv { TCC_STATE?: KVNamespace; NOTION_API_TOKEN?: string; NOTION_EARNLAB_DATA_SOURCE_ID?: string }
 const DEFAULT_DATA_SOURCE = 'de1e04ae-4618-4744-bf5d-ace0b9ac355e';
-const CACHE_KEY = 'tcc:earnlab:v1';
+const CACHE_KEY = 'tcc:earnlab:v2';
 const TTL = 300;
 
 interface Page { id: string; url: string; last_edited_time?: string; properties: Record<string, {
@@ -47,6 +48,7 @@ export async function buildEarnLab(pagesIn: Page[], now = new Date()) {
     recent: [...rows].sort((a, b) => (b.updatedAt ?? '').localeCompare(a.updatedAt ?? '')).slice(0, 8)
       .map((r) => ({ id: r.id, url: r.url, name: r.name, state: r.state, updatedAt: r.updatedAt, result: r.result })),
     month, movedToDefense: moved.length,
+    ...buildCategories(rows),
   };
 }
 

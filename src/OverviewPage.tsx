@@ -106,16 +106,20 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
           </div>
         </div>
         {stateError && <p className="ov-note warn">状態API: {stateError}</p>}
+        {!token && <button type="button" className="ov-connect-banner" onClick={onConnect}>
+          <strong>この端末はまだつながっていません</strong>
+          <span>Earn Labの期待値・本人タスク・活動ログ・トークン内訳が隠れています。PCで発行した8文字のコードを入れるだけで、この端末は400日つながったままになります。</span>
+          <em>この端末をつなぐ →</em>
+        </button>}
       </section>
 
-      <section className="panel" aria-label="全AIのフォローアップ・返信・回収">
-        <div className="panel-heading">
-          <div><span className="section-kicker">FOLLOW-UP / COLLECTION</span><h2>AIの返信・フォローアップ・回収</h2></div>
-          <a className="ov-more" href="https://app.notion.com/p/67cfe9e3503444dc9e5aab80d47fa0ea" target="_blank" rel="noopener noreferrer">Notionの案件正本で確認 ↗</a>
-        </div>
-        <p className="ov-note">ChatGPT・Claude等の担当、最後の実行、返信、交渉、請求・入金確認は案件ごとの証拠で判断します。現時点ではWebに全AIの案件別進捗が自動同期されていないため、上記のNotionパイプライン盤を正本として参照してください。未連携・未確認を「完了」と表示しません。</p>
+      <EarnLabPanel data={earnLab} status={earn.status} target={EARN_TARGET} connected={Boolean(token)} onConnect={onConnect} />
+
+      <details className="panel ov-collapsible" aria-label="全AIのフォローアップ・返信・回収">
+        <summary><span className="section-kicker">FOLLOW-UP / COLLECTION</span><strong>AIの返信・フォローアップ・回収</strong></summary>
+        <p className="ov-note">返信・交渉・請求・入金確認は案件ごとの証拠で判断します。正本は <a href="https://app.notion.com/p/67cfe9e3503444dc9e5aab80d47fa0ea" target="_blank" rel="noopener noreferrer">Notionの稼ぐパイプライン盤 ↗</a>。未確認を「完了」とは表示しません。</p>
         <p className="ov-note">公開タスクのデータ時点: {tasks.data?.generatedAt ? fmtJst(tasks.data.generatedAt) : '未取得'}{(!tasks.data?.generatedAt || !Number.isFinite(Date.parse(tasks.data.generatedAt)) || Date.now() - Date.parse(tasks.data.generatedAt) > 24 * 60 * 60 * 1000) ? '（24時間以上古い、または未取得）' : ''}</p>
-      </section>
+      </details>
 
       <QuotaGauges quotas={state?.quotas ?? null} onConnect={onConnect} />
 
@@ -189,7 +193,6 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
 
       <JobsPanel data={state} connected={token} onConnect={onConnect} compact />
       <UsagePanel usage={state?.usage ?? []} quotas={state?.quotas ?? []} connected={token} onConnect={onConnect} />
-      <EarnLabPanel data={earnLab} status={earn.status} target={EARN_TARGET} connected={Boolean(token)} onConnect={onConnect} />
       <SnsPanel parts={(estate.data?.parts as EstateParts | undefined) ?? null} metrics={state?.metrics ?? []} fetchedAt={estate.data?.fetchedAt} />
       <WhatsAppPanel events={state?.events ?? []} connected={token} />
 

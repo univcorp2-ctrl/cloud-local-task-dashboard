@@ -4,7 +4,7 @@ import TokenUsagePanel from './TokenUsagePanel';
 import QuotaStrip from './QuotaStrip';
 import OverviewPage from './OverviewPage';
 import ConnectDialog from './ConnectDialog';
-import { captureTokenFromUrl, useControlState, useOwnerToken } from './controlState';
+import { capturePairFromHash, captureTokenFromUrl, useControlState, useOwnerToken } from './controlState';
 import { dashboardAppLinks, appCategories } from './appLinks';
 import ManualTasksPanel from './ManualTasksPanel';
 import DevelopmentProgressPanel from './DevelopmentProgressPanel';
@@ -81,7 +81,7 @@ const pageTitle: Record<Page, [string, string]> = {
 
 export default function App() {
   const [activePage, setActivePage] = useState<Page>(() => typeof window !== 'undefined' ? pageFromHash(window.location.hash) : 'overview');
-  useEffect(() => { captureTokenFromUrl(); const onHashChange = () => setActivePage(pageFromHash(window.location.hash)); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
+  useEffect(() => { captureTokenFromUrl(); capturePairFromHash(); const onHashChange = () => setActivePage(pageFromHash(window.location.hash)); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
   const [connectOpen, setConnectOpen] = useState(false);
   const [ownerToken] = useOwnerToken();
   const connected = useConnected();
