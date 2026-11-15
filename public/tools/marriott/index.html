@@ -315,6 +315,7 @@ ul.tight{margin:0;padding-left:1.2em;display:grid;gap:4px}
 <section class="panel" aria-labelledby="src-h" data-view="about" hidden>
   <h2 id="src-h">出典</h2>
   <ul class="src">
+    <li>各ホテルの公式ページは、ホテルの詳細ページの「ホテル公式ページを開く」から開けます。</li>
     <li><a href="https://financialelite.jp/marriott-points-hotels-japan/">国内123軒の現金料金とポイント（2026-12-08泊、調査日10/23）</a></li>
     <li><a href="https://www.marriott.com/ja/offers/free-night-award-japanese-off-215737">マリオット公式：無料宿泊特典に最大25,000pt追加</a></li>
     <li><a href="https://choice-benefit.marriott.com/brilliant/en-us/terms">Brilliant選択特典の規約（NUAは特典予約にも使える）</a></li>
@@ -445,7 +446,7 @@ function detailHTML(h){
   const basisTxt = b ? `${b.label}：現金${yen(b.cash)}／${pt(b.pts)}${b.mixed?"（推定）":""}` : `2026-12-08泊：現金${yen(h.d8.cash)}／${pt(h.d8.pts)}（上限超え）`;
   return `<a class="back" href="#list">← ホテル一覧に戻る</a>
     <div class="hhead">
-      <h2 style="border:none;padding:0">${h.name}</h2>
+      <h2 style="border:none;padding:0">${h.url?`<a href="${h.url}" target="_blank" rel="noopener">${h.name}</a>`:h.name}</h2>
       <div class="tags"><span class="tag">${h.area}</span><span class="tag">${h.brand}</span>${statusTag(h)}</div>
     </div>
     <div class="metrics">
@@ -470,7 +471,7 @@ function detailHTML(h){
       ${h.extraNote?`<div><dt>追加料金</dt><dd>${h.extraNote}</dd></div>`:""}
       ${h.caveat?`<div><dt>注意</dt><dd>${h.caveat}</dd></div>`:""}
     </dl>
-    <p><a href="#extras">このホテルの追加料金を計算する →</a></p>`;
+    <p>${h.url?`<a href="${h.url}" target="_blank" rel="noopener">ホテル公式ページを開く ↗</a>`:`<span class="note">公式ページのリンク未取得</span>`}　<a href="#extras">このホテルの追加料金を計算する →</a></p>`;
 }
 const VIEWS = ["list","summary","extras","rules","about"];
 function route(){
