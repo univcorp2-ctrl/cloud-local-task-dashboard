@@ -67,7 +67,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const pages: Page[] = [];
   let cursor: string | null = null;
   try {
-    for (let i = 0; i < 6; i += 1) {
+    // 実験DBは1,500行超（2026-11-15時点）。6ページ=600件で切れて入金実績が漏れていたため20ページ=2,000件まで読む。
+    for (let i = 0; i < 20; i += 1) {
       const body: Record<string, unknown> = { page_size: 100 };
       if (cursor) body.start_cursor = cursor;
       const response = await fetch(`https://api.notion.com/v1/data_sources/${dataSource}/query`, {
