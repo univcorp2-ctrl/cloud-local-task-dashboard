@@ -72,6 +72,22 @@ export function captureTokenFromUrl(): void {
     }
   } catch { /* ignore malformed URLs */ }
 }
+/** 「稼ぐ・投資」ページの共有キー（読み取り専用）。`#earn=KEY` のリンクで受け取り、この端末に保存する。 */
+const SHARE_STORAGE = 'tcc_earn_share';
+export function getShareKey(): string { try { return window.localStorage.getItem(SHARE_STORAGE) || ''; } catch { return ''; } }
+export function setShareKey(value: string): void {
+  try { if (value) window.localStorage.setItem(SHARE_STORAGE, value); else window.localStorage.removeItem(SHARE_STORAGE); } catch { /* storage unavailable */ }
+}
+/** `#earn=KEY` で開かれたらキーを保存して、URLからは消す。 */
+export function captureShareFromHash(): void {
+  try {
+    const m = window.location.hash.match(/^#earn=([A-Za-z0-9]{24,64})/);
+    if (!m) return;
+    setShareKey(m[1]);
+    window.history.replaceState(null, '', window.location.pathname + window.location.search + '#earn');
+  } catch { /* ignore */ }
+}
+
 /** 別端末で発行したペアリングコードでこの端末をつなぐ（Cookie 400日）。成功で true。 */
 export async function redeemPairCode(code: string): Promise<boolean> {
   try {
