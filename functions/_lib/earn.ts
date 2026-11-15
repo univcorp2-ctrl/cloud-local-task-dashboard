@@ -34,7 +34,8 @@ export function toStream(p: NPage): Stream {
     id: p.id, url: p.url, name: text(p, 'ストリーム', 120), kind, verdict: sel(p, '判定'), stage: sel(p, '段階'),
     earn, auto, future, total: earn !== null && auto !== null && future !== null ? earn * 2 + auto + future : null,
     days: num(p, '現金化日数'), contacts, replies, wins: num(p, '受注数'),
-    replyRate: contacts !== null && contacts > 0 && replies !== null ? replies / contacts : null,
+    // 返信数が接触数を超える行（1社から複数回の返信など）は率を出さない
+    replyRate: contacts !== null && contacts > 0 && replies !== null && replies <= contacts ? replies / contacts : null,
     expected: num(p, '入金見込み_円'), paid: num(p, '実入金_円'), prob: num(p, '確度%'),
     firstCashDate: p.properties['最短入金日']?.date?.start ?? null,
     next: text(p, '次の一手', 260), issue: text(p, '課題', 260), memo: text(p, '評価メモ'),
