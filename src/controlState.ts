@@ -72,6 +72,27 @@ export function captureTokenFromUrl(): void {
     }
   } catch { /* ignore malformed URLs */ }
 }
+/** 別端末で発行したペアリングコードでこの端末をつなぐ（Cookie 400日）。成功で true。 */
+export async function redeemPairCode(code: string): Promise<boolean> {
+  try {
+    const response = await fetch('/api/pair/redeem', { method: 'POST', cache: 'no-store', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code }) });
+    return response.ok;
+  } catch { return false; }
+}
+
+/** `#pair=CODE` で開かれたら1回だけ使ってURLから消し、成功したら読み直す。 */
+export function capturePairFromHash(): void {
+  try {
+    const m = window.location.hash.match(/^#pair=([A-Za-z0-9-]{6,16})/);
+    if (!m) return;
+    window.history.replaceState(null, '', window.location.pathname + window.location.search + '#overview');
+    void redeemPairCode(m[1]).then((ok) => {
+      if (ok) window.location.reload();
+      else window.alert('ペアリングコードが無効か期限切れです。PCで新しいコードを発行してください。');
+    });
+  } catch { /* ignore */ }
+}
+
 export function getToken(): string { return memoryToken || readStorage(); }
 export function authHeaders(extra: Record<string, string> = {}): Record<string, string> {
   const token = getToken();

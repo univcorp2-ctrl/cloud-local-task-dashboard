@@ -163,3 +163,62 @@ a.ov-kpi:hover{border-color:#9fc1f0;box-shadow:0 6px 18px rgba(23,105,232,.08)}
 @media(max-width:600px){.us-table,.us-table tbody{display:block}.us-table thead{display:none}.us-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-bottom:1px solid #e8edf4;padding:8px 0}.us-table td{display:block;min-width:0!important;border:0}.us-table td:first-child{grid-column:1/-1}.us-table td[data-label]::before{content:attr(data-label);display:block;font-size:10px;font-weight:600;color:#64748b;margin-bottom:3px}}
 /* Override the legacy global table minimum so mobile cards retain every metric. */
 .us-table{min-width:0;max-width:100%}
+
+/* 2026-11-15 Earn Lab「どれが稼げるか」カテゴリー別の期待値・確率・現金化日数 */
+.el-tiles div.accent{background:#eef6ff;border-color:#bcd7ff}
+.el-tiles div.accent strong{color:#1769e8}
+.elc-toolbar{display:flex;gap:6px;margin:4px 0 10px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.elc-toolbar button{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:#334a66;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;min-height:36px}
+.elc-toolbar button.on{background:#0f1f35;color:#fff;border-color:#0f1f35}
+.elc-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.elc-card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;display:grid;gap:8px;min-width:0}
+.elc-head{display:flex;align-items:center;gap:8px;min-width:0}
+.elc-head strong{font-size:15px;color:#0f1f35;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.elc-rank{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:#0f1f35;color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center}
+.elc-conf{flex:0 0 auto;font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px}
+.elc-conf.hi{background:#e8f8f2;color:#168b61}.elc-conf.mid{background:#fff4e7;color:#c36e12}.elc-conf.lo{background:#ffedef;color:#d93746}
+.elc-nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.elc-nums div{display:grid;gap:1px;min-width:0}
+.elc-nums span{font-size:10px;font-weight:800;color:#6d87a5}
+.elc-nums strong{font-size:16px;color:#0f1f35;letter-spacing:-.02em;white-space:nowrap}
+.elc-nums div:first-child strong{color:#1769e8}
+.elc-nums small{font-size:9px;color:#8392a5}
+.elc-prob{height:6px;border-radius:6px;background:#eef1f4;overflow:hidden}
+.elc-prob span{display:block;height:100%;background:linear-gradient(90deg,#1769e8,#22b07d);border-radius:6px}
+.elc-meta,.elc-top{margin:0;font-size:12px;color:#55677d;line-height:1.5}
+.elc-top a{color:#1769e8;font-weight:700;text-decoration:none;word-break:break-all}
+.elc-basis summary{font-size:11px;color:#6d87a5;cursor:pointer}
+.elc-basis p{margin:4px 0 0;font-size:11px;color:#55677d;line-height:1.5}
+.elc-sub{margin:16px 0 8px;font-size:14px;color:#0f1f35}
+.elc-deals{margin:0;padding-left:20px;display:grid;gap:10px}
+.elc-deals li{font-size:12px;line-height:1.5;color:#334a66}
+.elc-deals a{color:#0f1f35;font-weight:700;text-decoration:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.elc-deal-nums{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:2px}
+.elc-deal-nums b{color:#1769e8;font-size:14px}
+.elc-deal-nums small{color:#6d87a5;font-size:11px}
+.elc-deals p{margin:2px 0 0;color:#55677d;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.elc-more{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.elc-more summary{font-size:13px;font-weight:800;color:#0f1f35;cursor:pointer;min-height:32px}
+/* 未接続バナー・折りたたみ */
+.ov-connect-banner{margin-top:12px;width:100%;text-align:left;display:grid;gap:4px;border:1px solid #bcd7ff;background:#eef6ff;border-radius:12px;padding:12px 14px;cursor:pointer;font:inherit}
+.ov-connect-banner strong{font-size:14px;color:#0f1f35}.ov-connect-banner span{font-size:12px;color:#334a66;line-height:1.5}.ov-connect-banner em{font-style:normal;font-size:13px;font-weight:800;color:#1769e8}
+.ov-collapsible>summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;min-height:36px}
+.ov-collapsible>summary::-webkit-details-marker{display:none}
+.ov-collapsible>summary::after{content:'⌄';margin-left:auto;color:#6d87a5}
+.ov-collapsible>summary strong{font-size:14px;color:#0f1f35}
+/* 接続ダイアログ：ペアリング */
+.connect-pair{margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fafcfe;display:grid;gap:8px}
+.connect-pair h3{margin:0;font-size:14px}.connect-pair p{margin:0;font-size:12px;color:#55677d;line-height:1.5}
+.connect-pair button,.connect-pair-code button{justify-self:start;border:0;background:var(--blue);color:#fff;border-radius:9px;padding:9px 14px;font-weight:800;cursor:pointer}
+.connect-pair-code{display:grid;gap:6px}
+.connect-pair-code strong{font-size:28px;letter-spacing:.12em;font-family:ui-monospace,Menlo,Consolas,monospace;color:#0f1f35}
+.connect-pair-code a{font-size:11px;word-break:break-all;color:#1769e8}
+.connect-hint{font-size:11px;color:#6d87a5;margin:6px 0}
+.connect-token{margin:8px 0}.connect-token summary{font-size:12px;color:#55677d;cursor:pointer}
+@media(max-width:560px){
+  .elc-list{grid-template-columns:minmax(0,1fr)}
+  .elc-nums{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:8px}
+  .elc-nums strong{font-size:18px}
+  .el-tiles strong{font-size:17px}
+  .ov-earnlab .panel-heading{flex-wrap:wrap;gap:6px}
+}
