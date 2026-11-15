@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "canonicalName": "タスクコントロールセンター",
-  "generatedAt": "2026-11-12",
+  "generatedAt": "2026-11-15",
   "registrationUrl": "https://docs.google.com/spreadsheets/d/1O8OoxxzNH91wRFdTjyx56Jr6l-_KIdQjUVFeoliuUVM/edit",
   "safety": "Only publicly linkable UI destinations. Private GitHub, task IDs and secrets must never be included.",
   "links": [
@@ -204,6 +204,14 @@
       "url": "https://estateboard.pages.dev/social-analytics/innovation/",
       "status": "public",
       "note": "Drive A/Bログから毎日2回自動同期"
+    },
+    {
+      "id": "marriott-guide",
+      "name": "🏨 マリオット無料宿泊 比較ガイド",
+      "category": "旅行・ポイント",
+      "url": "https://cloud-local-task-dashboard.pages.dev/tools/marriott/",
+      "status": "public",
+      "note": "85k特典で泊まれるホテルを総合点・浮く金額・必要ポイント・ラウンジ/朝食で比較。ホテル名から詳細へ"
     }
   ]
 }

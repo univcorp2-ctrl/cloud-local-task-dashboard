@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>マリオット85k無料宿泊 比較ガイド</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* 方針：ホテルのフロントのような濃紺×真鍮。上に結論と総合ランキング、次に並び替えできる比較カード、最後に制約・調査範囲・出典 */
+:root{
+  --ink:#16212e;
+  --paper:#f4f5f7;
+  --card:#ffffff;
+  --muted:#5b6673;
+  --line:#d9dee5;
+  --brass:#9a7433;
+  --brass-soft:#f3ead9;
+  --good:#1f7a4d; --good-bg:#e3f3ea;
+  --warn:#9a5b00; --warn-bg:#fbefd9;
+  --bad:#a3322b;  --bad-bg:#f8e3e1;
+  --display:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:"Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ink:#e8ecf1; --paper:#10161e; --card:#17202b; --muted:#9aa6b4; --line:#2a3644;
+    --brass:#d3ac63; --brass-soft:#2b2518;
+    --good:#6fd3a0; --good-bg:#16302a; --warn:#f0b75c; --warn-bg:#33281a; --bad:#f08a80; --bad-bg:#3a1f1e;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#e8ecf1; --paper:#10161e; --card:#17202b; --muted:#9aa6b4; --line:#2a3644;
+  --brass:#d3ac63; --brass-soft:#2b2518;
+  --good:#6fd3a0; --good-bg:#16302a; --warn:#f0b75c; --warn-bg:#33281a; --bad:#f08a80; --bad-bg:#3a1f1e;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 60px;display:grid;gap:28px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.35}
+h1{font-size:clamp(22px,4.6vw,32px)}
+h2{font-size:20px;border-bottom:2px solid var(--brass);padding-bottom:6px}
+p{margin:0}
+a{color:var(--brass)}
+.lede{color:var(--muted);font-size:14px}
+.num{font-variant-numeric:tabular-nums}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:12px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.fact{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--brass);border-radius:8px;padding:10px 12px}
+.fact b{display:block;font-size:18px;font-family:var(--display)}
+.fact span{font-size:13px;color:var(--muted)}
+.picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.pick{background:var(--brass-soft);border-radius:8px;padding:12px}
+.pick small{color:var(--muted);display:block}
+.pick strong{font-size:16px}
+.top{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.top li{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.top .r{font-family:var(--display);font-size:20px;color:var(--brass);text-align:center}
+.top .s{font-family:var(--display);font-size:18px}
+.top small{color:var(--muted);display:block;font-size:12px}
+.controls{display:grid;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lab{font-size:13px;color:var(--muted);min-width:64px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+select{font:inherit;font-size:14px;padding:6px 8px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);max-width:100%}
+.count{font-size:13px;color:var(--muted)}
+.list{display:grid;gap:12px}
+.hotel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:10px}
+.hotel.out{opacity:.72}
+.hhead{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:baseline}
+.hname{font-family:var(--display);font-size:17px;font-weight:700}
+.rank{font-family:var(--display);color:var(--brass);font-size:15px;margin-right:6px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:2px 8px;border-radius:4px;background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+.tag.t-ok{background:var(--good-bg);color:var(--good);border-color:transparent}
+.tag.t-mid{background:var(--warn-bg);color:var(--warn);border-color:transparent}
+.tag.t-ng{background:var(--bad-bg);color:var(--bad);border-color:transparent}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:8px}
+.m{border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.m span{display:block;font-size:11px;color:var(--muted)}
+.m b{font-size:15px}
+.m.sorted{border-color:var(--brass);background:var(--brass-soft)}
+.bar{height:5px;background:var(--line);border-radius:3px;margin-top:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brass)}
+.benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.b{border-radius:6px;padding:6px 8px;font-size:13px}
+.b em{font-style:normal;font-weight:700;display:block;font-size:12px}
+.ok{background:var(--good-bg);color:var(--good)}
+.ng{background:var(--bad-bg);color:var(--bad)}
+.mid{background:var(--warn-bg);color:var(--warn)}
+.opts{border-top:1px dashed var(--line);padding-top:8px;display:grid;gap:4px;font-size:13px;margin:0}
+.opts div{display:grid;grid-template-columns:100px 1fr;gap:8px}
+.opts dt{color:var(--muted)}
+.opts dd{margin:0}
+.note{font-size:12px;color:var(--muted)}
+.tscroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--paper);font-weight:700;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+.calc{display:grid;gap:10px}
+.calc input[type=number]{width:84px;font:inherit;padding:5px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.calc output{display:block;font-size:15px;background:var(--brass-soft);border-radius:8px;padding:10px 12px}
+ul.tight{margin:0;padding-left:1.2em;display:grid;gap:4px}
+.src{font-size:12px;columns:2 300px;column-gap:24px;margin:0;padding-left:1.2em}
+.src li{break-inside:avoid;margin-bottom:4px}
+[hidden]{display:none!important}
+.nav{display:flex;flex-wrap:wrap;gap:6px}
+.nav a{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:6px 12px;font-size:13px;text-decoration:none}
+.nav a[aria-current="page"]{background:var(--brass);border-color:var(--brass);color:var(--card);font-weight:700}
+.nav a:focus-visible,.rowlink:focus-visible,.back:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.list.compact{gap:6px}
+.rowlink{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:8px 10px;text-decoration:none;color:var(--ink);background:var(--card)}
+.rowlink:hover{border-color:var(--brass)}
+.rowlink.out{opacity:.7}
+.rowlink .r{font-family:var(--display);color:var(--brass);text-align:center}
+.rowlink .n{font-weight:700;text-decoration:underline;text-decoration-color:var(--brass);text-underline-offset:3px}
+.rowlink small{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.rowlink .v{font-family:var(--display);font-size:15px;text-align:right;white-space:nowrap}
+.back{font-size:13px}
+.top a{color:var(--ink)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<header style="display:grid;gap:8px">
+  <h1>マリオット85,000pt無料宿泊 比較ガイド</h1>
+  <p class="lede"><span id="upd">2026-11-15</span>時点の調査。85,000ptの無料宿泊特典とプラチナ会員の前提です。ポイント数は毎日変わるので、予約前に公式アプリで確認してください。</p>
+</header>
+
+<p class="note"><a href="/#overview">← タスクコントロールセンターに戻る</a></p>
+<nav class="nav" aria-label="ページ切り替え">
+  <a href="#list" data-nav="list">ホテル一覧</a>
+  <a href="#summary" data-nav="summary">結論</a>
+  <a href="#extras" data-nav="extras">追加料金</a>
+  <a href="#rules" data-nav="rules">ルール・制約</a>
+  <a href="#about" data-nav="about">根拠・出典</a>
+</nav>
+
+<section class="panel" data-view="detail" id="detail" hidden></section>
+
+<section class="facts" aria-label="前提" data-view="summary" hidden>
+  <div class="fact"><b class="num">110,000pt</b><span>1泊の上限（85k＋手持ち最大25k）</span></div>
+  <div class="fact"><b>標準客室のみ</b><span>クラブ客室は特典で直接予約できない</span></div>
+  <div class="fact"><b>リッツは特典が弱い</b><span>ラウンジ・無料朝食はプラチナでもなし</span></div>
+  <div class="fact"><b>期限は1年</b><span>発行から1年。余ったptは戻らない</span></div>
+</section>
+
+<section class="panel" data-view="summary" hidden>
+  <h2>総合ランキング TOP5</h2>
+  <ol class="top" id="top"></ol>
+  <p class="note">総合点（100点）＝お得度45＋格・ラグジュアリー25＋プラチナ特典20＋取りやすさ10。配点と計算式は下の「点数の付け方」にあります。</p>
+  <h2>目的別の本命</h2>
+  <div class="picks">
+    <div class="pick"><small>特典1枚で浮く金額が最大</small><strong>リッツ・カールトン福岡</strong><small>12/8は100,000ptで現金156,728円。上乗せ15,000pt</small></div>
+    <div class="pick"><small>最上級ブランドで朝食無料</small><strong>セントレジス大阪</strong><small>66,000ptで足りる日あり。昇格・バー1杯も付く</small></div>
+    <div class="pick"><small>ラウンジ・朝食・昇格を全部無料で</small><strong>ウェスティン都ホテル京都／JWマリオット奈良</strong><small>85kに対して安い日が多い点だけ注意</small></div>
+    <div class="pick"><small>リッツでラウンジまで付けたい</small><strong>リッツ・カールトン大阪＋有料クラブ変更</strong><small>追加2〜4万円。実例が一番多い</small></div>
+  </div>
+  <p class="note">JWマリオット東京は12/8が118,000ptで上限超えでした。104,500〜109,000ptの日だけ使えます。リッツ京都・東京・日光も日によって110,000ptを超えます。</p>
+</section>
+
+<section class="panel" aria-labelledby="cmp" data-view="list">
+  <h2 id="cmp">ホテル一覧</h2>
+  <p class="note">ホテル名を押すと詳細ページが開きます。</p>
+  <div class="controls">
+    <div class="row">
+      <label class="lab" for="sort">並び替え</label>
+      <select id="sort">
+        <option value="total">総合点 高い順</option>
+        <option value="pts">必要ポイント 安い順</option>
+        <option value="pts_desc">必要ポイント 高い順</option>
+        <option value="saved">お得度（特典1枚で浮く金額）大きい順</option>
+        <option value="value">コスパ（円/pt）高い順</option>
+        <option value="lux">ラグジュアリー度 高い順</option>
+        <option value="grade">ブランドの格 高い順</option>
+        <option value="perk">プラチナ特典の充実度 高い順</option>
+        <option value="extra">ラウンジ付きにする追加費用 安い順</option>
+      </select>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="row" role="group" aria-label="絞り込み">
+      <span class="lab">絞り込み</span>
+      <button class="chip" type="button" data-f="usable" aria-pressed="true">110k以内で泊まれる</button>
+      <button class="chip" type="button" data-f="lounge" aria-pressed="false">ラウンジ無料</button>
+      <button class="chip" type="button" data-f="breakfast" aria-pressed="false">朝食無料</button>
+      <button class="chip" type="button" data-f="no_topup" aria-pressed="false">85kだけで足りる</button>
+      <button class="chip" type="button" data-f="top" aria-pressed="false">最上級ブランド</button>
+      <button class="chip" type="button" data-f="tokyo" aria-pressed="false">東京近郊</button>
+      <button class="chip" type="button" data-f="kansai" aria-pressed="false">関西</button>
+    </div>
+  </div>
+  <div class="list compact" id="list"></div>
+</section>
+
+<section class="panel" aria-labelledby="score-h" data-view="about" hidden>
+  <h2 id="score-h">点数の付け方</h2>
+  <div class="tscroll">
+  <table>
+    <thead><tr><th>軸</th><th>配点</th><th>計算</th><th>根拠の種類</th></tr></thead>
+    <tbody>
+      <tr><td>お得度</td><td class="num">45</td><td>浮く金額＝その日の現金料金 −（85kを超えた上乗せpt×1円）。150,000円で満点。別の日の例で計算した場合は×0.8、裏付けの弱い場合は×0.4</td><td>調査値（2026-12-08泊の同日比較が基本）</td></tr>
+      <tr><td>格・ラグジュアリー</td><td class="num">25</td><td>（ラグジュアリー度＋ブランドの格）÷20×25</td><td>当方の評価</td></tr>
+      <tr><td>プラチナ特典</td><td class="num">20</td><td>ラウンジ2点・朝食1点・スイートを含む昇格1点の4点満点を20点に換算。△は一部加点</td><td>規約＋宿泊記</td></tr>
+      <tr><td>取りやすさ</td><td class="num">10</td><td>12/8に85k以内＝10、110k以内＝7、別の日なら110k以内＝4、裏付け弱い＝1</td><td>調査値</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">円/ptだけで比べると、85kを使い切れない安いホテルも上位に来てしまいます。特典は「1泊分の券」なので、券1枚で現金をいくら払わずに済むかを主軸にしました。円/ptは並び替えで別に見られます。</p>
+</section>
+
+<section class="panel" aria-labelledby="calc-h" data-view="extras" hidden>
+  <h2 id="calc-h">追加費用シミュレーター</h2>
+  <div class="calc">
+    <div class="row">
+      <label class="lab" for="c-hotel">ホテル</label>
+      <select id="c-hotel"></select>
+    </div>
+    <div class="row">
+      <label class="lab" for="c-pts">その日のpt</label>
+      <input type="number" id="c-pts" step="1000" min="0" class="num">
+      <span class="note">公式アプリの表示を入れる</span>
+    </div>
+    <div class="row">
+      <span class="lab">オプション</span>
+      <label><input type="checkbox" id="c-club"> 有料でラウンジ付き客室に変更</label>
+      <label><input type="checkbox" id="c-bf"> 朝食を付ける</label>
+      <label for="c-people">人数</label><input type="number" id="c-people" value="2" min="1" max="4" class="num">
+    </div>
+    <output id="c-out" for="c-hotel c-pts c-club c-bf c-people"></output>
+  </div>
+</section>
+
+<section class="panel" aria-labelledby="opt-h" data-view="extras" hidden>
+  <h2 id="opt-h">リッツでラウンジ・朝食を付ける方法（オプションあり／なし）</h2>
+  <div class="tscroll">
+  <table>
+    <thead><tr><th>方法</th><th>ラウンジ</th><th>朝食</th><th>追加費用</th><th>確実さ</th><th>注意</th></tr></thead>
+    <tbody>
+      <tr><td><b>なし</b>（特典で普通に予約）</td><td>✕</td><td>✕（有料）</td><td>0円</td><td>—</td><td>リッツの格だけを楽しむ</td></tr>
+      <tr><td><b>朝食だけ有料で付ける</b></td><td>✕</td><td>○</td><td>福岡 6,500円/人、日光 6,000円/人（プラチナ20%引後）、大阪は会員30%引</td><td>確実</td><td>2人で約1.2〜1.3万円</td></tr>
+      <tr><td><b>有料でクラブ客室に変更</b></td><td>○ 1日5回のフード（朝食込み）</td><td>○</td><td>大阪 約2〜4万円、東京 約2.5〜3.2万円（1室・日により変動。東京は2024年の記事）。福岡は未確認</td><td>当日の空室次第</td><td>事前に電話かメールで依頼。子ども料金・同伴者料金は別</td></tr>
+      <tr><td><b>ナイトリーアップグレードアワード（NUA）</b></td><td>○（クラブ客室に上がった場合）</td><td>○</td><td>NUA 1枚/泊（追加料金も払った例あり）</td><td>到着3日前に判定</td><td>ラウンジ付きの部屋か事前確認。リザーブは対象外</td></tr>
+      <tr><td><b>最初から現金かポイントでクラブ客室</b></td><td>○</td><td>○</td><td>無料宿泊特典は使えない</td><td>確実</td><td>85k特典の使い道にならない</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note">2人で泊まる場合、朝食だけなら約1.2〜1.3万円、クラブ変更なら約2〜4万円です。差額の1〜3万円ほどで、軽食・アフタヌーンティー・カクテルタイム・夜のスイーツまで付きます。京都・日光・沖縄のリッツはクラブラウンジの設定がない見込みです。</p>
+</section>
+
+<section class="panel" aria-labelledby="brand-h" data-view="rules" hidden>
+  <h2 id="brand-h">ブランド別ルール（プラチナ・普通の予約）</h2>
+  <div class="tscroll">
+  <table>
+    <thead><tr><th>ブランド</th><th>ラウンジ</th><th>朝食</th><th>アップグレード</th><th>格</th></tr></thead>
+    <tbody>
+      <tr><td>ザ・リッツ・カールトン</td><td>✕ クラブ客室の予約が必要</td><td>✕（割引のみ）</td><td>通常客室の範囲。スイートはチタン以上、クラブ客室は対象外</td><td>最上級</td></tr>
+      <tr><td>セントレジス</td><td>ラウンジ自体なし</td><td>○ 無料</td><td>○ スイート含む</td><td>最上級</td></tr>
+      <tr><td>エディション</td><td>✕</td><td>✕</td><td>○（一部除外）</td><td>最上級</td></tr>
+      <tr><td>ラグジュアリーコレクション／W</td><td>✕</td><td>ホテル次第</td><td>○</td><td>ラグジュアリー</td></tr>
+      <tr><td>JWマリオット</td><td>○ 本人＋同伴1名</td><td>○</td><td>○ スイート含む</td><td>ラグジュアリー</td></tr>
+      <tr><td>ウェスティン／マリオット／シェラトン／オートグラフ</td><td>○（ラウンジのある館）</td><td>○</td><td>○ スイート含む</td><td>プレミアム</td></tr>
+      <tr><td>リッツ・カールトン・リザーブ</td><td>✕</td><td>✕</td><td>NUAも不可</td><td>最上級</td></tr>
+      <tr><td>デザインホテルズ</td><td>✕</td><td>✕</td><td>限定的</td><td>独立系</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="panel" aria-labelledby="rule-h" data-view="rules" hidden>
+  <h2 id="rule-h">制約・注意点</h2>
+  <ul class="tight">
+    <li>特典は1泊分で、分割できない。必要ポイントが額面より少ない日に使っても差額は戻らない。</li>
+    <li>上乗せできるのは最大25,000pt（2026年3月から）。足りなければポイントを購入して足せる。</li>
+    <li>予約できるのは標準客室だけ。クラブ客室やスイートを特典で直接は取れない。</li>
+    <li>無料宿泊でもエリート特典（アップグレード・朝食・ラウンジ）は付く。</li>
+    <li>ハワイなどのリゾート料金は、ポイント宿泊でも現金で払う（シェラトン・ワイキキは1泊52ドル）。</li>
+    <li>クラブラウンジの子ども料金の例（リッツ東京）：5歳以下は無料、6〜11歳は4,000円、12歳以上は20,000円（税サ別）。宿泊していない同伴者は1回6,500円（税サ別）。</li>
+    <li>満室の日はプラチナでもアップグレードが出ない（京都・大阪で実例）。平日が狙い目。</li>
+    <li>Brilliantカードを解約するとプラチナが外れる可能性がある。予約時点の表示を確認する。</li>
+  </ul>
+</section>
+
+<section class="panel" aria-labelledby="scope-h" data-view="about" hidden>
+  <h2 id="scope-h">調査範囲と、まだ確認できていないこと</h2>
+  <ul class="tight">
+    <li><b>調べたもの</b>：国内123軒を同じ日（2026-12-08泊・1室1名）で比べた第三者調査、YouTube約50本（タイトルと概要欄）、公式規約、各ホテルのプラチナ特典の宿泊記、Notionの過去ログ3本。</li>
+    <li><b>載せた基準</b>：1泊60,000pt以上で、格が高いか、円/ptが0.8以上のホテル。上限超えの高級ホテルも「対象外」として残した。ウェスティン横浜・軽井沢マリオット・沖縄のリゾート各館は円/ptが0.4〜0.7台だったので省いた。</li>
+    <li><b>未確認</b>：公式アプリでの日付別ポイント（ログインしての確認はしていない）。12/8以外の日は外部カレンダーと動画の値。</li>
+    <li><b>未確認</b>：リッツ福岡のクラブ変更料金、リッツ京都・沖縄のクラブラウンジの有無、リッツ大阪のポイント宿泊時の朝食（無料の報告と30%引の報告がある）、プリンスギャラリーのラウンジ可否。</li>
+    <li><b>評価点</b>：ラグジュアリー度とブランドの格は当方の採点で、公的な格付けではない。</li>
+    <li><b>海外</b>は深掘りしていない。参考値：リッツ・バンコク約63,000pt〜、リッツ香港約100,000pt〜、リッツ・バリ85,000pt〜、Wモルディブ81,000〜88,000pt。渡航費とリゾート料金を足して判断する。</li>
+      </ul>
+</section>
+
+<section class="panel" aria-labelledby="upd-h" data-view="about" hidden>
+  <h2 id="upd-h">このページの更新のしかた</h2>
+  <ul class="tight">
+    <li>ホテルの数字・特典・点数の配点は、すべてデータファイル <code>data/hotels.js</code> に入っている。ページ本体は触らなくてよい。</li>
+    <li>Claudeに「マリオット比較ガイドの◯◯を△△に直して」と頼むと、このファイルだけを書き換えて公開し直す（タスクコントロールセンターのリポジトリ <code>public/tools/marriott/data/hotels.js</code>）。</li>
+    <li>公式アプリで見たポイント数と現金料金を伝えるだけで、浮く金額・総合点・順位は自動で計算し直される。</li>
+    <li>ホテルを足すときは、既存の1件をコピーして数字を入れ替える。</li>
+  </ul>
+</section>
+
+<section class="panel" aria-labelledby="src-h" data-view="about" hidden>
+  <h2 id="src-h">出典</h2>
+  <ul class="src">
+    <li><a href="https://financialelite.jp/marriott-points-hotels-japan/">国内123軒の現金料金とポイント（2026-12-08泊、調査日10/23）</a></li>
+    <li><a href="https://www.marriott.com/ja/offers/free-night-award-japanese-off-215737">マリオット公式：無料宿泊特典に最大25,000pt追加</a></li>
+    <li><a href="https://choice-benefit.marriott.com/brilliant/en-us/terms">Brilliant選択特典の規約（NUAは特典予約にも使える）</a></li>
+    <li><a href="https://www.ritzcarlton.com/ja/hotels/osarz-the-ritz-carlton-osaka/club/">リッツ大阪公式：クラブはエリート資格で無料にならない</a></li>
+    <li><a href="https://www.ritzcarlton.com/ja/hotels/fukrz-the-ritz-carlton-fukuoka/club/">リッツ福岡公式：クラブ案内</a></li>
+    <li><a href="https://luxuryhotelsjapan.com/ritz-carlton-osaka-club-lounge-additional-charge/">リッツ大阪 クラブ追加料金ガイド（2〜4万円）</a></li>
+    <li><a href="https://haruwari.com/ritz-carlton-osaka-club-lounge/">リッツ大阪 有料アップグレード22,356円の例</a></li>
+    <li><a href="https://randy-blog.com/hotel/the_ritz_carlton_osaka_club-deluxe-corner-room">リッツ大阪 差額31,625円で家族4人ラウンジの例</a></li>
+    <li><a href="https://www.tabipra.com/guide-ritz-tokyo/">リッツ東京 クラブ変更の相場2.5〜3.2万円</a></li>
+    <li><a href="https://matsunosuke.jp/ritzcarlton-tokyo-club-lounge/">リッツ東京 クラブラウンジの子ども・同伴者料金</a></li>
+    <li><a href="https://matsunosuke.jp/ritzcarlton-osaka-marriott-platinum-benefits/">リッツ大阪 プラチナ特典（朝食30%引・2,000円クレジット）</a></li>
+    <li><a href="https://www.pipinobu.com/?p=15595">リッツ大阪 ポイント宿泊＋プラチナで朝食無料の報告</a></li>
+    <li><a href="https://matsunosuke.jp/ritzcarlton-nikko-marriott-platinum-benefits/">リッツ日光 プラチナ特典（ラウンジなし・湖ビュー昇格が多い）</a></li>
+    <li><a href="https://www.pipinobu.com/?p=46321">リッツ日光 朝食7,500円・プラチナ20%引</a></li>
+    <li><a href="https://rikei-miler.com/travel/the-ritz-carlton-fukuoka-breakfast/">リッツ福岡 朝食6,500円・プラチナ優待なし</a></li>
+    <li><a href="https://matsunosuke.jp/?p=150953">セントレジス大阪 プラチナ特典（朝食無料）</a></li>
+    <li><a href="https://www.pipinobu.com/?p=87071">JWマリオット東京 ラウンジ（プラチナ以上）</a></li>
+    <li><a href="https://matsunosuke.jp/jwmarriott-nara-executive-club-lounge/">JWマリオット奈良 ラウンジ（プラチナ以上）</a></li>
+    <li><a href="https://matsunosuke.jp/?p=151469">東京エディション虎ノ門 プラチナ特典（朝食・ラウンジなし）</a></li>
+    <li><a href="https://milepro.com/marriott-platinum-elite-benefits/">プラチナ特典とリッツの除外</a></li>
+    <li><a href="https://youtu.be/9uv_zjTSnI8">YouTube：1pt価値ランキング（2026-08下旬平日の調査）</a></li>
+    <li><a href="https://www.youtube.com/watch?v=ar39yCkto9Y">YouTube：リッツ日光97,000pt・プラチナでスイート</a></li>
+    <li><a href="https://www.youtube.com/watch?v=Iwdbj96I7ow">YouTube：リッツ大阪 ポイント＋追加料金でクラブ</a></li>
+    <li><a href="https://www.youtube.com/watch?v=s4P-i_L_1yw">YouTube：ウェスティン都京都 ジュニアスイート昇格</a></li>
+    <li><a href="https://thehawaiivacationguide.com/stay/sheraton-waikiki-with-points-review/">シェラトン・ワイキキ ポイントとリゾート料金</a></li>
+    <li><a href="https://thriftytraveler.com/guides/hotels/85k-marriott-free-night-certificate/">海外：85k特典のおすすめ（Thrifty Traveler）</a></li>
+  </ul>
+</section>
+
+</main>
+
+<script src="data/hotels.js"></script>
+<script>
+/*DATA-START*/
+// d8=2026-12-08泊（1室1名）の現金料金と必要pt。alt=別の日の例（mixed=現金とptの日付が違う推定）。weak=裏付けが弱い例
+const D = window.HOTEL_DATA || {hotels:[],cap:110000,face:85000,dealFull:150000,weights:{deal:45,lux:25,perk:20,ease:10},updated:"",baseDate:""};
+const H = D.hotels, W = D.weights;
+const CAP = D.cap, FACE = D.face;
+function basis(h){
+  if(h.d8 && h.d8.pts<=CAP) return {cash:h.d8.cash, pts:h.d8.pts, kind:"d8", f:1, label:"2026-12-08泊"};
+  if(h.alt) return {cash:h.alt.cash, pts:h.alt.pts, kind:"alt", f:0.8, label:h.alt.label, mixed:h.alt.mixed};
+  if(h.weak) return {cash:h.weak.cash, pts:h.weak.pts, kind:"weak", f:0.4, label:h.weak.label, mixed:true};
+  return null;
+}
+const saved = h => { const b=basis(h); return b ? b.cash - Math.max(0,b.pts-FACE) : null; };
+const ypp = h => { const b=basis(h)||h.d8; return b ? b.cash/b.pts : null; };
+const perkScore = h => (h.lounge==="ok"?2:h.lounge==="mid"?0.5:0) + (h.bf==="ok"?1:h.bf==="mid"?0.3:0) + (h.up==="ok"?1:h.up==="mid"?0.4:0);
+function parts(h){
+  const b=basis(h);
+  const deal = b ? Math.min(W.deal, saved(h)/D.dealFull*W.deal)*b.f : 0;
+  const lux = (h.lux+h.grade)/20*W.lux;
+  const perk = perkScore(h)/4*W.perk;
+  const ease = (!b ? 0 : b.kind==="d8" ? (b.pts<=FACE?1:0.7) : b.kind==="alt" ? 0.4 : 0.1)*W.ease;
+  return {deal,lux,perk,ease,total:deal+lux+perk+ease};
+}
+const total = h => parts(h).total;
+const extraCost = h => h.lounge==="ok" ? 0 : (h.clubFee && h.clubFee[1]>0 ? h.clubFee[0] : Infinity);
+/*DATA-END*/
+
+const yen = n => "¥" + Math.round(n).toLocaleString("ja-JP");
+const pt  = n => n.toLocaleString("ja-JP") + "pt";
+const label = {ok:"○", ng:"✕", mid:"△"};
+const byTotal = (a,b)=> total(b)-total(a);
+const sorters = {
+  total:byTotal,
+  saved:(a,b)=> (saved(b)??-1)-(saved(a)??-1) || byTotal(a,b),
+  value:(a,b)=> (ypp(b)??-1)-(ypp(a)??-1),
+  lux:(a,b)=> b.lux-a.lux || byTotal(a,b),
+  grade:(a,b)=> b.grade-a.grade || b.lux-a.lux,
+  perk:(a,b)=> perkScore(b)-perkScore(a) || byTotal(a,b),
+  pts:(a,b)=> ((basis(a)||a.d8).pts)-((basis(b)||b.d8).pts),
+  pts_desc:(a,b)=> ((basis(b)||b.d8).pts)-((basis(a)||a.d8).pts),
+  extra:(a,b)=> extraCost(a)-extraCost(b) || byTotal(a,b)
+};
+const filters = {
+  usable:h=>!!basis(h),
+  lounge:h=>h.lounge==="ok",
+  breakfast:h=>h.bf==="ok",
+  no_topup:h=>{const b=basis(h); return !!b && b.pts<=FACE;},
+  top:h=>h.top,
+  tokyo:h=>h.region==="tokyo",
+  kansai:h=>h.region==="kansai"
+};
+const active = new Set(["usable"]);
+
+function metric(key, cur, name, val, pct){
+  return `<div class="m${key===cur?" sorted":""}"><span>${name}</span><b class="num">${val}</b>${pct!=null?`<div class="bar"><i style="width:${Math.max(3,Math.min(100,pct))}%"></i></div>`:""}</div>`;
+}
+function statusTag(h){
+  const b=basis(h);
+  if(!b) return `<span class="tag t-ng">対象外（12/8は${pt(h.d8.pts)}）</span>`;
+  if(b.kind==="d8") return `<span class="tag t-ok">${b.pts<=FACE?"85kだけで可":"上乗せ"+pt(b.pts-FACE)}</span>`;
+  if(b.kind==="alt") return `<span class="tag t-mid">日を選べば可</span>`;
+  return `<span class="tag t-mid">使える日は未確認</span>`;
+}
+function exTxt(h){ return h.lounge==="ok" ? "0円（無料）" : (h.clubFee && h.clubFee[1]>0) ? `${yen(h.clubFee[0])}〜${yen(h.clubFee[1])}` : "不可／未確認"; }
+function curVal(h,cur){
+  const b=basis(h), s=saved(h), v=ypp(h);
+  switch(cur){
+    case "saved": return s!=null? yen(s) : "—";
+    case "value": return v!=null? v.toFixed(2)+"円/pt" : "—";
+    case "lux": return h.lux+"/10";
+    case "grade": return h.grade+"/10";
+    case "perk": return perkScore(h).toFixed(1)+"/4";
+    case "pts": case "pts_desc": return pt((b||h.d8).pts);
+    case "extra": return exTxt(h);
+    default: return parts(h).total.toFixed(0)+"点";
+  }
+}
+function render(){
+  const cur = document.getElementById("sort").value;
+  const rows = H.filter(h=>[...active].every(f=>filters[f](h))).sort(sorters[cur]);
+  document.getElementById("count").textContent = `${rows.length}件／全${H.length}件`;
+  const el = document.getElementById("list");
+  if(!rows.length){ el.innerHTML = `<p class="note">この条件に合うホテルはありません。絞り込みを1つ外してください。</p>`; return; }
+  el.innerHTML = rows.map((h,i)=>{
+    const b=basis(h);
+    return `<a class="rowlink${b?"":" out"}" href="#h-${h.id}">
+      <span class="r num">${i+1}</span>
+      <span><span class="n">${h.name}</span><small>${h.area}・${b? pt(b.pts) : "対象外 "+pt(h.d8.pts)}・ラウンジ${label[h.lounge]} 朝食${label[h.bf]} 昇格${label[h.up]}</small></span>
+      <span class="v num">${curVal(h,cur)}</span>
+    </a>`;
+  }).join("");
+}
+function detailHTML(h){
+  const b=basis(h), p=parts(h), s=saved(h), v=ypp(h), cur="";
+  const ptsTxt = b ? pt(b.pts) : pt(h.d8.pts);
+  const basisTxt = b ? `${b.label}：現金${yen(b.cash)}／${pt(b.pts)}${b.mixed?"（推定）":""}` : `2026-12-08泊：現金${yen(h.d8.cash)}／${pt(h.d8.pts)}（上限超え）`;
+  return `<a class="back" href="#list">← ホテル一覧に戻る</a>
+    <div class="hhead">
+      <h2 style="border:none;padding:0">${h.name}</h2>
+      <div class="tags"><span class="tag">${h.area}</span><span class="tag">${h.brand}</span>${statusTag(h)}</div>
+    </div>
+    <div class="metrics">
+      ${metric("total",cur,"総合点", p.total.toFixed(0)+"/100", p.total)}
+      ${metric("saved",cur,"浮く金額", s!=null? yen(s)+(b.mixed?"※":""):"—", s!=null? s/150000*100:null)}
+      ${metric("value",cur,"コスパ（円/pt）", v!=null? v.toFixed(2):"—", v!=null? v/2.1*100:null)}
+      ${metric("lux",cur,"ラグジュアリー度", h.lux+"/10", h.lux*10)}
+      ${metric("grade",cur,"ブランドの格", h.grade+"/10", h.grade*10)}
+      ${metric("perk",cur,"プラチナ特典", perkScore(h).toFixed(1)+"/4", perkScore(h)/4*100)}
+      ${metric("pts",cur,"必要pt", ptsTxt, null)}
+      ${metric("extra",cur,"ラウンジ追加費用", exTxt(h), null)}
+    </div>
+    <div class="benefits">
+      <div class="b ${h.lounge}"><em>ラウンジ ${label[h.lounge]}</em>${h.loungeTxt}</div>
+      <div class="b ${h.bf}"><em>朝食 ${label[h.bf]}</em>${h.bfTxt}</div>
+      <div class="b ${h.up}"><em>アップグレード ${label[h.up]}</em>${h.upTxt}</div>
+    </div>
+    <dl class="opts">
+      <div><dt>数字の根拠</dt><dd>${basisTxt}${h.altNote?"。"+h.altNote:""}</dd></div>
+      <div><dt>点数の内訳</dt><dd class="num">お得度${p.deal.toFixed(0)}＋格${p.lux.toFixed(0)}＋特典${p.perk.toFixed(0)}＋取りやすさ${p.ease.toFixed(0)}</dd></div>
+      <div><dt>狙い方</dt><dd>${h.how}</dd></div>
+      ${h.extraNote?`<div><dt>追加料金</dt><dd>${h.extraNote}</dd></div>`:""}
+      ${h.caveat?`<div><dt>注意</dt><dd>${h.caveat}</dd></div>`:""}
+    </dl>
+    <p><a href="#extras">このホテルの追加料金を計算する →</a></p>`;
+}
+const VIEWS = ["list","summary","extras","rules","about"];
+function route(){
+  const hash = (location.hash||"").slice(1);
+  let view = "list";
+  const hotel = hash.startsWith("h-") ? H.find(x=>x.id===hash.slice(2)) : null;
+  if(hotel){
+    view = "detail";
+    document.getElementById("detail").innerHTML = detailHTML(hotel);
+    sel.value = hotel.id; syncPts(); calc();
+  } else if(VIEWS.includes(hash)) view = hash;
+  document.querySelectorAll("[data-view]").forEach(e=>{ e.hidden = e.dataset.view!==view; });
+  document.querySelectorAll("[data-nav]").forEach(a=>{
+    if(a.dataset.nav===(view==="detail"?"list":view)) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");
+  });
+  window.scrollTo(0,0);
+}
+function renderTop(){
+  const rows = H.filter(h=>basis(h)).sort(byTotal).slice(0,5);
+  document.getElementById("top").innerHTML = rows.map((h,i)=>{
+    const b=basis(h), s=saved(h);
+    return `<li><span class="r num">${i+1}</span><span><a href="#h-${h.id}"><b>${h.name}</b></a><small>浮く金額 ${yen(s)}${b.mixed?"（推定）":""}／${pt(b.pts)}／ラウンジ${label[h.lounge]}・朝食${label[h.bf]}・昇格${label[h.up]}</small></span><span class="s num">${total(h).toFixed(0)}点</span></li>`;
+  }).join("");
+}
+document.getElementById("sort").addEventListener("change", render);
+document.querySelectorAll(".chip").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    const f = btn.dataset.f;
+    if(active.has(f)){active.delete(f); btn.setAttribute("aria-pressed","false");}
+    else{active.add(f); btn.setAttribute("aria-pressed","true");}
+    render();
+  });
+});
+
+// シミュレーター
+const sel = document.getElementById("c-hotel");
+sel.innerHTML = H.map(h=>`<option value="${h.id}">${h.name}</option>`).join("");
+sel.value = "ritz-osaka";
+const ptsIn = document.getElementById("c-pts");
+function syncPts(){ const h = H.find(x=>x.id===sel.value); ptsIn.value = (basis(h)||h.d8).pts; }
+function calc(){
+  const h = H.find(x=>x.id===sel.value);
+  const p = Number(ptsIn.value)||0;
+  const people = Math.max(1, Number(document.getElementById("c-people").value)||1);
+  const club = document.getElementById("c-club").checked;
+  const bf = document.getElementById("c-bf").checked;
+  const lines = [];
+  if(p>CAP){ lines.push(`<b>この日は使えません</b>：${pt(p)}は上限110,000ptを超えています。別の日を探してください。`); }
+  else{
+    const top = Math.max(0, p-FACE);
+    lines.push(top>0 ? `上乗せポイント：<b class="num">${pt(top)}</b>` : `上乗せポイント：<b>不要</b>（${pt(FACE-p)}分は使い残しになります）`);
+  }
+  let lo=0, hi=0; const notes=[];
+  const paidClub = h.lounge!=="ok" && h.clubFee && h.clubFee[1]>0;
+  if(club){
+    if(h.lounge==="ok"){ notes.push("ラウンジは特典で無料なので、変更は不要です"); }
+    else if(paidClub){ lo+=h.clubFee[0]; hi+=h.clubFee[1]; notes.push(`クラブ変更 ${yen(h.clubFee[0])}〜${yen(h.clubFee[1])}（1室・ラウンジの朝食込み）`); }
+    else { notes.push("このホテルはラウンジがないか、変更料金が未確認です"); }
+  }
+  if(bf){
+    if(h.bf==="ok" || (club && paidClub)){ notes.push("朝食は特典かラウンジに含まれるので追加なし"); }
+    else if(h.bfPrice){ lo+=h.bfPrice*people; hi+=h.bfPrice*people; notes.push(`朝食 ${yen(h.bfPrice)}×${people}人＝${yen(h.bfPrice*people)}`); }
+    else { notes.push("朝食料金は未確認（現地で確認）"); }
+  }
+  if(h.hawaii){ notes.push("リゾート料金 1泊52ドルが別にかかります"); }
+  lines.push(`追加の現金：<b class="num">${lo===hi? yen(lo) : yen(lo)+"〜"+yen(hi)}</b>`);
+  if(notes.length) lines.push(`<span class="note">${notes.join("／")}</span>`);
+  document.getElementById("c-out").innerHTML = lines.join("<br>");
+}
+sel.addEventListener("change", ()=>{syncPts(); calc();});
+["c-pts","c-club","c-bf","c-people"].forEach(id=>document.getElementById(id).addEventListener("input", calc));
+document.getElementById("c-club").checked = true;
+if(D.updated) document.getElementById("upd").textContent = D.updated;
+if(!H.length) document.getElementById("list").innerHTML = '<p class="note">データファイル（data/hotels.js）を読み込めませんでした。ページを再読み込みしてください。</p>';
+else { syncPts(); calc(); renderTop(); render(); route(); window.addEventListener("hashchange", route); }
+</script>
+</body>
+</html>
