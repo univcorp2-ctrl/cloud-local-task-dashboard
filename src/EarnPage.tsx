@@ -154,8 +154,13 @@ const SORTS: Record<Tab, Array<[SortKey, string]>> = {
 
 export default function EarnPage({ onConnect }: { onConnect: () => void }) {
   const { data, status } = useEarn();
-  const [tab, setTab] = useState<Tab>('earn');
+  // `#earn/invest` で開くと投資案件のタブから始まる
+  const [tab, setTabState] = useState<Tab>(() => typeof window !== 'undefined' && window.location.hash.startsWith('#earn/invest') ? 'invest' : 'earn');
   const [sort, setSort] = useState<SortKey>('rank');
+  const setTab = (next: Tab) => {
+    setTabState(next);
+    try { window.history.replaceState(null, '', window.location.pathname + window.location.search + (next === 'invest' ? '#earn/invest' : '#earn')); } catch { /* ignore */ }
+  };
   const list = useMemo(() => {
     const src = data ? (tab === 'earn' ? data.earn : data.invest) : [];
     return sort === 'rank' ? src : [...src].sort(sorters[sort]);
