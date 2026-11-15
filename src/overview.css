@@ -222,3 +222,23 @@ a.ov-kpi:hover{border-color:#9fc1f0;box-shadow:0 6px 18px rgba(23,105,232,.08)}
   .el-tiles strong{font-size:17px}
   .ov-earnlab .panel-heading{flex-wrap:wrap;gap:6px}
 }
+
+/* 2026-11-15 全体像の整理：上に「やること・稼ぐ・残量」だけ、くわしいデータは折りたたみ */
+.ov-details{display:block}
+.ov-details>summary{cursor:pointer;list-style:none;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14px;font-weight:800;color:#0f1f35;display:flex;align-items:center;gap:8px;min-height:50px}
+.ov-details>summary::-webkit-details-marker{display:none}
+.ov-details>summary::after{content:'⌄';margin-left:auto;color:#6d87a5;font-size:16px}
+.ov-details[open]>summary::after{content:'⌃'}
+.ov-details>*+*{margin-top:14px}
+@media(max-width:560px){
+  .overview .panel-heading h2{font-size:17px}
+  .overview .ov-note{font-size:13px;line-height:1.65}
+  .ov-tasks strong{font-size:15px;line-height:1.45}
+  .ov-tasks small{font-size:12px}
+  .ov-tasks p{font-size:13px;line-height:1.6}
+  .ov-projects strong{font-size:14px}
+  .ov-projects small{font-size:12px;line-height:1.55}
+  .ov-agent strong{font-size:14px}.ov-agent small{font-size:12px}
+  .ov-empty{font-size:13px}
+  .ov-focus-head h2{font-size:18px;line-height:1.45}
+}

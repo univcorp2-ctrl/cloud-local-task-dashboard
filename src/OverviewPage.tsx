@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import QuotaGauges from './QuotaGauges';
 import DashboardDirectory from './DashboardDirectory';
 import EarnLabPanel, { type EarnLab } from './EarnLabPanel';
+import { EarnSummary } from './EarnPage';
 import SnsPanel, { type EstateParts } from './SnsPanel';
 import WhatsAppPanel from './WhatsAppPanel';
 import UsagePanel from './UsagePanel';
@@ -113,17 +114,13 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
         </button>}
       </section>
 
-      <EarnLabPanel data={earnLab} status={earn.status} target={EARN_TARGET} connected={Boolean(token)} onConnect={onConnect} />
+      <EarnSummary onConnect={onConnect} />
 
-      <details className="panel ov-collapsible" aria-label="全AIのフォローアップ・返信・回収">
+      <details className="panel ov-collapsible" hidden aria-label="全AIのフォローアップ・返信・回収">
         <summary><span className="section-kicker">FOLLOW-UP / COLLECTION</span><strong>AIの返信・フォローアップ・回収</strong></summary>
         <p className="ov-note">返信・交渉・請求・入金確認は案件ごとの証拠で判断します。正本は <a href="https://app.notion.com/p/67cfe9e3503444dc9e5aab80d47fa0ea" target="_blank" rel="noopener noreferrer">Notionの稼ぐパイプライン盤 ↗</a>。未確認を「完了」とは表示しません。</p>
         <p className="ov-note">公開タスクのデータ時点: {tasks.data?.generatedAt ? fmtJst(tasks.data.generatedAt) : '未取得'}{(!tasks.data?.generatedAt || !Number.isFinite(Date.parse(tasks.data.generatedAt)) || Date.now() - Date.parse(tasks.data.generatedAt) > 24 * 60 * 60 * 1000) ? '（24時間以上古い、または未取得）' : ''}</p>
       </details>
-
-      <QuotaGauges quotas={state?.quotas ?? null} onConnect={onConnect} />
-
-      <DashboardDirectory mode="pinned" />
 
       <section className="ov-grid3">
         <article className="panel ov-col">
@@ -172,6 +169,13 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
         </article>
       </section>
 
+      <QuotaGauges quotas={state?.quotas ?? null} onConnect={onConnect} />
+
+      <DashboardDirectory mode="pinned" />
+
+      <details className="ov-details">
+        <summary>くわしいデータを開く（KPI・ジョブ・トークン内訳・過去の実験・SNS・活動ログ）</summary>
+
       <section className="panel ov-kpis" aria-label="KGI・KPI">
         <div className="panel-heading"><div><span className="section-kicker">KGI / KPI</span><h2>ゴールに対する進み方</h2></div><small>{estate.data ? `外部指標 ${fmtJst(estate.data.fetchedAt)} 取得` : ''}</small></div>
         <div className="ov-kpi-grid">
@@ -219,7 +223,9 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
         </article>
       </section>
 
+      <EarnLabPanel data={earnLab} status={earn.status} target={EARN_TARGET} connected={Boolean(token)} onConnect={onConnect} />
       <DashboardDirectory />
+      </details>
     </div>
   );
 }

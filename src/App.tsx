@@ -4,7 +4,8 @@ import TokenUsagePanel from './TokenUsagePanel';
 import QuotaStrip from './QuotaStrip';
 import OverviewPage from './OverviewPage';
 import ConnectDialog from './ConnectDialog';
-import { capturePairFromHash, captureTokenFromUrl, useControlState, useOwnerToken } from './controlState';
+import { capturePairFromHash, captureShareFromHash, captureTokenFromUrl, useControlState, useOwnerToken } from './controlState';
+import EarnPage from './EarnPage';
 import { dashboardAppLinks, appCategories } from './appLinks';
 import ManualTasksPanel from './ManualTasksPanel';
 import DevelopmentProgressPanel from './DevelopmentProgressPanel';
@@ -69,9 +70,10 @@ function TaskRow({ task }: { task: ScheduledTask }) {
   );
 }
 
-type Page = 'cases' | 'overview' | 'automation' | 'work' | 'development';
-const pageFromHash = (hash: string): Page => hash === '#cases' || hash === '' ? 'cases' : hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
+type Page = 'earn' | 'cases' | 'overview' | 'automation' | 'work' | 'development';
+const pageFromHash = (hash: string): Page => hash.startsWith('#earn') ? 'earn' : hash === '#cases' || hash === '' ? 'cases' : hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
 const pageTitle: Record<Page, [string, string]> = {
+  earn: ['稼ぐ・投資', '稼げやすい順。入金までの日数・自動化・将来性。'],
   cases: ['案件・タスク進捗', 'カテゴリー別・担当AI・停止理由・次の一手。'],
   overview: ['今日の全体像', '本人タスク・AI稼働・残量・KPI・開発進捗を一画面で。'],
   automation: ['クラウド & ローカル定期タスク', 'AI稼働・トークン消費と自動処理を監視。'],
@@ -80,7 +82,7 @@ const pageTitle: Record<Page, [string, string]> = {
 };
 
 export default function App() {
-  const [activePage, setActivePage] = useState<Page>(() => typeof window !== 'undefined' ? pageFromHash(window.location.hash) : 'overview');
+  const [activePage, setActivePage] = useState<Page>(() => { if (typeof window === 'undefined') return 'overview'; captureShareFromHash(); return pageFromHash(window.location.hash); });
   useEffect(() => { captureTokenFromUrl(); capturePairFromHash(); const onHashChange = () => setActivePage(pageFromHash(window.location.hash)); window.addEventListener('hashchange', onHashChange); return () => window.removeEventListener('hashchange', onHashChange); }, []);
   const [connectOpen, setConnectOpen] = useState(false);
   const [ownerToken] = useOwnerToken();
@@ -135,6 +137,7 @@ export default function App() {
       <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
         <div className="brand"><span className="brand-mark">☁</span><div><strong>タスクコントロールセンター</strong><small>Task Control Center</small></div></div>
         <nav aria-label="メインナビゲーション">
+          <a className={activePage === 'earn' ? 'active' : ''} href="#earn">¥ <span>★ 稼ぐ・投資</span></a>
           <a className={activePage === 'cases' ? 'active' : ''} href="#cases">▤ <span>◎ 案件・タスク管制</span></a>
           <a className={activePage === 'overview' ? 'active' : ''} href="#overview">◎ <span>⓪ 今日の全体像</span></a>
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
@@ -160,7 +163,7 @@ export default function App() {
           </div>}
           </div>
         </header>
-        {activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
+        {activePage === 'earn' ? <EarnPage onConnect={() => setConnectOpen(true)} /> : activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
         <JobsPanel data={control.data ?? null} connected={connected} onConnect={() => setConnectOpen(true)} />
         <TokenUsagePanel />
         <details className="ops-expanded">
@@ -213,11 +216,11 @@ export default function App() {
       {menuOpen && <button className="backdrop" onClick={() => setMenuOpen(false)} aria-label="メニューを閉じる" />}
       {connectOpen && <ConnectDialog onClose={() => setConnectOpen(false)} />}
       <nav className="tabbar" aria-label="モバイルナビゲーション">
+        <a className={activePage === 'earn' ? 'active' : ''} href="#earn"><span>¥</span><span>稼ぐ</span></a>
         <a className={activePage === 'cases' ? 'active' : ''} href="#cases"><span>▤</span><span>案件進捗</span></a>
         <a className={activePage === 'overview' ? 'active' : ''} href="#overview"><span>◎</span><span>全体像</span></a>
         <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks"><span>☷</span><span>タスク</span></a>
         <a className={activePage === 'automation' ? 'active' : ''} href="#automation"><span>⚙</span><span>AI稼働</span></a>
-        <a className={activePage === 'development' ? 'active' : ''} href="#development"><span>▥</span><span>開発</span></a>
       </nav>
     </div>
   );
