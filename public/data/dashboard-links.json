@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "canonicalName": "タスクコントロールセンター",
-  "generatedAt": "2026-11-15",
+  "generatedAt": "2026-11-16",
   "registrationUrl": "https://docs.google.com/spreadsheets/d/1O8OoxxzNH91wRFdTjyx56Jr6l-_KIdQjUVFeoliuUVM/edit",
   "safety": "Only publicly linkable UI destinations. Private GitHub, task IDs and secrets must never be included.",
   "links": [
@@ -212,6 +212,22 @@
       "url": "https://cloud-local-task-dashboard.pages.dev/tools/marriott/",
       "status": "public",
       "note": "85k特典で泊まれるホテルを総合点・浮く金額・必要ポイント・ラウンジ/朝食で比較。ホテル名から詳細へ"
+    },
+    {
+      "id": "ec-api-mcp-map",
+      "name": "🛒 物販API・MCP対応マップ",
+      "category": "物販・API",
+      "url": "https://ec-api-mcp-map.pages.dev/",
+      "status": "public",
+      "note": "Amazon・楽天・Yahoo!・Qoo10・Shopee・eBay・Shopifyなど42件の公式API/MCP対応表と、20サービスのAPI登録手順"
+    },
+    {
+      "id": "ec-api-registration-doc",
+      "name": "物販API 登録指示書（Markdown）",
+      "category": "物販・API",
+      "url": "https://drive.google.com/file/d/1muNGWnsCZnqzWpBueGRedaWAUI6CpVrb/view",
+      "status": "login",
+      "note": "同じ登録手順をAI向けのMarkdownにしたもの。Googleドライブ（bukken511のアカウントでログイン）"
     }
   ]
 }
