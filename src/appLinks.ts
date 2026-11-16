@@ -4,7 +4,7 @@ export interface DashboardAppLink {
   id: string;
   label: string;
   url: string;
-  category: 'SNS・Muse' | 'Earn Lab' | '不動産' | '物販' | '業務' | 'その他';
+  category: 'SNS・Muse' | 'Earn Lab' | '不動産' | '旅行・ポイント' | '物販' | '業務' | 'その他';
   description: string;
 }
 export const dashboardAppLinks: DashboardAppLink[] = [
@@ -30,5 +30,7 @@ export const dashboardAppLinks: DashboardAppLink[] = [
     url: 'https://estateboard.pages.dev/', description: '不動産分析ボード' },
   { id: 'shinchiku-land-viewer', label: '新築土地ビューア', category: '不動産',
     url: 'https://shinchiku-land-viewer.univcorp2.workers.dev/', description: '新築用地の確認' },
+  { id: 'marriott-guide', label: 'マリオット無料宿泊 比較ガイド', category: '旅行・ポイント',
+    url: '/tools/marriott/', description: '85k特典で泊まれるホテルを総合点・浮く金額・必要ポイント・ラウンジ/朝食で比較' },
 ];
-export const appCategories: DashboardAppLink['category'][] = ['SNS・Muse', 'Earn Lab', '不動産', '物販', '業務', 'その他'];
+export const appCategories: DashboardAppLink['category'][] = ['SNS・Muse', 'Earn Lab', '不動産', '旅行・ポイント', '物販', '業務', 'その他'];
