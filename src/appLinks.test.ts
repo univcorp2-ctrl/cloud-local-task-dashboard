@@ -13,3 +13,8 @@ test('real-estate launcher contains five approved destinations', () => {
   expect(realEstate.every(x => x.url.startsWith('https://') || x.url.startsWith('/tools/'))).toBe(true);
   expect(appCategories).toContain('物販');
 });
+test('物販 launcher links the EC API/MCP map', () => {
+  const ec = dashboardAppLinks.filter(x => x.category === '物販');
+  expect(ec.map(x => x.url)).toContain('https://ec-api-mcp-map.pages.dev/');
+  expect(new Set(dashboardAppLinks.map(x => x.id)).size).toBe(dashboardAppLinks.length);
+});

@@ -216,7 +216,7 @@
     {
       "id": "ec-api-mcp-map",
       "name": "🛒 物販API・MCP対応マップ",
-      "category": "物販・API",
+      "category": "物販",
       "url": "https://ec-api-mcp-map.pages.dev/",
       "status": "public",
       "note": "Amazon・楽天・Yahoo!・Qoo10・Shopee・eBay・Shopifyなど42件の公式API/MCP対応表と、20サービスのAPI登録手順"
@@ -224,7 +224,7 @@
     {
       "id": "ec-api-registration-doc",
       "name": "物販API 登録指示書（Markdown）",
-      "category": "物販・API",
+      "category": "物販",
       "url": "https://drive.google.com/file/d/1muNGWnsCZnqzWpBueGRedaWAUI6CpVrb/view",
       "status": "login",
       "note": "同じ登録手順をAI向けのMarkdownにしたもの。Googleドライブ（bukken511のアカウントでログイン）"
