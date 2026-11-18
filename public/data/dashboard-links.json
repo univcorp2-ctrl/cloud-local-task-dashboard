@@ -6,6 +6,30 @@
   "safety": "Only publicly linkable UI destinations. Private GitHub, task IDs and secrets must never be included.",
   "links": [
     {
+      "id": "property-today",
+      "name": "今日のおすすめ物件（Notion）",
+      "category": "不動産",
+      "url": "https://app.notion.com/p/41210562e58b815cabe2fcdc5db513d1",
+      "status": "login",
+      "note": "毎朝のおすすめ候補。Notionログインが必要な場合あり"
+    },
+    {
+      "id": "property-master-notion",
+      "name": "統一物件マスターDB（正本台帳）",
+      "category": "不動産",
+      "url": "https://app.notion.com/p/25c2ceb7d2d640f0aceefa790d9ee161",
+      "status": "login",
+      "note": "物件の価格・判断・進捗・個別Driveリンクの正本。Notionログインが必要な場合あり"
+    },
+    {
+      "id": "property-documents-drive",
+      "name": "仕入れ候補の物件資料（Drive）",
+      "category": "不動産",
+      "url": "https://drive.google.com/drive/folders/1sPPYbCMAtTQPk1rSye5PEsRjRxag68_b",
+      "status": "login",
+      "note": "販売図面・登記・レントロールなど原本。Googleログインが必要な場合あり"
+    },
+    {
       "id": "funding-map",
       "name": "💰 資金調達マップ（最新 11/12版）",
       "category": "資金調達",

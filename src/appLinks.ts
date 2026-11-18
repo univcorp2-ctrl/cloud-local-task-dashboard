@@ -8,6 +8,10 @@ export interface DashboardAppLink {
   description: string;
 }
 export const dashboardAppLinks: DashboardAppLink[] = [
+  { id: 'property-today', label: '今日のおすすめ物件（Notion）', category: '不動産', url: 'https://app.notion.com/p/41210562e58b815cabe2fcdc5db513d1', description: '毎朝の厳選候補。Notionログインが必要な場合があります' },
+  { id: 'property-master-notion', label: '統一物件マスターDB（正本台帳）', category: '不動産', url: 'https://app.notion.com/p/25c2ceb7d2d640f0aceefa790d9ee161', description: '全AI共通の物件正本。価格・判断・進捗・資料リンクを確認' },
+  { id: 'property-documents-drive', label: '仕入れ候補の物件資料（Drive）', category: '不動産', url: 'https://drive.google.com/drive/folders/1sPPYbCMAtTQPk1rSye5PEsRjRxag68_b', description: '販売図面・登記・レントロール等の原本。Googleログインが必要な場合があります' },
+
   { id: 'sns-innovation', label: 'SNS実験（Muse A/B）', category: 'SNS・Muse', url: 'https://estateboard.pages.dev/social-analytics/innovation/', description: 'Muse の投稿A/B実験の判定' },
   { id: 'sns-kpi', label: 'SNS KPI（全媒体）', category: 'SNS・Muse', url: 'https://estateboard.pages.dev/social-analytics/', description: '媒体別KPI' },
   { id: 'sns-threads', label: 'Threads', category: 'SNS・Muse', url: 'https://estateboard.pages.dev/social-analytics/threads/', description: 'Threads分析' },
