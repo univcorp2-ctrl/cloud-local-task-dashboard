@@ -10,6 +10,7 @@ import { dashboardAppLinks, appCategories } from './appLinks';
 import ManualTasksPanel from './ManualTasksPanel';
 import DevelopmentProgressPanel from './DevelopmentProgressPanel';
 import OperationsOverview from './OperationsOverview';
+import BackgroundLedger from './BackgroundLedger';
 import JobsPanel from './JobsPanel';
 import CaseBoard from './CaseBoard';
 import { useConnected } from './controlState';
@@ -164,6 +165,7 @@ export default function App() {
           </div>
         </header>
         {activePage === 'earn' ? <EarnPage onConnect={() => setConnectOpen(true)} /> : activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
+        <BackgroundLedger />
         <JobsPanel data={control.data ?? null} connected={connected} onConnect={() => setConnectOpen(true)} />
         <TokenUsagePanel />
         <details className="ops-expanded">
