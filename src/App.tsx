@@ -10,6 +10,7 @@ import { dashboardAppLinks, appCategories } from './appLinks';
 import ManualTasksPanel from './ManualTasksPanel';
 import DevelopmentProgressPanel from './DevelopmentProgressPanel';
 import OperationsOverview from './OperationsOverview';
+import BackgroundLedger from './BackgroundLedger';
 import JobsPanel from './JobsPanel';
 import CaseBoard from './CaseBoard';
 import { useConnected } from './controlState';
@@ -175,7 +176,7 @@ export default function App() {
           <KpiCard tone="red" label="要確認" value={totals.failed} note="直近の失敗" icon="!" />
         </section>
 
-        <OperationsOverview section="catalog" />
+        <BackgroundLedger /><OperationsOverview section="catalog" />
 
         <section className="overview-grid">
           <article className="panel status-panel">

@@ -237,6 +237,19 @@
   ],
   "activeProjects": [
     {
+      "id": "background-ledger",
+      "title": "バックグラウンド処理台帳",
+      "priority": "P1",
+      "progressPercent": 70,
+      "confidence": "medium",
+      "executionStatus": "実装・テスト済み／計測の全量対応は未完",
+      "nextAction": "最新実行履歴・週次利用枠の分母・既存レポート実行時の更新を照合",
+      "lastActionResult": "Notion正本を再利用し所有者専用API・モバイル対応表示・週内増分集計を実装。週次枠％の欠測は未取得",
+      "inspectedAt": "2026-11-19T02:54:53Z",
+      "phase": "計測連携の検証段階",
+      "visibility": "public_alias_only"
+    },
+    {
       "id": "gpt-followerchatgpt",
       "title": "GPT Follower｜ChatGPT自動追撃",
       "priority": "P0",
@@ -6675,5 +6688,5 @@
     }
   ],
   "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照",
-  "activeProjectsUpdatedAt": "2026-11-12T04:55:00Z"
+  "activeProjectsUpdatedAt": "2026-11-19T02:54:53Z"
 }
