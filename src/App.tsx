@@ -165,6 +165,7 @@ export default function App() {
           </div>
         </header>
         {activePage === 'earn' ? <EarnPage onConnect={() => setConnectOpen(true)} /> : activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
+        <BackgroundLedger />
         <JobsPanel data={control.data ?? null} connected={connected} onConnect={() => setConnectOpen(true)} />
         <TokenUsagePanel />
         <details className="ops-expanded">
@@ -176,7 +177,7 @@ export default function App() {
           <KpiCard tone="red" label="要確認" value={totals.failed} note="直近の失敗" icon="!" />
         </section>
 
-        <BackgroundLedger /><OperationsOverview section="catalog" />
+        <OperationsOverview section="catalog" />
 
         <section className="overview-grid">
           <article className="panel status-panel">

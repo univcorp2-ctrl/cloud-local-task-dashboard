@@ -13,6 +13,9 @@ test('主要なダッシュボード情報を表示する', async () => {
   window.location.hash = '#automation';
   render(<App />);
   expect(screen.getByRole('heading', { name: 'クラウド & ローカル定期タスク' })).toBeInTheDocument();
+  const ledger = screen.getByRole('heading', { name: 'バックグラウンド処理台帳' });
+  expect(ledger.closest('details')).toBeNull();
+  expect(ledger).toBeVisible();
   const backupEntries = await screen.findAllByText('Google Driveバックアップ');
   expect(backupEntries.length).toBeGreaterThanOrEqual(2);
   expect(screen.getByText('接続エージェント')).toBeInTheDocument();
