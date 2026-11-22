@@ -50,7 +50,7 @@
 .dev-active-table td{padding:9px 11px;border-bottom:1px solid #e7eef5;vertical-align:top;font-size:12px;color:#40516a;line-height:1.45}
 .dev-active-table tbody tr:last-child td{border-bottom:0}
 .dev-active-table td strong{color:#1a3557;font-size:12px}
-.dev-active-table td small{display:block;font-size:10px;line-height:1.35;margin-top:4px;color:#71849b}
+.dev-active-table td small{display:block;font-size:10px;line-height:1.35;margin-top:4px;color:#53677f}
 .dev-active-index{text-align:center;color:#3768aa!important;font-weight:850;font-variant-numeric:tabular-nums}
 .dev-active-progress strong{font-size:15px!important;color:#235ec1!important;font-variant-numeric:tabular-nums}
 .dev-active-progress .dev-meter{height:6px;margin:5px 0 0}
