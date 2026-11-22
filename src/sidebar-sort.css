@@ -1,0 +1,42 @@
+/* Mobile-first, touch-friendly sidebar launcher. Keep public links distinct from drag handles. */
+.sidebar-app-directory{display:grid;gap:6px;min-width:0;margin-top:8px}
+.sidebar-reorder-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 3px 3px;color:#eff6ff;font-size:12px;font-weight:800}
+.sidebar-reorder-bar button{border:1px solid #52739e;background:#173c67;color:#e9f3ff;border-radius:8px;padding:7px 10px;font-size:11px;font-weight:750;cursor:pointer;min-height:34px}
+.sidebar-sort-help,.sidebar-sort-footnote{margin:0 3px 5px;color:#9cb8d7;font-size:10px;line-height:1.5}
+.sidebar-sort-footnote{margin:0 5px 14px}
+.sidebar-app-group{min-width:0}
+.sidebar-app-group>summary{justify-content:space-between;gap:6px}
+.sidebar-summary-title{min-width:0;flex:1}
+.sidebar-summary-actions{display:flex;flex:none;align-items:center;gap:2px}
+.sidebar-sort-item{display:flex;align-items:center;min-width:0;gap:3px;border-radius:8px;border:1px solid transparent;transition:background .12s ease,border-color .12s ease}
+.sidebar nav .sidebar-sort-item>a{flex:1;min-width:0;display:flex;justify-content:space-between;align-items:center;gap:4px;padding:10px 7px;font-size:12px;line-height:1.4;color:#c2d8f2;text-decoration:none;overflow-wrap:anywhere;border-radius:7px}
+.sidebar nav .sidebar-sort-item>a span{margin-left:2px;color:#82aee4;flex:none}
+.sidebar nav .sidebar-sort-item>a:hover{color:#fff;background:rgba(43,107,178,.25)}
+.sidebar-sort-handle{display:grid;place-items:center;flex:0 0 32px;width:32px;height:38px;border:0;border-radius:8px;background:transparent;color:#aac8ec;font-size:21px;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.sidebar-sort-handle:active{cursor:grabbing;background:rgba(125,173,236,.18)}
+.sidebar-sort-step{flex:none;min-width:26px;min-height:34px;padding:3px;border:1px solid #40618d;background:#123457;border-radius:7px;color:#ecf4ff;cursor:pointer}
+.sidebar-sort-step:disabled{opacity:.25;cursor:default}
+.sidebar-app-group.is-dragging,.sidebar-sort-item.is-dragging{opacity:.65;background:rgba(65,141,243,.15)}
+.sidebar-app-group.is-drop-target,.sidebar-sort-item.is-drop-target{background:rgba(38,131,228,.26);border-color:#7db6f7}
+.sidebar-sort-handle:focus-visible,.sidebar-sort-step:focus-visible,.sidebar-reorder-bar button:focus-visible{outline:2px solid #b4d5ff;outline-offset:2px}
+.sidebar{padding-bottom:max(18px,env(safe-area-inset-bottom))}
+@media(max-width:820px){
+  .sidebar{width:min(340px,90vw);padding:16px 14px max(20px,env(safe-area-inset-bottom));box-shadow:16px 0 44px rgba(2,14,32,.35)}
+  .sidebar .brand{padding-bottom:14px}
+  .sidebar nav{overscroll-behavior:contain}
+  .sidebar-app-directory{gap:7px}
+  .sidebar nav .sidebar-sort-item>a{font-size:13px;min-height:46px;padding:10px}
+  .sidebar-sort-handle{height:44px;width:42px;flex-basis:42px;font-size:25px}
+  .sidebar-app-group>summary{min-height:46px;font-size:14px}
+  .topbar{gap:9px;margin-bottom:14px}
+  .menu-button{min-width:44px;min-height:44px;font-size:21px;flex:none;cursor:pointer}
+  main{min-width:0;padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+  main .panel,main section,main article{min-width:0;max-width:100%}
+}
+@media(max-width:560px){
+  main{padding-left:12px;padding-right:12px}
+  .topbar h1{font-size:19px;line-height:1.35}
+  .topbar-right{min-width:0;max-width:55%;gap:4px}
+  .sidebar-foot{padding-top:8px}
+  .sidebar .brand strong{font-size:14px}
+}
