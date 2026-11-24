@@ -237,6 +237,29 @@
   ],
   "activeProjects": [
     {
+      "id": "tcc-wbs",
+      "title": "WBS・マスタースケジュール",
+      "priority": "P1",
+      "progressPercent": 90,
+      "confidence": "本番390px・5分以内の自動反映を検証。カレンダー照合は未接続",
+      "executionStatus": "5柱・4週間・止まり表示を本番配備",
+      "nextAction": "カレンダーと振り返りログの照合。Notion側の柱タグ付与は継続",
+      "lastActionResult": "lint / 80 tests / build / Functions compile PASS。匿名401・本人200、横溢れなし、Notion変更後176秒以内に自動UI反映",
+      "inspectedAt": "2026-11-24T10:57:04.571Z",
+      "phase": "本番検証済み・追加連携は残課題",
+      "visibility": "public_alias_only",
+      "links": [
+        {
+          "label": "WBS",
+          "url": "https://cloud-local-task-dashboard.pages.dev/#wbs"
+        },
+        {
+          "label": "PR #37",
+          "url": "https://github.com/univcorp2-ctrl/cloud-local-task-dashboard/pull/37"
+        }
+      ]
+    },
+    {
       "id": "gpt-followerchatgpt",
       "title": "GPT Follower｜ChatGPT自動追撃",
       "priority": "P0",
@@ -6675,5 +6698,5 @@
     }
   ],
   "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照",
-  "activeProjectsUpdatedAt": "2026-11-12T04:55:00Z"
+  "activeProjectsUpdatedAt": "2026-11-24T10:57:04.571Z"
 }
