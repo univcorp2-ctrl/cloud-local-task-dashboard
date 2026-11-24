@@ -18,6 +18,7 @@ interface NotionPage {
     number?: number | null;
     date?: { start: string } | null;
     url?: string | null;
+    relation?: Array<{ id: string }>;
   }>;
 }
 export interface PrivateTask {
@@ -26,6 +27,7 @@ export interface PrivateTask {
   nextAction: string; humanAction: string; whyHuman: string; executionStatus: string;
   cashDistance: string; order: number | null; completed: boolean;
   goal?: string; doneCriteria?: string; wbsSummary?: string;
+  priorityGroup?: string; archived?: boolean; parentIds?: string[];
   evidenceUrl?: string | null; freshness?: string; linkStatus?: string; lastEditedAt?: string | null;
 }
 export interface TaskListResult { generatedAt: string; source: 'Notion'; truncated: boolean; showCompleted: boolean; tasks: PrivateTask[] }
@@ -61,7 +63,7 @@ export function toTask(page: NotionPage): PrivateTask {
     executor: optionOf(page, '実行レーン') || '未設定',
     assignedAi: optionOf(page, '担当AI') || '⏳ 未割当',
     autonomy: optionOf(page, '自律実行') || '未設定',
-    due: page.properties['期日']?.date?.start ?? page.properties['期限']?.date?.start ?? null,
+    due: page.properties['期限']?.date?.start ?? page.properties['期日']?.date?.start ?? null,
     nextAction: titleOf(page, '次の一手'),
     humanAction: titleOf(page, '人間がやること'),
     whyHuman: optionOf(page, 'なぜHiroだけ'),
@@ -71,6 +73,9 @@ export function toTask(page: NotionPage): PrivateTask {
     goal: titleOf(page, '目的・ゴール'),
     doneCriteria: titleOf(page, '完了条件'),
     wbsSummary: titleOf(page, 'WBSサマリー'),
+    priorityGroup: optionOf(page, '優先区分'),
+    archived: Boolean(page.properties['アーカイブ']?.checkbox),
+    parentIds: (page.properties['上位']?.relation ?? []).map(p => p.id),
     evidenceUrl: page.properties['実装正本URL']?.url ?? page.properties['元タスクリンク']?.url ?? null,
     freshness: optionOf(page, '情報鮮度') || '要確認',
     linkStatus: optionOf(page, '連携状態') || '未照合',

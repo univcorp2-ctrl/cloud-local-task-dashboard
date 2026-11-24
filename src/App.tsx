@@ -13,6 +13,7 @@ import DevelopmentProgressPanel from './DevelopmentProgressPanel';
 import OperationsOverview from './OperationsOverview';
 import JobsPanel from './JobsPanel';
 import CaseBoard from './CaseBoard';
+import WbsPage from './WbsPage';
 import { useConnected } from './controlState';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
@@ -71,9 +72,10 @@ function TaskRow({ task }: { task: ScheduledTask }) {
   );
 }
 
-type Page = 'earn' | 'cases' | 'overview' | 'automation' | 'work' | 'development';
-const pageFromHash = (hash: string): Page => hash.startsWith('#earn') ? 'earn' : hash === '#cases' || hash === '' ? 'cases' : hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
+type Page = 'wbs' | 'earn' | 'cases' | 'overview' | 'automation' | 'work' | 'development';
+const pageFromHash = (hash: string): Page => hash === '#wbs' ? 'wbs' : hash.startsWith('#earn') ? 'earn' : hash === '#cases' || hash === '' ? 'cases' : hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
 const pageTitle: Record<Page, [string, string]> = {
+  wbs: ['WBS・マスタースケジュール', '柱ごとの状態・期限・止まりをNotionから確認。'],
   earn: ['稼ぐ・投資', '稼げやすい順。入金までの日数・自動化・将来性。'],
   cases: ['案件・タスク進捗', 'カテゴリー別・担当AI・停止理由・次の一手。'],
   overview: ['今日の全体像', '本人タスク・AI稼働・残量・KPI・開発進捗を一画面で。'],
@@ -140,6 +142,7 @@ export default function App() {
         <nav aria-label="メインナビゲーション">
           <a className={activePage === 'earn' ? 'active' : ''} href="#earn">¥ <span>★ 稼ぐ・投資</span></a>
           <a className={activePage === 'cases' ? 'active' : ''} href="#cases">▤ <span>◎ 案件・タスク管制</span></a>
+          <a className={activePage === 'wbs' ? 'active' : ''} href="#wbs">▥ <span>WBS・マスタースケジュール</span></a>
           <a className={activePage === 'overview' ? 'active' : ''} href="#overview">◎ <span>⓪ 今日の全体像</span></a>
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
           <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
@@ -160,7 +163,7 @@ export default function App() {
           </div>}
           </div>
         </header>
-        {activePage === 'earn' ? <EarnPage onConnect={() => setConnectOpen(true)} /> : activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
+        {activePage === 'wbs' ? <WbsPage onConnect={() => setConnectOpen(true)} /> : activePage === 'earn' ? <EarnPage onConnect={() => setConnectOpen(true)} /> : activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
         <JobsPanel data={control.data ?? null} connected={connected} onConnect={() => setConnectOpen(true)} />
         <TokenUsagePanel />
         <details className="ops-expanded">
