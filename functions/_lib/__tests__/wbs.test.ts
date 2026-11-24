@@ -28,10 +28,11 @@ describe('WBS from the Notion master', () => {
     expect(result.schedule.days.filter(d=>d.saturday)).toHaveLength(4);
   });
   it('maps deadline before date, full text, hold and relation metadata', () => {
-    const mapped = toTask({id:'x',url:'',properties:{'期限':{date:{start:'2026-12-01'}},'期日':{date:{start:'2026-12-02'}},'上位':{relation:[{id:'p'}]},'優先区分':{select:{name:'⑤保留'}},'アーカイブ':{checkbox:true}}});
+    const mapped = toTask({id:'x',url:'',properties:{'所要':{select:{name:'15分'}},'期限':{date:{start:'2026-12-01'}},'期日':{date:{start:'2026-12-02'}},'上位':{relation:[{id:'p'}]},'優先区分':{select:{name:'⑤保留'}},'アーカイブ':{checkbox:true}}});
     expect(mapped.due).toBe('2026-12-01');
     expect(mapped.parentIds).toEqual(['p']);
     expect(mapped.priorityGroup).toBe('⑤保留');
     expect(mapped.archived).toBe(true);
+    expect(mapped.estimatedDuration).toBe('15分');
   });
 });

@@ -28,6 +28,7 @@ export interface PrivateTask {
   cashDistance: string; order: number | null; completed: boolean;
   goal?: string; doneCriteria?: string; wbsSummary?: string;
   priorityGroup?: string; archived?: boolean; parentIds?: string[];
+  estimatedDuration?: string;
   evidenceUrl?: string | null; freshness?: string; linkStatus?: string; lastEditedAt?: string | null;
 }
 export interface TaskListResult { generatedAt: string; source: 'Notion'; truncated: boolean; showCompleted: boolean; tasks: PrivateTask[] }
@@ -74,6 +75,7 @@ export function toTask(page: NotionPage): PrivateTask {
     doneCriteria: titleOf(page, '完了条件'),
     wbsSummary: titleOf(page, 'WBSサマリー'),
     priorityGroup: optionOf(page, '優先区分'),
+    estimatedDuration: optionOf(page, '所要') || titleOf(page, '所要'),
     archived: Boolean(page.properties['アーカイブ']?.checkbox),
     parentIds: (page.properties['上位']?.relation ?? []).map(p => p.id),
     evidenceUrl: page.properties['実装正本URL']?.url ?? page.properties['元タスクリンク']?.url ?? null,

@@ -30,7 +30,7 @@ export function buildWbs(input: PrivateTask[], now = new Date(), truncated = fal
     if (t.due && Number.isFinite(Date.parse(t.due)) && (t.due.length === 10 ? t.due < today : Date.parse(t.due) < now.getTime())) blockedReasons.push('期限超過');
     if (t.lastEditedAt && now.getTime() - Date.parse(t.lastEditedAt) >= 7 * DAY) blockedReasons.push('7日以上更新なし');
     return { ...t, pillar, group: (t.parentIds ?? []).map(id => parents.get(norm(id))).filter(Boolean).join(' / ') || tag?.[2]?.trim() || '中項目未設定', blockedReasons,
-      duration: (t.humanAction + ' ' + t.title).match(/\d+\s*(?:分|時間)/)?.[0] ?? null };
+      duration: t.estimatedDuration || (t.humanAction + ' ' + t.title).match(/\d+\s*(?:分|時間)/)?.[0] || null };
   }).sort(byDue);
   return {
     source: 'Notion', generatedAt: now.toISOString(), truncated, total: tasks.length, heldCount: eligible.filter(held).length,
