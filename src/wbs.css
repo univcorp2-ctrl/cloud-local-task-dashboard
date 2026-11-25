@@ -1,0 +1,26 @@
+.wbs-page { min-width: 0; max-width: 1080px; margin: 0 auto; padding: 16px; color: var(--text, #172b4d); }
+.wbs-page section, .wbs-pillars { min-width: 0; margin-bottom: 24px; }
+.wbs-page h2 { font-size: 1.15rem; margin: 16px 0 8px; }
+.wbs-page h3 { font-size: .95rem; margin: 16px 0 8px; overflow-wrap: anywhere; }
+.wbs-page p { font-size: .85rem; line-height: 1.65; overflow-wrap: anywhere; }
+.wbs-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 20px; }
+.wbs-toolbar button { min-height: 44px; }
+.wbs-pillar { background: #fff; border: 1px solid #dce3ed; border-radius: 10px; padding: 14px; margin-bottom: 14px; min-width: 0; }
+.wbs-pillar summary { cursor: pointer; min-height: 44px; overflow-wrap: anywhere; }
+.wbs-pillar summary span { display: block; margin-top: 8px; font-size: .8rem; line-height: 1.7; }
+.wbs-task { display: flex; flex-direction: column; gap: 5px; padding: 12px 8px; border-bottom: 1px solid #e5eaf1; color: inherit; text-decoration: none; min-width: 0; overflow-wrap: anywhere; font-size: .85rem; }
+.wbs-task:focus-visible, .wbs-pillar summary:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+.wbs-task strong { line-height: 1.6; }
+.wbs-task span { font-size: .78rem; }
+.wbs-next { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wbs-danger { color: #af2323; font-weight: 700; }
+.wbs-blocked { border-left: 3px solid #af2323; }
+.wbs-week { border-top: 1px solid #dce3ed; padding-top: 8px; }
+.wbs-days, .wbs-bars { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); min-width: 0; }
+.wbs-days span { text-align: center; font-size: .72rem; padding: 8px 0; }
+.wbs-bars span { min-height: 18px; padding: 3px; }
+.wbs-saturday { background: repeating-linear-gradient(135deg, #e5eaf1, #e5eaf1 2px, #f8fafc 2px, #f8fafc 6px); }
+.wbs-today { border-left: 2px solid #af2323; }
+.wbs-bar { display: block; background: #2457b3; border-radius: 3px; height: 12px; }
+.wbs-bar.blocked { background: #af2323; }
+@media (max-width: 600px) { .wbs-page { padding: 10px; width: 100%; } .wbs-pillar { padding: 10px; } .wbs-toolbar { align-items: stretch; } }

@@ -12,6 +12,7 @@
 - ユーザー追加用Sheet: https://docs.google.com/spreadsheets/d/1O8OoxxzNH91wRFdTjyx56Jr6l-_KIdQjUVFeoliuUVM/edit
 
 ## 改修箇所
+- `#wbs`: `src/WbsPage.tsx`, `src/wbs.css`, `functions/api/private-wbs.ts`, `functions/_lib/wbs.ts`。認証済みNotionの5柱・4週間の期限・止まりを表示。180秒キャッシュ＋60秒ポーリング、手動更新でキャッシュを迂回。公開JSONは使わない。詳細 [WBS運用](wbs-implementation-plan.md)。
 - `#overview`（既定ホーム）: `src/OverviewPage.tsx`, `src/QuotaGauges.tsx`, `src/controlState.ts`, `src/ConnectDialog.tsx`, `src/overview.css`。データは `/api/state`（KV）＋ `/api/external/*` ＋ 既存JSON。詳細 [control-state-api.md](control-state-api.md)。
 - 状態API/MCP: `functions/_lib/{state,mcp,auth,notion}.ts`, `functions/api/state/*`, `functions/api/mcp.ts`。テスト `functions/_lib/__tests__/`。
 - `#development`: `src/DevelopmentProgressPanel.tsx`, `src/development-progress.css` とデータ `public/data/development-progress.json`。
