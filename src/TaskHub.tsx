@@ -359,7 +359,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
           <button type="button" className={stage === 'all' ? 'on' : ''} onClick={() => setStage('all')}>すべて <b>{deals.length}</b></button>
           {[...STAGE_FLOW].reverse().map((s) => <button key={s} type="button" className={stage === s ? 'on' : ''} onClick={() => setStage(stage === s ? 'all' : s)}>{STAGE_LABEL[s]} <b>{deals.filter((d) => d.stage === s).length}</b></button>)}
         </div>
-        {stage === 'all' && hiddenDeals > 0 && <p className="th-hint">本命（買付済・買付準備・銀行打診）は全件、それ以外は14日以内に動いたものだけ表示中。<button type="button" className="th-linkbtn" onClick={() => setAllDeals(!allDeals)}>{allDeals ? '絞り込む' : `残り${hiddenDeals}件（動きなし・見送り判断済み）も表示`}</button></p>}
+        {stage === 'all' && hiddenDeals > 0 && <p className="th-hint">{allDeals ? `全${deals.length}件を表示中。` : '本命（買付済・買付準備・銀行打診）は全件、それ以外は14日以内に動いたものだけ表示中。'}<button type="button" className="th-linkbtn" onClick={() => setAllDeals(!allDeals)}>{allDeals ? '絞り込む' : `残り${hiddenDeals}件（動きなし・見送り判断済み）も表示`}</button></p>}
         {dealList.length === 0 ? <div className="th-empty">この段階の物件はありません。</div> : <div className="th-rows">{dealList.map((d) => {
           const idx = STAGE_FLOW.indexOf(d.stage);
           return <div key={d.id} className={`th-row deal${(daysUntil(d.due) ?? 1) < 0 ? ' overdue' : ''}`}>
