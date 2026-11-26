@@ -6,6 +6,7 @@ import { EarnSummary } from './EarnPage';
 import SnsPanel, { type EstateParts } from './SnsPanel';
 import WhatsAppPanel from './WhatsAppPanel';
 import UsagePanel from './UsagePanel';
+import ExecutionPanel, { type ExecutionData } from './ExecutionPanel';
 import JobsPanel from './JobsPanel';
 import { authHeaders, fmtJst, useConnected, useControlState, useOwnerToken, type ControlSnapshot, type Kpi } from './controlState';
 import type { ScheduledTask, TaskSnapshot } from './types';
@@ -70,6 +71,7 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
   const revenue = useJson<External>('/api/external/revenue-agent', 300_000);
   const priv = useJson<{ tasks?: PrivateTask[] }>(token ? '/api/private-tasks' : '/api/health', 180_000, true);
   const earn = useJson<EarnLab>(token ? '/api/private-earnlab' : '/api/health', 300_000, true);
+  const execution = useJson<ExecutionData>(token ? '/api/private-execution' : '/api/health', 60_000, true);
   const earnLab = token && earn.data && typeof earn.data.total === 'number' ? earn.data : null;
   const EARN_TARGET = 5_000_000;
   const privateTasks = token && priv.data && Array.isArray(priv.data.tasks) ? priv.data.tasks : null;
@@ -197,6 +199,7 @@ export default function OverviewPage({ onConnect }: { onConnect: () => void }) {
 
       <JobsPanel data={state} connected={token} onConnect={onConnect} compact />
       <UsagePanel usage={state?.usage ?? []} quotas={state?.quotas ?? []} connected={token} onConnect={onConnect} />
+      <ExecutionPanel data={token && execution.data?.agents ? execution.data : null} status={token ? execution.status : 401} />
       <SnsPanel parts={(estate.data?.parts as EstateParts | undefined) ?? null} metrics={state?.metrics ?? []} fetchedAt={estate.data?.fetchedAt} />
       <WhatsAppPanel events={state?.events ?? []} connected={token} />
 

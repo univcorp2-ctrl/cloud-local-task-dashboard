@@ -319,6 +319,25 @@
       ]
     },
     {
+      "id": "ai-execution-visibility",
+      "title": "AI実行ログ・未対応返信の可視化",
+      "priority": "最優先",
+      "progressPercent": 40,
+      "confidence": "実装とテスト済み・全AI採用と全件収集は未達",
+      "executionStatus": "部分実装・本番未反映",
+      "nextAction": "プレビュー検証、変更レビュー、全AIランタイムと受信収集器の接続",
+      "lastActionResult": "共通実行台帳と認証付き表示を追加。回帰76件・型検査・ビルド成功。受信の収集不足は明示。",
+      "inspectedAt": "2026-11-26T08:00:00Z",
+      "phase": "review",
+      "links": [
+        {
+          "label": "TCC",
+          "url": "https://cloud-local-task-dashboard.pages.dev/"
+        }
+      ],
+      "visibility": "public_alias_only"
+    },
+    {
       "id": "acquisition-workflow",
       "title": "仕入れ資料請求・受領・催促・アーカイブ連携",
       "priority": "P0",
@@ -6675,5 +6694,5 @@
     }
   ],
   "privateSummary": "非公開repoは詳細を公開サイトに配信せず、カテゴリ集計だけ掲載。詳細はNotion/DriveのPrivate台帳を参照",
-  "activeProjectsUpdatedAt": "2026-11-12T04:55:00Z"
+  "activeProjectsUpdatedAt": "2026-11-26T07:59:51.961790+00:00"
 }
