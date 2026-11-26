@@ -17,3 +17,11 @@ coverage. The common writer and inbox importer live in Agent_Orchestration on
 
 Validation: Vitest, app tsc, Functions tsc and Vite build. Anonymous/agent reads,
 24h boundary, storage failures and incomplete inbox coverage have regression tests.
+
+2026-11-26 rollout: manual preview deployment succeeded at
+https://93684295.cloud-local-task-dashboard.pages.dev . Its private API returns
+503 because preview auth is not configured. Copying the production owner secret
+to preview was rejected by automatic approval review; it was not performed.
+Production main is unchanged. The managed Pages build failed in the existing
+`npm install` command (`edgesOut` null); the project build command is being
+corrected separately to use the existing pnpm lockfile and `pnpm run build`.
