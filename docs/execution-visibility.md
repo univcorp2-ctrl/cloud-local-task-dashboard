@@ -25,3 +25,7 @@ to preview was rejected by automatic approval review; it was not performed.
 Production main is unchanged. The managed Pages build failed in the existing
 `npm install` command (`edgesOut` null); the project build command is being
 corrected separately to use the existing pnpm lockfile and `pnpm run build`.
+
+Readback at 2026-11-26 08:04 UTC: the build command is now `pnpm run build`;
+retry deployment `f4421fbd-7b21-4a91-bda9-839920775832` passed build and deploy.
+No authentication settings or secrets were changed. Preview auth remains blocked.
