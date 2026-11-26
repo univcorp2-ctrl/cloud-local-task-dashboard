@@ -42,7 +42,7 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   const origin = request.headers.get('Origin');
   if (auth.via === 'access' && (!origin || origin !== new URL(request.url).origin)) return jsonResponse({ error: 'same_origin_required' }, 403);
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) return jsonResponse({ error: 'invalid_content_type' }, 415);
-  let body: { id?: unknown; completed?: unknown; nextAction?: unknown; due?: unknown; instruction?: unknown };
+  let body: { id?: unknown; completed?: unknown; nextAction?: unknown; due?: unknown; instruction?: unknown; expectNextAction?: unknown };
   try { body = await request.json() as typeof body; } catch { return jsonResponse({ error: 'invalid_body' }, 400); }
   if ([body.nextAction, body.instruction].some((v) => typeof v === 'string' && v.length > 1500)) return jsonResponse({ error: 'text_too_long' }, 400);
   if (typeof body.id !== 'string') return jsonResponse({ error: 'invalid_completion_request' }, 400);
@@ -54,7 +54,8 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
     };
     try {
       const result = await editRow(env, body.id, edit, { dataSourceId: notionConfig(env).dataSourceId, databaseId: ALLOWED_DATABASE },
-        { nextAction: '次の一手', due: '期日' }, auth.via === 'access' ? 'cloudflare-access' : 'owner-token');
+        { nextAction: '次の一手', due: '期日' }, auth.via === 'access' ? 'cloudflare-access' : 'owner-token',
+        typeof body.expectNextAction === 'string' ? { nextAction: body.expectNextAction } : {});
       const notified = await notify(env, `Notionタスクを更新しました${edit.instruction ? '（AIへの指示あり）' : ''} (${body.id.slice(0, 8)}…)`, 'tasks');
       return jsonResponse({ ...result, notified });
     } catch (error) {

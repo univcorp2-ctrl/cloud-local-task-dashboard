@@ -133,14 +133,15 @@ function DueChip({ due }: { due: string | null }) {
   return <span className={`th-due ${cls}`}>{text}</span>;
 }
 
-function Editor({ initial, onSave, onCancel, busy, dueLabel }: { initial: Edit; onSave: (e: Edit) => void; onCancel: () => void; busy: boolean; dueLabel: string }) {
+function Editor({ initial, onSave, onCancel, busy, dueLabel }: { initial: Edit; onSave: (e: Edit, snapshot: Edit) => void; onCancel: () => void; busy: boolean; dueLabel: string }) {
+  const [snapshot] = useState(initial); // values when editing began; dirty fields are judged against this, not the polled row
   const [v, setV] = useState(initial);
   return <div className="th-editor">
     <label>次の一手（進捗を書き換え）<textarea rows={2} maxLength={MAX_CHARS} value={v.nextAction} onChange={(e) => setV({ ...v, nextAction: e.target.value })} /></label>
     <label className="th-editor-due">{dueLabel}<input type="date" value={v.due} onChange={(e) => setV({ ...v, due: e.target.value })} /></label>
     <label>AIへの指示・メモ（Notionの「Hiro→AI指示」に残り、次の回でAIが対応します）<textarea rows={3} maxLength={MAX_CHARS} placeholder="例：この件は来週火曜に銀行へ持ち込むので資料を一式そろえて" value={v.instruction} onChange={(e) => setV({ ...v, instruction: e.target.value })} /></label>
     <small className="th-editor-count">次の一手 {v.nextAction.length}/{MAX_CHARS}字・指示 {v.instruction.length}/{MAX_CHARS}字</small>
-    <div className="th-editor-actions"><button type="button" className="th-btn primary" disabled={busy} onClick={() => onSave(v)}>{busy ? '保存中…' : 'Notionに保存'}</button><button type="button" className="th-btn" onClick={onCancel} disabled={busy}>閉じる</button></div>
+    <div className="th-editor-actions"><button type="button" className="th-btn primary" disabled={busy} onClick={() => onSave(v, snapshot)}>{busy ? '保存中…' : 'Notionに保存'}</button><button type="button" className="th-btn" onClick={onCancel} disabled={busy}>閉じる</button></div>
   </div>;
 }
 
@@ -218,16 +219,17 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
       setNotice(`「${t.title.slice(0, 30)}」をNotionで完了にしました。${auditWarn(j)}`);
     } catch (e) { setNotice(e instanceof Error ? e.message : '保存失敗'); } finally { setBusy(null); }
   }
-  async function saveTask(t: HubTask, e: Edit) {
+  async function saveTask(t: HubTask, e: Edit, snap: Edit) {
     setBusy(t.id); setNotice('');
     const body: Record<string, unknown> = { id: t.id };
-    if (e.nextAction !== t.nextAction) body.nextAction = e.nextAction;
-    if (e.due !== jstDate(t.due)) body.due = e.due || null;
+    if (e.nextAction !== snap.nextAction) body.nextAction = e.nextAction;
+    if (e.due !== snap.due) body.due = e.due || null;
     if (e.instruction.trim()) body.instruction = e.instruction.trim();
     if (Object.keys(body).length === 1) { setBusy(null); setEditing(null); return; }
+    body.expectNextAction = snap.nextAction; // server answers 409 if the row changed meanwhile
     try {
       const j = await patch('/api/private-tasks', body);
-      setTasks((p) => p?.map((x) => x.id === t.id ? { ...x, nextAction: e.nextAction, due: e.due || null, hiroNote: e.instruction.trim() ? e.instruction.trim() : x.hiroNote, lastEditedAt: new Date().toISOString() } : x) ?? null);
+      setTasks((p) => p?.map((x) => x.id === t.id ? { ...x, ...('nextAction' in body ? { nextAction: e.nextAction } : {}), ...('due' in body ? { due: e.due || null } : {}), hiroNote: e.instruction.trim() ? e.instruction.trim() : x.hiroNote, lastEditedAt: new Date().toISOString() } : x) ?? null);
       setEditing(null); setNotice('Notionに保存しました。' + (e.instruction.trim() ? 'AIは次の進捗レポートの回（8・14・20時）で指示を読みます。' : '') + auditWarn(j));
     } catch (err) { setNotice(err instanceof Error ? err.message : '保存失敗'); } finally { setBusy(null); }
   }
@@ -240,16 +242,17 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
       setNotice(`「${d.name.slice(0, 24)}」の次の一手をNotionで完了にし、AIに次の一手の更新を頼みました。${auditWarn(j)}`);
     } catch (e) { setNotice(e instanceof Error ? e.message : '保存失敗'); } finally { setBusy(null); }
   }
-  async function saveDeal(d: HubDeal, e: Edit) {
+  async function saveDeal(d: HubDeal, e: Edit, snap: Edit) {
     setBusy(d.id); setNotice('');
     const body: Record<string, unknown> = { id: d.id };
-    if (e.nextAction !== d.nextAction) body.nextAction = e.nextAction;
-    if (e.due !== jstDate(d.due)) body.due = e.due || null;
+    if (e.nextAction !== snap.nextAction) body.nextAction = e.nextAction;
+    if (e.due !== snap.due) body.due = e.due || null;
     if (e.instruction.trim()) body.instruction = e.instruction.trim();
     if (Object.keys(body).length === 1) { setBusy(null); setEditing(null); return; }
+    body.expectNextAction = snap.nextAction; // server answers 409 if the row changed meanwhile
     try {
       const j = await patch('/api/private-deals', body);
-      setDeals((p) => p?.map((x) => x.id === d.id ? { ...x, nextAction: e.nextAction, due: e.due || null, hiroNote: e.instruction.trim() || x.hiroNote, updatedAt: new Date().toISOString() } : x) ?? null);
+      setDeals((p) => p?.map((x) => x.id === d.id ? { ...x, ...('nextAction' in body ? { nextAction: e.nextAction } : {}), ...('due' in body ? { due: e.due || null } : {}), hiroNote: e.instruction.trim() || x.hiroNote, updatedAt: new Date().toISOString() } : x) ?? null);
       setEditing(null); setNotice('Notionに保存しました。' + auditWarn(j));
     } catch (err) { setNotice(err instanceof Error ? err.message : '保存失敗'); } finally { setBusy(null); }
   }
@@ -288,7 +291,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
         <small className="th-ago">{ago(t.lastEditedAt)}</small>
         <button type="button" className="th-edit" onClick={() => setEditing(editing === t.id ? null : t.id)}>✏️ 進捗・指示</button>
       </div>
-      {editing === t.id && <Editor dueLabel="期限" busy={busy === t.id} initial={{ nextAction: t.nextAction, due: jstDate(t.due), instruction: '' }} onCancel={() => setEditing(null)} onSave={(e) => void saveTask(t, e)} />}
+      {editing === t.id && <Editor dueLabel="期限" busy={busy === t.id} initial={{ nextAction: t.nextAction, due: jstDate(t.due), instruction: '' }} onCancel={() => setEditing(null)} onSave={(e, snap) => void saveTask(t, e, snap)} />}
     </div>;
   };
 
@@ -381,7 +384,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
               <small className="th-ago">{ago(d.updatedAt)}</small>
               <button type="button" className="th-edit" onClick={() => setEditing(editing === d.id ? null : d.id)}>✏️ 進捗・指示</button>
             </div>
-            {editing === d.id && <Editor dueLabel="次の一手の期限" busy={busy === d.id} initial={{ nextAction: d.nextAction, due: jstDate(d.due), instruction: '' }} onCancel={() => setEditing(null)} onSave={(e) => void saveDeal(d, e)} />}
+            {editing === d.id && <Editor dueLabel="次の一手の期限" busy={busy === d.id} initial={{ nextAction: d.nextAction, due: jstDate(d.due), instruction: '' }} onCancel={() => setEditing(null)} onSave={(e, snap) => void saveDeal(d, e, snap)} />}
           </div>;
         })}</div>}
       </>}

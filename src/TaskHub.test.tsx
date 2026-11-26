@@ -64,7 +64,7 @@ describe('TaskHub screen', () => {
     fireEvent.click(within(row).getByText('✏️ 進捗・指示'));
     fireEvent.change(within(row).getByPlaceholderText(/例：/), { target: { value: '明日10時に行く' } });
     fireEvent.click(within(row).getByText('Notionに保存'));
-    await waitFor(() => expect(calls.some((c) => c.method === 'PATCH' && c.body?.includes('明日10時に行く'))).toBe(true));
+    await waitFor(() => expect(calls.some((c) => c.method === 'PATCH' && c.body?.includes('明日10時に行く') && c.body?.includes('"expectNextAction":"納付書を出す"'))).toBe(true));
     fireEvent.click(screen.getByLabelText('東村山 ライフピアの次の一手を完了'));
     await waitFor(() => expect(calls.some((c) => c.url === '/api/private-deals' && c.body?.includes('"nextDone":true'))).toBe(true));
   });

@@ -78,7 +78,7 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   const origin = request.headers.get('Origin');
   if (auth.via === 'access' && (!origin || origin !== new URL(request.url).origin)) return jsonResponse({ error: 'same_origin_required' }, 403);
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) return jsonResponse({ error: 'invalid_content_type' }, 415);
-  let body: { id?: unknown; nextAction?: unknown; due?: unknown; instruction?: unknown; nextDone?: unknown; previousNext?: unknown };
+  let body: { id?: unknown; nextAction?: unknown; due?: unknown; instruction?: unknown; nextDone?: unknown; previousNext?: unknown; expectNextAction?: unknown };
   try { body = await request.json() as typeof body; } catch { return jsonResponse({ error: 'invalid_body' }, 400); }
   if ([body.nextAction, body.instruction].some((v) => typeof v === 'string' && v.length > 1500)) return jsonResponse({ error: 'text_too_long' }, 400);
   if (typeof body.id !== 'string') return jsonResponse({ error: 'invalid_edit_request' }, 400);
@@ -98,7 +98,7 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   try {
     const result = await editRow(env, body.id, edit, { dataSourceId: env.NOTION_PROPERTY_DATA_SOURCE_ID?.trim() || PROPERTY_SOURCE, databaseId: PROPERTY_DATABASE },
       { nextAction: '次の一手', due: '次の一手の期限' }, auth.via === 'access' ? 'cloudflare-access' : 'owner-token',
-      body.nextDone === true ? { nextAction: previous } : {});
+      body.nextDone === true ? { nextAction: previous } : typeof body.expectNextAction === 'string' ? { nextAction: body.expectNextAction } : {});
     const notified = await notify(env, `物件の進捗を更新しました${instruction ? '（AIへの指示あり）' : ''} (${body.id.slice(0, 8)}…)`, 'deals');
     return jsonResponse({ ...result, notified, nextAction: edit.nextAction ?? null });
   } catch (error) {
