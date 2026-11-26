@@ -106,6 +106,14 @@ export function bucketOf(t: HubTask): string {
   return BLOCKS.some((b) => b.key === c) ? c : 'none';
 }
 
+export const HOT_STAGES = ['買付済', '買付準備', '銀行打診'];
+export const looksDropped = (d: { nextAction: string }) => /^見送り/.test(d.nextAction.trim());
+/** Default deal list: every 本命 (買付済・買付準備・銀行打診); others only if touched in 14 days and not judged 見送り. */
+export function defaultDeal(d: HubDeal, now = new Date()): boolean {
+  if (HOT_STAGES.includes(d.stage)) return true;
+  if (looksDropped(d)) return false;
+  return Boolean(d.updatedAt) && now.getTime() - Date.parse(d.updatedAt!) <= 14 * dayMs;
+}
 const STAGE_FLOW = ['深掘り済', '資料請求済', '資料受領', '銀行打診', '買付準備', '買付済'];
 const STAGE_LABEL: Record<string, string> = { 深掘り済: '詳細調査', 資料請求済: '資料請求', 資料受領: '資料受領', 銀行打診: '銀行打診', 買付準備: '買付準備', 買付済: '買付済' };
 const man = (v: number | null) => v === null ? '—' : v >= 10000 ? `${(v / 10000).toFixed(2)}億円` : `${Math.round(v).toLocaleString('ja-JP')}万円`;
@@ -148,6 +156,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
   const [fetchedAt, setFetchedAt] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
   const [stage, setStage] = useState('all');
+  const [allDeals, setAllDeals] = useState(false);
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
@@ -186,8 +195,9 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
     for (const t of visible) { const k = bucketOf(t); m.set(k, [...(m.get(k) ?? []), t]); }
     return m;
   }, [visible]);
-  const dealList = useMemo(() => (deals ?? []).filter((d) => stage === 'all' || d.stage === stage)
-    .sort((a, b) => STAGE_FLOW.indexOf(b.stage) - STAGE_FLOW.indexOf(a.stage) || (a.due ?? '9999').localeCompare(b.due ?? '9999')), [deals, stage]);
+  const hiddenDeals = useMemo(() => (deals ?? []).filter((d) => !defaultDeal(d)).length, [deals]);
+  const dealList = useMemo(() => (deals ?? []).filter((d) => (stage === 'all' ? (allDeals || defaultDeal(d)) : d.stage === stage))
+    .sort((a, b) => STAGE_FLOW.indexOf(b.stage) - STAGE_FLOW.indexOf(a.stage) || (a.due ?? '9999').localeCompare(b.due ?? '9999')), [deals, stage, allDeals]);
 
   async function patch(url: string, body: Record<string, unknown>) {
     const r = await fetch(url, { method: 'PATCH', headers: authHeaders({ 'Content-Type': 'application/json' }), credentials: 'same-origin', body: JSON.stringify(body) });
@@ -349,6 +359,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
           <button type="button" className={stage === 'all' ? 'on' : ''} onClick={() => setStage('all')}>すべて <b>{deals.length}</b></button>
           {[...STAGE_FLOW].reverse().map((s) => <button key={s} type="button" className={stage === s ? 'on' : ''} onClick={() => setStage(stage === s ? 'all' : s)}>{STAGE_LABEL[s]} <b>{deals.filter((d) => d.stage === s).length}</b></button>)}
         </div>
+        {stage === 'all' && hiddenDeals > 0 && <p className="th-hint">本命（買付済・買付準備・銀行打診）は全件、それ以外は14日以内に動いたものだけ表示中。<button type="button" className="th-linkbtn" onClick={() => setAllDeals(!allDeals)}>{allDeals ? '絞り込む' : `残り${hiddenDeals}件（動きなし・見送り判断済み）も表示`}</button></p>}
         {dealList.length === 0 ? <div className="th-empty">この段階の物件はありません。</div> : <div className="th-rows">{dealList.map((d) => {
           const idx = STAGE_FLOW.indexOf(d.stage);
           return <div key={d.id} className={`th-row deal${(daysUntil(d.due) ?? 1) < 0 ? ' overdue' : ''}`}>
@@ -360,6 +371,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
               <div className="th-next"><b>次の一手</b>{d.nextAction.trim() || '— まだ決まっていません（✏️から書けます）'}</div>
               {d.lastMemo && <div className="th-memo">直近：{d.lastMemo}</div>}
               {notePending(d.hiroNote) && <div className="th-note">📨 {d.hiroNote.split('\n')[0]}</div>}
+              <div className="th-flags">{looksDropped(d) && <span className="th-flag gray">見送り判断済み（段階が未更新）</span>}{!d.due && !looksDropped(d) && <span className="th-flag amber">期限が未設定</span>}{isStale(d.updatedAt) && <span className="th-flag gray">14日以上動きなし</span>}</div>
               <div className="th-links">{d.drive && <a href={d.drive} target="_blank" rel="noreferrer">資料フォルダ ↗</a>}{d.listing && <a href={d.listing} target="_blank" rel="noreferrer">掲載元 ↗</a>}</div>
             </div>
             <div className="th-side">
