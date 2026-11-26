@@ -224,13 +224,17 @@ export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, all
     notes.push(`AIへの指示：${edit.instruction.trim()}`);
   }
   if (!notes.length) throw new NotionError('nothing_to_save', 400);
+  const paragraph = (text: string) => ({ object: 'block', type: 'paragraph', paragraph: rich(text) });
+  if (overflow.length) {
+    // back up the oldest history into the page body FIRST; if that fails, save nothing
+    const backup = await fetch(`https://api.notion.com/v1/blocks/${pageId}/children`, { method: 'PATCH', headers: h, body: JSON.stringify({ children: overflow.map((o) => paragraph(`📦 Hiro→AI指示の古い履歴（列の上限を超えた分をここへ移動）\n${o}`)) }) }).catch(() => null);
+    if (!backup?.ok) throw new NotionError('history_backup_failed', 502);
+  }
   const response = await fetch(`https://api.notion.com/v1/pages/${pageId}`, { method: 'PATCH', headers: h, body: JSON.stringify({ properties }) });
   if (!response.ok) throw new NotionError('notion_save_failed', 502);
   let auditLogged = false;
   try {
-    const paragraph = (text: string) => ({ object: 'block', type: 'paragraph', paragraph: rich(text) });
-    const children = [paragraph(`🗣 Hiro（タスクコントロールセンター）${jstStamp(now)}｜${notes.join('｜')}`),
-      ...overflow.map((o) => paragraph(`📦 Hiro→AI指示の古い履歴（列の上限を超えた分をここへ移動）\n${o}`))];
+    const children = [paragraph(`🗣 Hiro（タスクコントロールセンター）${jstStamp(now)}｜${notes.join('｜')}`)];
     const audit = await fetch(`https://api.notion.com/v1/blocks/${pageId}/children`, { method: 'PATCH', headers: h, body: JSON.stringify({ children }) });
     auditLogged = audit.ok;
   } catch { /* saved; audit failed */ }
