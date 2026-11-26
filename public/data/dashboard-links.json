@@ -8,7 +8,7 @@
     {
       "id": "task-deal-board",
       "name": "📋 全体タスク・案件ボード（Hiroの一手／案件進捗／全件）",
-      "category": "タスク",
+      "category": "タスク・開発",
       "url": "https://claude.ai/artifact/GUCmh34YVGEXkyVxzSLR8u",
       "status": "login",
       "note": "Hiroにしかできない一手・西成さん/JR植田様など案件ごとの進捗・全タスクを1枚で。Claudeログインが必要（本人のみ閲覧）"
