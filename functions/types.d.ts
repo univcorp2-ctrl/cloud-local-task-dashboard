@@ -13,3 +13,6 @@ interface EventContext<Env, Params extends string = string, Data = Record<string
   next(input?: Request | string, init?: RequestInit): Promise<Response>;
 }
 type PagesFunction<Env = unknown, Params extends string = string> = (context: EventContext<Env, Params>) => Response | Promise<Response>;
+interface D1Result<T> { results?: T[]; success: boolean }
+interface D1PreparedStatement { bind(...values: unknown[]): D1PreparedStatement; all<T = Record<string, unknown>>(): Promise<D1Result<T>> }
+interface D1Database { prepare(query: string): D1PreparedStatement }
