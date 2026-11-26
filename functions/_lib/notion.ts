@@ -27,6 +27,8 @@ export interface PrivateTask {
   cashDistance: string; order: number | null; completed: boolean;
   goal?: string; doneCriteria?: string; wbsSummary?: string;
   evidenceUrl?: string | null; freshness?: string; linkStatus?: string; lastEditedAt?: string | null;
+  priorityClass?: string; blocker?: string; urgency?: string; important?: boolean; archived?: boolean;
+  memo?: string; hiroNote?: string; hiroNoteAt?: string | null;
 }
 export interface TaskListResult { generatedAt: string; source: 'Notion'; truncated: boolean; showCompleted: boolean; tasks: PrivateTask[] }
 export class NotionError extends Error { constructor(public code: string, public status: number) { super(code); } }
@@ -75,6 +77,14 @@ export function toTask(page: NotionPage): PrivateTask {
     freshness: optionOf(page, '情報鮮度') || '要確認',
     linkStatus: optionOf(page, '連携状態') || '未照合',
     lastEditedAt: page.last_edited_time ?? null,
+    priorityClass: optionOf(page, '優先区分'),
+    blocker: titleOf(page, '止めている先'),
+    urgency: optionOf(page, '緊急度'),
+    important: Boolean(page.properties['📌重要タスク']?.checkbox),
+    archived: Boolean(page.properties['アーカイブ']?.checkbox),
+    memo: titleOf(page, 'メモ'),
+    hiroNote: titleOf(page, 'Hiro→AI指示'),
+    hiroNoteAt: page.properties['Hiro指示日時']?.date?.start ?? null,
     completed: Boolean(page.properties['完了']?.checkbox || DONE_STATUSES.includes(status)),
   };
 }
@@ -142,3 +152,69 @@ export async function completeTask(env: NotionEnv, pageId: string, via: string):
   } catch { /* status saved; audit append failed */ }
   return { ok: true, taskId: pageId, auditLogged, completedAt };
 }
+
+/** Completed, non-archived tasks edited within the last `days` days ("今週終わったこと"). */
+export async function listRecentDone(env: NotionEnv, days: number): Promise<PrivateTask[]> {
+  const { token, dataSourceId } = notionConfig(env);
+  const since = new Date(Date.now() - Math.max(1, Math.min(31, days)) * 86_400_000).toISOString();
+  const body = {
+    page_size: 100,
+    sorts: [{ timestamp: 'last_edited_time', direction: 'descending' }],
+    filter: { and: [
+      { property: 'アーカイブ', checkbox: { equals: false } },
+      { timestamp: 'last_edited_time', last_edited_time: { on_or_after: since } },
+      { or: [{ property: '完了', checkbox: { equals: true } }, ...DONE_STATUSES.map((name) => ({ property: 'ステータス', select: { equals: name } }))] },
+    ] },
+  };
+  const response = await fetch(`https://api.notion.com/v1/data_sources/${dataSourceId}/query`, { method: 'POST', headers: headers(token), body: JSON.stringify(body) });
+  if (!response.ok) throw new NotionError('notion_query_failed', 502);
+  const data = await response.json() as { results?: NotionPage[] };
+  return (data.results ?? []).map(toTask);
+}
+
+export interface RowEdit { nextAction?: string; due?: string | null; instruction?: string }
+const rich = (text: string) => ({ rich_text: text ? [{ type: 'text', text: { content: text.slice(0, 1990) } }] : [] });
+export const jstStamp = (d = new Date()) => new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(d);
+const plain = (prop: { rich_text?: Array<{ plain_text?: string }> } | undefined) => (prop?.rich_text ?? []).map((p) => p.plain_text ?? '').join('');
+
+/**
+ * Shared edit for any allowed Notion row: next action, due date, and Hiro→AI instruction.
+ * The page's parent must match `allowed` (data source id or database id). Appends one audit paragraph.
+ */
+export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, allowed: { dataSourceId: string; databaseId: string },
+  fields: { nextAction: string; due: string }, via: string): Promise<{ ok: true; id: string; savedAt: string; auditLogged: boolean }> {
+  const { token } = notionConfig(env);
+  if (!/^[a-f0-9-]{32,36}$/i.test(pageId)) throw new NotionError('invalid_edit_request', 400);
+  const h = headers(token);
+  const pageResponse = await fetch(`https://api.notion.com/v1/pages/${pageId}`, { headers: h });
+  if (!pageResponse.ok) throw new NotionError('row_not_found_or_inaccessible', 404);
+  const page = await pageResponse.json() as { parent?: { database_id?: string; data_source_id?: string }; properties?: Record<string, { rich_text?: Array<{ plain_text?: string }> }> };
+  const norm = (v?: string) => (v ?? '').replace(/-/g, '').toLowerCase();
+  if (norm(page.parent?.data_source_id) !== norm(allowed.dataSourceId) && norm(page.parent?.database_id) !== norm(allowed.databaseId)) throw new NotionError('wrong_database', 403);
+  const properties: Record<string, unknown> = {};
+  const now = new Date();
+  const notes: string[] = [];
+  if (typeof edit.nextAction === 'string') { properties[fields.nextAction] = rich(edit.nextAction.trim()); notes.push(`次の一手→${edit.nextAction.trim() || '（空）'}`); }
+  if (edit.due !== undefined) {
+    if (edit.due !== null && !/^\d{4}-\d{2}-\d{2}$/.test(edit.due)) throw new NotionError('invalid_due', 400);
+    properties[fields.due] = { date: edit.due ? { start: edit.due } : null };
+    notes.push(`期限→${edit.due ?? '（なし）'}`);
+  }
+  if (typeof edit.instruction === 'string' && edit.instruction.trim()) {
+    const previous = plain(page.properties?.['Hiro→AI指示']);
+    const line = `[${jstStamp(now)}] ${edit.instruction.trim()}`;
+    properties['Hiro→AI指示'] = rich(previous ? `${line}\n${previous}` : line);
+    properties['Hiro指示日時'] = { date: { start: now.toISOString() } };
+    notes.push(`AIへの指示：${edit.instruction.trim()}`);
+  }
+  if (!notes.length) throw new NotionError('nothing_to_save', 400);
+  const response = await fetch(`https://api.notion.com/v1/pages/${pageId}`, { method: 'PATCH', headers: h, body: JSON.stringify({ properties }) });
+  if (!response.ok) throw new NotionError('notion_save_failed', 502);
+  let auditLogged = false;
+  try {
+    const audit = await fetch(`https://api.notion.com/v1/blocks/${pageId}/children`, { method: 'PATCH', headers: h, body: JSON.stringify({ children: [{ object: 'block', type: 'paragraph', paragraph: { rich_text: [{ type: 'text', text: { content: `🗣 Hiro（タスクコントロールセンター）${jstStamp(now)}｜${notes.join('｜')}`.slice(0, 1990) } }] } }] }) });
+    auditLogged = audit.ok;
+  } catch { /* saved; audit failed */ }
+  return { ok: true, id: pageId, savedAt: now.toISOString(), auditLogged };
+}
+export const TASK_DATABASE = { dataSourceId: '0f570283-d51e-4797-912a-57b54d72e381', databaseId: ALLOWED_DATABASE };

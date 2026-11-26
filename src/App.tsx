@@ -14,6 +14,7 @@ import OperationsOverview from './OperationsOverview';
 import JobsPanel from './JobsPanel';
 import CaseBoard from './CaseBoard';
 import ProgressPanel from './ProgressPanel';
+import TaskHub from './TaskHub';
 import { useConnected } from './controlState';
 import type { ScheduledTask, TaskSnapshot, TaskStatus } from './types';
 
@@ -72,9 +73,10 @@ function TaskRow({ task }: { task: ScheduledTask }) {
   );
 }
 
-type Page = 'progress' | 'earn' | 'cases' | 'overview' | 'automation' | 'work' | 'development';
-const pageFromHash = (hash: string): Page => hash === '#progress' ? 'progress' : hash.startsWith('#earn') ? 'earn' : hash === '#cases' || hash === '' ? 'cases' : hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
+type Page = 'hub' | 'progress' | 'earn' | 'cases' | 'overview' | 'automation' | 'work' | 'development';
+const pageFromHash = (hash: string): Page => hash === '#hub' || hash === '' || hash === '#' ? 'hub' : hash === '#progress' ? 'progress' : hash.startsWith('#earn') ? 'earn' : hash === '#cases' ? 'cases' : hash === '#my-tasks' ? 'work' : hash === '#automation' ? 'automation' : hash === '#development' ? 'development' : 'overview';
 const pageTitle: Record<Page, [string, string]> = {
+  hub: ['タスク全体・進行中の物件', '誰が・何を・いつまでに。チェックで完了、✏️で進捗とAIへの指示。'],
   progress: ['進捗・フォロー', '返信の取りこぼし・今日のフォロー・AIごとの稼働を一画面で。'],
   earn: ['稼ぐ・投資', '稼げやすい順。入金までの日数・自動化・将来性。'],
   cases: ['案件・タスク進捗', 'カテゴリー別・担当AI・停止理由・次の一手。'],
@@ -140,12 +142,13 @@ export default function App() {
       <aside className={menuOpen ? 'sidebar open' : 'sidebar'}>
         <div className="brand"><span className="brand-mark">☁</span><div><strong>タスクコントロールセンター</strong><small>Task Control Center</small></div></div>
         <nav aria-label="メインナビゲーション">
+          <a className={activePage === 'hub' ? 'active' : ''} href="#hub">🧭 <span>タスク全体（ここから）</span></a>
           <a className={activePage === 'progress' ? 'active' : ''} href="#progress">◉ <span>● 進捗・フォロー</span></a>
           <a className={activePage === 'earn' ? 'active' : ''} href="#earn">¥ <span>★ 稼ぐ・投資</span></a>
           <a className={activePage === 'cases' ? 'active' : ''} href="#cases">▤ <span>◎ 案件・タスク管制</span></a>
           <a className={activePage === 'overview' ? 'active' : ''} href="#overview">◎ <span>⓪ 今日の全体像</span></a>
           <a className={activePage === 'automation' ? 'active' : ''} href="#automation">⚙ <span>① 自動化・AI稼働</span></a>
-          <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク・本人対応</span></a>
+          <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks">☷ <span>② 全タスク一覧（検索・カンバン）</span></a>
           <a className={activePage === 'development' ? 'active' : ''} href="#development">▥ <span>③ 開発進捗・次アクション</span></a>
           <SortableSidebar />
         </nav>
@@ -163,7 +166,7 @@ export default function App() {
           </div>}
           </div>
         </header>
-        {activePage === 'progress' ? <ProgressPanel onConnect={() => setConnectOpen(true)} /> : activePage === 'earn' ? <EarnPage onConnect={() => setConnectOpen(true)} /> : activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
+        {activePage === 'hub' ? <TaskHub onConnect={() => setConnectOpen(true)} /> : activePage === 'progress' ? <ProgressPanel onConnect={() => setConnectOpen(true)} /> : activePage === 'earn' ? <EarnPage onConnect={() => setConnectOpen(true)} /> : activePage === 'cases' ? <CaseBoard onConnect={() => setConnectOpen(true)} /> : activePage === 'overview' ? <OverviewPage onConnect={() => setConnectOpen(true)} /> : activePage === 'automation' ? <>
         <JobsPanel data={control.data ?? null} connected={connected} onConnect={() => setConnectOpen(true)} />
         <TokenUsagePanel />
         <details className="ops-expanded">
@@ -216,11 +219,11 @@ export default function App() {
       {menuOpen && <button className="backdrop" onClick={() => setMenuOpen(false)} aria-label="メニューを閉じる" />}
       {connectOpen && <ConnectDialog onClose={() => setConnectOpen(false)} />}
       <nav className="tabbar" aria-label="モバイルナビゲーション">
+        <a className={activePage === 'hub' ? 'active' : ''} href="#hub"><span>🧭</span><span>タスク</span></a>
         <a className={activePage === 'progress' ? 'active' : ''} href="#progress"><span>◉</span><span>進捗</span></a>
         <a className={activePage === 'earn' ? 'active' : ''} href="#earn"><span>¥</span><span>稼ぐ</span></a>
         <a className={activePage === 'cases' ? 'active' : ''} href="#cases"><span>▤</span><span>案件進捗</span></a>
         <a className={activePage === 'overview' ? 'active' : ''} href="#overview"><span>◎</span><span>全体像</span></a>
-        <a className={activePage === 'work' ? 'active' : ''} href="#my-tasks"><span>☷</span><span>タスク</span></a>
         <a className={activePage === 'automation' ? 'active' : ''} href="#automation"><span>⚙</span><span>AI稼働</span></a>
       </nav>
     </div>
