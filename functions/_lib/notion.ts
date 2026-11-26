@@ -18,6 +18,7 @@ interface NotionPage {
     number?: number | null;
     date?: { start: string } | null;
     url?: string | null;
+    relation?: Array<{ id: string }>;
   }>;
 }
 export interface PrivateTask {
@@ -28,7 +29,7 @@ export interface PrivateTask {
   goal?: string; doneCriteria?: string; wbsSummary?: string;
   evidenceUrl?: string | null; freshness?: string; linkStatus?: string; lastEditedAt?: string | null;
   priorityClass?: string; blocker?: string; urgency?: string; important?: boolean; archived?: boolean;
-  memo?: string; hiroNote?: string; hiroNoteAt?: string | null;
+  memo?: string; hiroNote?: string; hiroNoteAt?: string | null; parentIds?: string[];
 }
 export interface TaskListResult { generatedAt: string; source: 'Notion'; truncated: boolean; showCompleted: boolean; tasks: PrivateTask[] }
 export class NotionError extends Error { constructor(public code: string, public status: number) { super(code); } }
@@ -85,6 +86,7 @@ export function toTask(page: NotionPage): PrivateTask {
     memo: titleOf(page, 'メモ'),
     hiroNote: titleOf(page, 'Hiro→AI指示'),
     hiroNoteAt: page.properties['Hiro指示日時']?.date?.start ?? null,
+    parentIds: (page.properties['上位']?.relation ?? []).map((r) => r.id),
     completed: Boolean(page.properties['完了']?.checkbox || DONE_STATUSES.includes(status)),
   };
 }
@@ -173,7 +175,14 @@ export async function listRecentDone(env: NotionEnv, days: number): Promise<Priv
 }
 
 export interface RowEdit { nextAction?: string; due?: string | null; instruction?: string }
-const rich = (text: string) => ({ rich_text: text ? [{ type: 'text', text: { content: text.slice(0, 1990) } }] : [] });
+export const MAX_EDIT_CHARS = 1500;
+const MAX_NOTE_HISTORY = 12000;
+/** Notion caps one text object at 2,000 chars; a property may hold up to 100 objects. */
+export const rich = (text: string) => {
+  const chunks: Array<{ type: 'text'; text: { content: string } }> = [];
+  for (let i = 0; i < Math.min(text.length, MAX_NOTE_HISTORY); i += 1900) chunks.push({ type: 'text', text: { content: text.slice(i, i + 1900) } });
+  return { rich_text: chunks };
+};
 export const jstStamp = (d = new Date()) => new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(d);
 const plain = (prop: { rich_text?: Array<{ plain_text?: string }> } | undefined) => (prop?.rich_text ?? []).map((p) => p.plain_text ?? '').join('');
 
@@ -194,6 +203,7 @@ export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, all
   const properties: Record<string, unknown> = {};
   const now = new Date();
   const notes: string[] = [];
+  for (const v of [edit.nextAction, edit.instruction]) if (typeof v === 'string' && v.length > MAX_EDIT_CHARS) throw new NotionError('text_too_long', 400);
   if (typeof edit.nextAction === 'string') { properties[fields.nextAction] = rich(edit.nextAction.trim()); notes.push(`次の一手→${edit.nextAction.trim() || '（空）'}`); }
   if (edit.due !== undefined) {
     if (edit.due !== null && !/^\d{4}-\d{2}-\d{2}$/.test(edit.due)) throw new NotionError('invalid_due', 400);
@@ -203,7 +213,8 @@ export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, all
   if (typeof edit.instruction === 'string' && edit.instruction.trim()) {
     const previous = plain(page.properties?.['Hiro→AI指示']);
     const line = `[${jstStamp(now)}] ${edit.instruction.trim()}`;
-    properties['Hiro→AI指示'] = rich(previous ? `${line}\n${previous}` : line);
+    // newest first; when the history exceeds the cap, the OLDEST lines are dropped (never the new one)
+    properties['Hiro→AI指示'] = rich((previous ? `${line}\n${previous}` : line).slice(0, MAX_NOTE_HISTORY));
     properties['Hiro指示日時'] = { date: { start: now.toISOString() } };
     notes.push(`AIへの指示：${edit.instruction.trim()}`);
   }

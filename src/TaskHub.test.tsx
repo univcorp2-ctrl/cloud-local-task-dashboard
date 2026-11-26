@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import TaskHub, { bucketOf, daysUntil, matches, who, type HubTask } from './TaskHub';
+import TaskHub, { bucketOf, daysUntil, groupChildren, isHiro, jstDate, matches, who, type HubTask } from './TaskHub';
 
 const base: HubTask = { id: 't1', url: 'https://notion.so/t1', title: '納税する', category: '🧾 確定申告・経理', priority: '🔴 最高', status: '🟡 進行中',
   owner: '🤖 AI', executor: 'CLIエージェント', assignedAi: '🤖 Claude', due: null, nextAction: '納付書を出す', humanAction: '', executionStatus: '実行中',
@@ -18,6 +18,22 @@ describe('TaskHub helpers', () => {
     expect(bucketOf({ ...base, assignedAi: '👤 Hiro', priorityClass: '⑤保留' })).toBe('⑤保留');
     expect(bucketOf(base)).toBe('①関所');
     expect(bucketOf({ ...base, priorityClass: '' })).toBe('none');
+  });
+  it('converts date-times to the JST calendar day', () => {
+    expect(jstDate('2026-11-26T18:00:00.000Z')).toBe('2026-11-27');
+    expect(daysUntil('2026-11-26T18:00:00.000Z', new Date('2026-11-27T12:00:00+09:00'))).toBe(0);
+  });
+  it('treats human-owned unassigned rows as Hiro everywhere', () => {
+    const t = { ...base, assignedAi: '⏳ 未割当', owner: '👤 人間' };
+    expect(isHiro(t)).toBe(true);
+    expect(bucketOf(t)).toBe('hiro');
+  });
+  it('groups children by relation first and never duplicates', () => {
+    const p1 = { ...base, id: 'p1', order: 11 }, p2 = { ...base, id: 'p2', order: 11 };
+    const c1 = { ...base, id: 'c1', order: 11.1, parentIds: ['p2'] }, c2 = { ...base, id: 'c2', order: 11.2 };
+    const g = groupChildren([p1, p2], [c1, c2]);
+    expect(g.get('p2')?.map((x) => x.id)).toEqual(['c1']);
+    expect(g.get('p1')?.map((x) => x.id)).toEqual(['c2']);
   });
   it('flags overdue and missing next action', () => {
     expect(matches({ ...base, due: '2026-11-20' }, 'overdue', now)).toBe(true);

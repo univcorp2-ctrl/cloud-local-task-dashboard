@@ -7,7 +7,7 @@
  */
 import { authorize, jsonResponse, recordOwnerSeen, type AuthEnv } from '../_lib/auth';
 import { ALLOWED_DATABASE, completeTask, editRow, listRecentDone, listTasks, notionConfig, NotionError, type NotionEnv } from '../_lib/notion';
-import { applyIngest, loadState, saveState } from '../_lib/state';
+import { notify } from '../_lib/notify';
 
 interface Env extends AuthEnv, NotionEnv { TCC_STATE?: KVNamespace }
 
@@ -47,19 +47,15 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   if (typeof body.id !== 'string') return jsonResponse({ error: 'invalid_completion_request' }, 400);
   if (body.completed !== true) {
     const edit = {
-      ...(typeof body.nextAction === 'string' ? { nextAction: body.nextAction.slice(0, 1500) } : {}),
+      ...(typeof body.nextAction === 'string' ? { nextAction: body.nextAction } : {}),
       ...(typeof body.due === 'string' || body.due === null ? { due: body.due as string | null } : {}),
-      ...(typeof body.instruction === 'string' ? { instruction: body.instruction.slice(0, 1500) } : {}),
+      ...(typeof body.instruction === 'string' ? { instruction: body.instruction } : {}),
     };
     try {
       const result = await editRow(env, body.id, edit, { dataSourceId: notionConfig(env).dataSourceId, databaseId: ALLOWED_DATABASE },
         { nextAction: '次の一手', due: '期日' }, auth.via === 'access' ? 'cloudflare-access' : 'owner-token');
-      if (env.TCC_STATE) {
-        const state = await loadState(env.TCC_STATE);
-        applyIngest(state, { events: [{ kind: 'info', message: `Notionタスクを更新しました${edit.instruction ? '（AIへの指示あり）' : ''} (${body.id.slice(0, 8)}…)`, topic: 'tasks' }] }, 'owner');
-        await saveState(env.TCC_STATE, state);
-      }
-      return jsonResponse(result);
+      const notified = await notify(env, `Notionタスクを更新しました${edit.instruction ? '（AIへの指示あり）' : ''} (${body.id.slice(0, 8)}…)`, 'tasks');
+      return jsonResponse({ ...result, notified });
     } catch (error) {
       if (error instanceof NotionError) return jsonResponse({ error: error.code }, error.status);
       return jsonResponse({ error: 'notion_unreachable' }, 502);
@@ -67,12 +63,8 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   }
   try {
     const result = await completeTask(env, body.id, auth.via === 'access' ? 'cloudflare-access' : 'owner-token');
-    if (env.TCC_STATE) {
-      const state = await loadState(env.TCC_STATE);
-      applyIngest(state, { events: [{ kind: 'success', message: `Notionタスクを完了にしました (${body.id.slice(0, 8)}…)`, topic: 'tasks' }] }, 'owner');
-      await saveState(env.TCC_STATE, state);
-    }
-    return jsonResponse(result);
+    const notified = await notify(env, `Notionタスクを完了にしました (${body.id.slice(0, 8)}…)`, 'tasks', 'success');
+    return jsonResponse({ ...result, notified });
   } catch (error) {
     if (error instanceof NotionError) return jsonResponse({ error: error.code }, error.status);
     return jsonResponse({ error: 'notion_unreachable' }, 502);

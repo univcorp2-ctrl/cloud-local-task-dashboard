@@ -105,3 +105,4 @@
   .th-top{flex-direction:column}
   .th-top-side{justify-items:start}
 }
+.th-editor-count{grid-column:1/-1;font-size:10px;color:#7a8ca1}

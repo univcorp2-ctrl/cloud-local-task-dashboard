@@ -7,7 +7,8 @@
  */
 import { authorize, jsonResponse, recordOwnerSeen, type AuthEnv } from '../_lib/auth';
 import { editRow, notionConfig, NotionError, type NotionEnv } from '../_lib/notion';
-import { applyIngest, loadState, saveState } from '../_lib/state';
+import { jstStamp } from '../_lib/notion';
+import { notify } from '../_lib/notify';
 
 interface Env extends AuthEnv, NotionEnv { TCC_STATE?: KVNamespace; NOTION_PROPERTY_DATA_SOURCE_ID?: string }
 type Prop = { title?: Array<{ plain_text?: string }>; rich_text?: Array<{ plain_text?: string }>; select?: { name: string } | null;
@@ -17,6 +18,7 @@ type Page = { id: string; url: string; last_edited_time?: string; properties: Re
 export const PROPERTY_SOURCE = '6f4841cf-e44c-466c-b330-c0d6daccb974';
 export const PROPERTY_DATABASE = '25c2ceb7d2d640f0aceefa790d9ee161';
 /** Order matters: later = closer to buying. */
+export const DONE_MARK = '✅完了';
 export const ACTIVE_STAGES = ['深掘り済', '資料請求済', '資料受領', '銀行打診', '買付準備', '買付済'] as const;
 
 const text = (p: Page, k: string) => (p.properties[k]?.title ?? p.properties[k]?.rich_text ?? []).map((x) => x.plain_text ?? '').join('');
@@ -79,22 +81,23 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   let body: { id?: unknown; nextAction?: unknown; due?: unknown; instruction?: unknown; nextDone?: unknown; previousNext?: unknown };
   try { body = await request.json() as typeof body; } catch { return jsonResponse({ error: 'invalid_body' }, 400); }
   if (typeof body.id !== 'string') return jsonResponse({ error: 'invalid_edit_request' }, 400);
-  const doneNote = body.nextDone === true ? `✅ 次の一手は完了（${typeof body.previousNext === 'string' && body.previousNext ? body.previousNext.slice(0, 200) : '内容未記入'}）。次の一手と期限を更新してください。` : '';
-  const instruction = [doneNote, typeof body.instruction === 'string' ? body.instruction.slice(0, 1500) : ''].filter(Boolean).join(' ');
-  const edit = {
-    ...(typeof body.nextAction === 'string' ? { nextAction: body.nextAction.slice(0, 1500) } : {}),
-    ...(typeof body.due === 'string' || body.due === null ? { due: body.due as string | null } : {}),
-    ...(instruction ? { instruction } : {}),
-  };
+  const previous = typeof body.previousNext === 'string' ? body.previousNext.slice(0, 300) : '';
+  if (body.nextDone === true && (!previous.trim() || previous.startsWith(DONE_MARK))) return jsonResponse({ error: 'nothing_to_complete' }, 400);
+  const doneNote = body.nextDone === true ? `✅ 次の一手「${previous}」は完了。次の一手と期限を決めて更新してください。` : '';
+  const instruction = [doneNote, typeof body.instruction === 'string' ? body.instruction : ''].filter(Boolean).join(' ');
+  // nextDone persists in Notion: 次の一手 becomes "✅完了(日時)：…" and the deadline is cleared, so the box cannot be re-sent.
+  const edit = body.nextDone === true
+    ? { nextAction: `${DONE_MARK}(${jstStamp()})：${previous}`, due: null, instruction }
+    : {
+      ...(typeof body.nextAction === 'string' ? { nextAction: body.nextAction } : {}),
+      ...(typeof body.due === 'string' || body.due === null ? { due: body.due as string | null } : {}),
+      ...(instruction ? { instruction } : {}),
+    };
   try {
     const result = await editRow(env, body.id, edit, { dataSourceId: env.NOTION_PROPERTY_DATA_SOURCE_ID?.trim() || PROPERTY_SOURCE, databaseId: PROPERTY_DATABASE },
       { nextAction: '次の一手', due: '次の一手の期限' }, auth.via === 'access' ? 'cloudflare-access' : 'owner-token');
-    if (env.TCC_STATE) {
-      const state = await loadState(env.TCC_STATE);
-      applyIngest(state, { events: [{ kind: 'info', message: `物件の進捗を更新しました${instruction ? '（AIへの指示あり）' : ''} (${body.id.slice(0, 8)}…)`, topic: 'deals' }] }, 'owner');
-      await saveState(env.TCC_STATE, state);
-    }
-    return jsonResponse(result);
+    const notified = await notify(env, `物件の進捗を更新しました${instruction ? '（AIへの指示あり）' : ''} (${body.id.slice(0, 8)}…)`, 'deals');
+    return jsonResponse({ ...result, notified, nextAction: edit.nextAction ?? null });
   } catch (error) {
     if (error instanceof NotionError) return jsonResponse({ error: error.code }, error.status);
     return jsonResponse({ error: 'notion_unreachable' }, 502);
