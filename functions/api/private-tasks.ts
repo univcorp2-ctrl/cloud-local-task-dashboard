@@ -44,6 +44,7 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) return jsonResponse({ error: 'invalid_content_type' }, 415);
   let body: { id?: unknown; completed?: unknown; nextAction?: unknown; due?: unknown; instruction?: unknown };
   try { body = await request.json() as typeof body; } catch { return jsonResponse({ error: 'invalid_body' }, 400); }
+  if ([body.nextAction, body.instruction].some((v) => typeof v === 'string' && v.length > 1500)) return jsonResponse({ error: 'text_too_long' }, 400);
   if (typeof body.id !== 'string') return jsonResponse({ error: 'invalid_completion_request' }, 400);
   if (body.completed !== true) {
     const edit = {

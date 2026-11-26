@@ -80,10 +80,12 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) return jsonResponse({ error: 'invalid_content_type' }, 415);
   let body: { id?: unknown; nextAction?: unknown; due?: unknown; instruction?: unknown; nextDone?: unknown; previousNext?: unknown };
   try { body = await request.json() as typeof body; } catch { return jsonResponse({ error: 'invalid_body' }, 400); }
+  if ([body.nextAction, body.instruction].some((v) => typeof v === 'string' && v.length > 1500)) return jsonResponse({ error: 'text_too_long' }, 400);
   if (typeof body.id !== 'string') return jsonResponse({ error: 'invalid_edit_request' }, 400);
-  const previous = typeof body.previousNext === 'string' ? body.previousNext.slice(0, 300) : '';
+  const previous = typeof body.previousNext === 'string' ? body.previousNext : '';
   if (body.nextDone === true && (!previous.trim() || previous.startsWith(DONE_MARK))) return jsonResponse({ error: 'nothing_to_complete' }, 400);
-  const doneNote = body.nextDone === true ? `✅ 次の一手「${previous}」は完了。次の一手と期限を決めて更新してください。` : '';
+  if (previous.length > 1500) return jsonResponse({ error: 'text_too_long' }, 400);
+  const doneNote = body.nextDone === true ? `✅ 次の一手「${previous.slice(0, 200)}${previous.length > 200 ? '…' : ''}」は完了。次の一手と期限を決めて更新してください。` : '';
   const instruction = [doneNote, typeof body.instruction === 'string' ? body.instruction : ''].filter(Boolean).join(' ');
   // nextDone persists in Notion: 次の一手 becomes "✅完了(日時)：…" and the deadline is cleared, so the box cannot be re-sent.
   const edit = body.nextDone === true
@@ -95,7 +97,8 @@ export const onRequestPatch: PagesFunction<Env> = async ({ request, env }) => {
     };
   try {
     const result = await editRow(env, body.id, edit, { dataSourceId: env.NOTION_PROPERTY_DATA_SOURCE_ID?.trim() || PROPERTY_SOURCE, databaseId: PROPERTY_DATABASE },
-      { nextAction: '次の一手', due: '次の一手の期限' }, auth.via === 'access' ? 'cloudflare-access' : 'owner-token');
+      { nextAction: '次の一手', due: '次の一手の期限' }, auth.via === 'access' ? 'cloudflare-access' : 'owner-token',
+      body.nextDone === true ? { nextAction: previous } : {});
     const notified = await notify(env, `物件の進捗を更新しました${instruction ? '（AIへの指示あり）' : ''} (${body.id.slice(0, 8)}…)`, 'deals');
     return jsonResponse({ ...result, notified, nextAction: edit.nextAction ?? null });
   } catch (error) {

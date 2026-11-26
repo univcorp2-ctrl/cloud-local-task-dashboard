@@ -191,7 +191,7 @@ const plain = (prop: { rich_text?: Array<{ plain_text?: string }> } | undefined)
  * The page's parent must match `allowed` (data source id or database id). Appends one audit paragraph.
  */
 export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, allowed: { dataSourceId: string; databaseId: string },
-  fields: { nextAction: string; due: string }, via: string): Promise<{ ok: true; id: string; savedAt: string; auditLogged: boolean }> {
+  fields: { nextAction: string; due: string }, via: string, expect: { nextAction?: string } = {}): Promise<{ ok: true; id: string; savedAt: string; auditLogged: boolean }> {
   const { token } = notionConfig(env);
   if (!/^[a-f0-9-]{32,36}$/i.test(pageId)) throw new NotionError('invalid_edit_request', 400);
   const h = headers(token);
@@ -200,10 +200,13 @@ export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, all
   const page = await pageResponse.json() as { parent?: { database_id?: string; data_source_id?: string }; properties?: Record<string, { rich_text?: Array<{ plain_text?: string }> }> };
   const norm = (v?: string) => (v ?? '').replace(/-/g, '').toLowerCase();
   if (norm(page.parent?.data_source_id) !== norm(allowed.dataSourceId) && norm(page.parent?.database_id) !== norm(allowed.databaseId)) throw new NotionError('wrong_database', 403);
+  // optimistic concurrency: refuse when the row changed since the screen was loaded
+  if (typeof expect.nextAction === 'string' && plain(page.properties?.[fields.nextAction]).trim() !== expect.nextAction.trim()) throw new NotionError('row_changed_reload', 409);
   const properties: Record<string, unknown> = {};
+  const overflow: string[] = [];
   const now = new Date();
   const notes: string[] = [];
-  for (const v of [edit.nextAction, edit.instruction]) if (typeof v === 'string' && v.length > MAX_EDIT_CHARS) throw new NotionError('text_too_long', 400);
+  for (const v of [edit.nextAction, edit.instruction]) if (typeof v === 'string' && v.length > MAX_EDIT_CHARS + 60) throw new NotionError('text_too_long', 400); // callers validate user text at MAX_EDIT_CHARS; +60 leaves room for system markers
   if (typeof edit.nextAction === 'string') { properties[fields.nextAction] = rich(edit.nextAction.trim()); notes.push(`次の一手→${edit.nextAction.trim() || '（空）'}`); }
   if (edit.due !== undefined) {
     if (edit.due !== null && !/^\d{4}-\d{2}-\d{2}$/.test(edit.due)) throw new NotionError('invalid_due', 400);
@@ -213,8 +216,10 @@ export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, all
   if (typeof edit.instruction === 'string' && edit.instruction.trim()) {
     const previous = plain(page.properties?.['Hiro→AI指示']);
     const line = `[${jstStamp(now)}] ${edit.instruction.trim()}`;
-    // newest first; when the history exceeds the cap, the OLDEST lines are dropped (never the new one)
-    properties['Hiro→AI指示'] = rich((previous ? `${line}\n${previous}` : line).slice(0, MAX_NOTE_HISTORY));
+    // newest first; history beyond the cap is moved (not deleted) into the page body
+    const combined = previous ? `${line}\n${previous}` : line;
+    properties['Hiro→AI指示'] = rich(combined.slice(0, MAX_NOTE_HISTORY));
+    if (combined.length > MAX_NOTE_HISTORY) overflow.push(combined.slice(MAX_NOTE_HISTORY));
     properties['Hiro指示日時'] = { date: { start: now.toISOString() } };
     notes.push(`AIへの指示：${edit.instruction.trim()}`);
   }
@@ -223,7 +228,10 @@ export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, all
   if (!response.ok) throw new NotionError('notion_save_failed', 502);
   let auditLogged = false;
   try {
-    const audit = await fetch(`https://api.notion.com/v1/blocks/${pageId}/children`, { method: 'PATCH', headers: h, body: JSON.stringify({ children: [{ object: 'block', type: 'paragraph', paragraph: { rich_text: [{ type: 'text', text: { content: `🗣 Hiro（タスクコントロールセンター）${jstStamp(now)}｜${notes.join('｜')}`.slice(0, 1990) } }] } }] }) });
+    const paragraph = (text: string) => ({ object: 'block', type: 'paragraph', paragraph: rich(text) });
+    const children = [paragraph(`🗣 Hiro（タスクコントロールセンター）${jstStamp(now)}｜${notes.join('｜')}`),
+      ...overflow.map((o) => paragraph(`📦 Hiro→AI指示の古い履歴（列の上限を超えた分をここへ移動）\n${o}`))];
+    const audit = await fetch(`https://api.notion.com/v1/blocks/${pageId}/children`, { method: 'PATCH', headers: h, body: JSON.stringify({ children }) });
     auditLogged = audit.ok;
   } catch { /* saved; audit failed */ }
   return { ok: true, id: pageId, savedAt: now.toISOString(), auditLogged };

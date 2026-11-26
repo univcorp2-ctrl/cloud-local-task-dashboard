@@ -34,6 +34,8 @@ describe('TaskHub helpers', () => {
     const g = groupChildren([p1, p2], [c1, c2]);
     expect(g.get('p2')?.map((x) => x.id)).toEqual(['c1']);
     expect(g.get('p1')?.map((x) => x.id)).toEqual(['c2']);
+    const c3 = { ...base, id: 'c3', order: 11.3, parentIds: ['elsewhere'] };
+    expect([...groupChildren([p1, p2], [c3]).values()].flat()).toEqual([]);
   });
   it('flags overdue and missing next action', () => {
     expect(matches({ ...base, due: '2026-11-20' }, 'overdue', now)).toBe(true);

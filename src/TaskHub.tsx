@@ -81,7 +81,8 @@ export function groupChildren(parents: HubTask[], children: HubTask[]): Map<stri
   const out = new Map<string, HubTask[]>();
   for (const c of children) {
     const byRelation = parents.find((p) => c.parentIds?.includes(p.id));
-    const byOrderParent = byRelation ? undefined : parents.find((p) => typeof p.order === 'number' && typeof c.order === 'number' && Math.floor(c.order) === p.order);
+    // a child that names its parent in Notion is never re-attached by number (its parent may sit in another block)
+    const byOrderParent = byRelation || c.parentIds?.length ? undefined : parents.find((p) => typeof p.order === 'number' && typeof c.order === 'number' && Math.floor(c.order) === p.order);
     const target = byRelation ?? byOrderParent;
     if (target) out.set(target.id, [...(out.get(target.id) ?? []), c]);
   }
@@ -190,6 +191,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
 
   async function patch(url: string, body: Record<string, unknown>) {
     const r = await fetch(url, { method: 'PATCH', headers: authHeaders({ 'Content-Type': 'application/json' }), credentials: 'same-origin', body: JSON.stringify(body) });
+    if (r.status === 409) { void reload(); throw new Error('この行は別の場所（AIやNotion）で更新されていました。最新の内容に読み直したので、もう一度確認してください。'); }
     if (!r.ok) throw new Error(`Notionに保存できませんでした（HTTP ${r.status}）。画面上も変更していません。`);
     const j = await r.json() as { ok?: boolean; auditLogged?: boolean; nextAction?: string | null };
     if (!j.ok) throw new Error('Notionから保存の確認が返ってきませんでした。');
@@ -283,8 +285,10 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
   const renderBlock = (b: typeof BLOCKS[number]) => {
     const items = grouped.get(b.key) ?? [];
     if (!items.length && (b.key === 'none' || filter !== 'all')) return null;
-    const parents = b.key === 'hiro' ? [...items].sort(byDue) : items.filter(isParent).sort(byOrder);
-    const children = b.key === 'hiro' ? [] : items.filter((t) => !isParent(t));
+    const ids = new Set(items.map((t) => t.id));
+    const hasParentHere = (t: HubTask) => Boolean(t.parentIds?.some((id) => ids.has(id)));
+    const parents = b.key === 'hiro' ? [...items].sort(byDue) : items.filter((t) => isParent(t) && !hasParentHere(t)).sort(byOrder);
+    const children = b.key === 'hiro' ? [] : items.filter((t) => !isParent(t) || hasParentHere(t));
     const kidsOf = groupChildren(parents, children);
     const placed = new Set([...kidsOf.values()].flat().map((k) => k.id));
     const orphan = children.filter((c) => !placed.has(c.id));
