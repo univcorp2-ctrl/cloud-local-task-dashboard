@@ -13,3 +13,8 @@ compatibility_date = "2026-10-01"
 [[kv_namespaces]]
 binding = "TCC_STATE"
 id = "108efeefffab4c4e987ea5d3c3024050"
+
+[[d1_databases]]
+binding = "HIRO_DATA"
+database_name = "hiro-data"
+database_id = "d3e8b117-8e7f-409f-911b-894d53aa90ce"
