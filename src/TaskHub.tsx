@@ -6,7 +6,7 @@ import './task-hub.css';
 export type HubTask = {
   id: string; url: string; title: string; category: string; priority: string; status: string; owner: string; executor: string;
   assignedAi?: string; autonomy?: string; due: string | null; nextAction: string; humanAction: string; executionStatus: string;
-  order?: number | null; completed: boolean; deadline?: string | null; priorityClass?: string; blocker?: string; urgency?: string; important?: boolean;
+  order?: number | null; completed: boolean; deadline?: string | null; plannedDue?: string | null; priorityClass?: string; blocker?: string; urgency?: string; important?: boolean;
   hiroNote?: string; hiroNoteAt?: string | null; lastEditedAt?: string | null; goal?: string; parentIds?: string[];
 };
 export type HubDeal = {
@@ -16,7 +16,7 @@ export type HubDeal = {
   hiroNote: string; hiroNoteAt: string | null; updatedAt: string | null;
 };
 type Filter = 'focus' | 'all' | 'overdue' | 'soon' | 'hiro' | 'blocked' | 'stale' | 'noNext' | 'note';
-type Edit = { nextAction: string; due: string; instruction: string };
+type Edit = { nextAction: string; due: string; instruction: string; rawDue?: string | null };
 
 /* ───────── Notion links (正本) ───────── */
 export const NOTION_LINKS = {
@@ -225,13 +225,13 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
     setBusy(t.id); setNotice('');
     const body: Record<string, unknown> = { id: t.id };
     if (e.nextAction !== snap.nextAction) body.nextAction = e.nextAction;
-    if (e.due !== snap.due) body.due = e.due || null;
+    if (e.due !== snap.due) { body.due = e.due || null; body.expectDue = snap.rawDue ?? null; }
     if (e.instruction.trim()) body.instruction = e.instruction.trim();
     if (Object.keys(body).length === 1) { setBusy(null); setEditing(null); return; }
     body.expectNextAction = snap.nextAction; // server answers 409 if the row changed meanwhile
     try {
       const j = await patch('/api/private-tasks', body);
-      setTasks((p) => p?.map((x) => x.id === t.id ? { ...x, ...('nextAction' in body ? { nextAction: e.nextAction } : {}), ...('due' in body ? { due: e.due || null } : {}), hiroNote: e.instruction.trim() ? e.instruction.trim() : x.hiroNote, lastEditedAt: new Date().toISOString() } : x) ?? null);
+      setTasks((p) => p?.map((x) => x.id === t.id ? { ...x, ...('nextAction' in body ? { nextAction: e.nextAction } : {}), ...('due' in body ? { plannedDue: e.due || null, due: e.due || x.deadline || null } : {}), hiroNote: e.instruction.trim() ? e.instruction.trim() : x.hiroNote, lastEditedAt: new Date().toISOString() } : x) ?? null);
       setEditing(null); setNotice('Notionに保存しました。' + (e.instruction.trim() ? 'AIは次の進捗レポートの回（8・14・20時）で指示を読みます。' : '') + auditWarn(j));
     } catch (err) { setNotice(err instanceof Error ? err.message : '保存失敗'); } finally { setBusy(null); }
   }
@@ -248,7 +248,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
     setBusy(d.id); setNotice('');
     const body: Record<string, unknown> = { id: d.id };
     if (e.nextAction !== snap.nextAction) body.nextAction = e.nextAction;
-    if (e.due !== snap.due) body.due = e.due || null;
+    if (e.due !== snap.due) { body.due = e.due || null; body.expectDue = snap.rawDue ?? null; }
     if (e.instruction.trim()) body.instruction = e.instruction.trim();
     if (Object.keys(body).length === 1) { setBusy(null); setEditing(null); return; }
     body.expectNextAction = snap.nextAction; // server answers 409 if the row changed meanwhile
@@ -293,7 +293,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
         <small className="th-ago">{ago(t.lastEditedAt)}</small>
         <button type="button" className="th-edit" onClick={() => setEditing(editing === t.id ? null : t.id)}>✏️ 進捗・指示</button>
       </div>
-      {editing === t.id && <Editor dueLabel="予定日（Notionの期日）" busy={busy === t.id} initial={{ nextAction: t.nextAction, due: jstDate(t.due), instruction: '' }} onCancel={() => setEditing(null)} onSave={(e, snap) => void saveTask(t, e, snap)} />}
+      {editing === t.id && <Editor dueLabel="予定日（Notionの期日）" busy={busy === t.id} initial={{ nextAction: t.nextAction, due: jstDate(t.plannedDue === undefined ? t.due : t.plannedDue), rawDue: t.plannedDue === undefined ? t.due : t.plannedDue, instruction: '' }} onCancel={() => setEditing(null)} onSave={(e, snap) => void saveTask(t, e, snap)} />}
     </div>;
   };
 
@@ -307,7 +307,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
     const kidsOf = groupChildren(parents, children);
     const placed = new Set([...kidsOf.values()].flat().map((k) => k.id));
     const orphan = children.filter((c) => !placed.has(c.id));
-    const over = items.filter((t) => (daysUntil(t.due) ?? 1) < 0).length;
+    const over = items.filter((t) => (daysUntil(t.deadline ?? t.due) ?? 1) < 0).length;
     const blocked = items.filter(isBlockedTask).length;
     const isOpen = open[b.key] ?? !('collapsed' in b && b.collapsed);
     return <section key={b.key} className={`th-block tone-${b.tone}`}>
@@ -324,7 +324,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
           {parents.map((p) => {
             const kids = (kidsOf.get(p.id) ?? []).sort(byOrder);
             return <div key={p.id} className="th-group">{renderTask(p)}
-              {kids.length > 0 && <details className="th-kids"><summary>子タスク {kids.length}件（{kids.filter((k) => (daysUntil(k.due) ?? 1) < 0).length}件 期限切れ）</summary>{kids.map((k) => renderTask(k, true))}</details>}
+              {kids.length > 0 && <details className="th-kids"><summary>子タスク {kids.length}件（{kids.filter((k) => (daysUntil(k.deadline ?? k.due) ?? 1) < 0).length}件 期限切れ）</summary>{kids.map((k) => renderTask(k, true))}</details>}
             </div>;
           })}
           {orphan.map((c) => renderTask(c, true))}
@@ -389,7 +389,7 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
               <small className="th-ago">{ago(d.updatedAt)}</small>
               <button type="button" className="th-edit" onClick={() => setEditing(editing === d.id ? null : d.id)}>✏️ 進捗・指示</button>
             </div>
-            {editing === d.id && <Editor dueLabel="次の一手の期限" busy={busy === d.id} initial={{ nextAction: d.nextAction, due: jstDate(d.due), instruction: '' }} onCancel={() => setEditing(null)} onSave={(e, snap) => void saveDeal(d, e, snap)} />}
+            {editing === d.id && <Editor dueLabel="次の一手の期限" busy={busy === d.id} initial={{ nextAction: d.nextAction, due: jstDate(d.due), rawDue: d.due, instruction: '' }} onCancel={() => setEditing(null)} onSave={(e, snap) => void saveDeal(d, e, snap)} />}
           </div>;
         })}</div>}
       </>}

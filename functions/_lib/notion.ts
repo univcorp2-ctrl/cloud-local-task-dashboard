@@ -28,7 +28,7 @@ export interface PrivateTask {
   cashDistance: string; order: number | null; completed: boolean;
   goal?: string; doneCriteria?: string; wbsSummary?: string;
   evidenceUrl?: string | null; freshness?: string; linkStatus?: string; lastEditedAt?: string | null;
-  deadline?: string | null; priorityClass?: string; blocker?: string; urgency?: string; important?: boolean; archived?: boolean;
+  deadline?: string | null; plannedDue?: string | null; priorityClass?: string; blocker?: string; urgency?: string; important?: boolean; archived?: boolean;
   memo?: string; hiroNote?: string; hiroNoteAt?: string | null; parentIds?: string[];
 }
 export interface TaskListResult { generatedAt: string; source: 'Notion'; truncated: boolean; showCompleted: boolean; tasks: PrivateTask[] }
@@ -66,6 +66,7 @@ export function toTask(page: NotionPage): PrivateTask {
     autonomy: optionOf(page, '自律実行') || '未設定',
     due: page.properties['期日']?.date?.start ?? page.properties['期限']?.date?.start ?? null,
     deadline: page.properties['期限']?.date?.start ?? null,
+    plannedDue: page.properties['期日']?.date?.start ?? null,
     nextAction: titleOf(page, '次の一手'),
     humanAction: titleOf(page, '人間がやること'),
     whyHuman: optionOf(page, 'なぜHiroだけ'),
@@ -192,17 +193,18 @@ const plain = (prop: { rich_text?: Array<{ plain_text?: string }> } | undefined)
  * The page's parent must match `allowed` (data source id or database id). Appends one audit paragraph.
  */
 export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, allowed: { dataSourceId: string; databaseId: string },
-  fields: { nextAction: string; due: string }, via: string, expect: { nextAction?: string } = {}): Promise<{ ok: true; id: string; savedAt: string; auditLogged: boolean }> {
+  fields: { nextAction: string; due: string }, via: string, expect: { nextAction?: string; due?: string | null } = {}): Promise<{ ok: true; id: string; savedAt: string; auditLogged: boolean }> {
   const { token } = notionConfig(env);
   if (!/^[a-f0-9-]{32,36}$/i.test(pageId)) throw new NotionError('invalid_edit_request', 400);
   const h = headers(token);
   const pageResponse = await fetch(`https://api.notion.com/v1/pages/${pageId}`, { headers: h });
   if (!pageResponse.ok) throw new NotionError('row_not_found_or_inaccessible', 404);
-  const page = await pageResponse.json() as { parent?: { database_id?: string; data_source_id?: string }; properties?: Record<string, { rich_text?: Array<{ plain_text?: string }> }> };
+  const page = await pageResponse.json() as { parent?: { database_id?: string; data_source_id?: string }; properties?: Record<string, { rich_text?: Array<{ plain_text?: string }>; date?: { start?: string } | null }> };
   const norm = (v?: string) => (v ?? '').replace(/-/g, '').toLowerCase();
   if (norm(page.parent?.data_source_id) !== norm(allowed.dataSourceId) && norm(page.parent?.database_id) !== norm(allowed.databaseId)) throw new NotionError('wrong_database', 403);
   // optimistic concurrency: refuse when the row changed since the screen was loaded
   if (typeof expect.nextAction === 'string' && plain(page.properties?.[fields.nextAction]).trim() !== expect.nextAction.trim()) throw new NotionError('row_changed_reload', 409);
+  if (expect.due !== undefined && (page.properties?.[fields.due]?.date?.start ?? null) !== expect.due) throw new NotionError('row_changed_reload', 409);
   const properties: Record<string, unknown> = {};
   const overflow: string[] = [];
   const now = new Date();
