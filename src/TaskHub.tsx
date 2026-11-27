@@ -107,9 +107,10 @@ export function bucketOf(t: HubTask): string {
 }
 
 export const HOT_STAGES = ['買付済', '買付準備', '銀行打診'];
-export const looksDropped = (d: { nextAction: string }) => /^見送り/.test(d.nextAction.trim());
+export const looksDropped = (d: { nextAction: string }) => /^(?:見送り|重複統合済|紹介停止|失効|掲載終了)/.test(d.nextAction.trim());
 /** Default deal list: every 本命 (買付済・買付準備・銀行打診); others only if touched in 14 days and not judged 見送り. */
 export function defaultDeal(d: HubDeal, now = new Date()): boolean {
+  if (!d.nextAction.trim() || !d.due || looksDropped(d) || d.nextAction.startsWith(DONE_MARK)) return false;
   if (HOT_STAGES.includes(d.stage)) return true;
   if (looksDropped(d)) return false;
   return Boolean(d.updatedAt) && now.getTime() - Date.parse(d.updatedAt!) <= 14 * dayMs;
@@ -202,9 +203,16 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
 
   async function patch(url: string, body: Record<string, unknown>) {
     const r = await fetch(url, { method: 'PATCH', headers: authHeaders({ 'Content-Type': 'application/json' }), credentials: 'same-origin', body: JSON.stringify(body) });
-    if (r.status === 409) { void reload(); throw new Error('この行は別の場所（AIやNotion）で更新されていました。最新の内容に読み直したので、もう一度確認してください。'); }
+    const payload = await r.json().catch(() => ({})) as { error?: string; ok?: boolean; auditLogged?: boolean; nextAction?: string | null };
+    if (r.status === 409) {
+      void reload();
+      if (payload.error === 'duplicate_locked') throw new Error('重複統合済みの旧行です。Notionの正本ページから操作してください。');
+      if (payload.error === 'owner_or_external_hold') throw new Error('本人判断・外部回答待ちのため編集を停止しました。再開条件を確認してください。');
+      if (payload.error === 'deal_not_active' || payload.error === 'deal_stopped') throw new Error('進行対象外または停止済みの物件です。最新状態を再確認してください。');
+      throw new Error('この行は別の場所（AIやNotion）で更新されていました。最新の内容に読み直したので、もう一度確認してください。');
+    }
     if (!r.ok) throw new Error(`Notionに保存できませんでした（HTTP ${r.status}）。画面上も変更していません。`);
-    const j = await r.json() as { ok?: boolean; auditLogged?: boolean; nextAction?: string | null };
+    const j = payload;
     if (!j.ok) throw new Error('Notionから保存の確認が返ってきませんでした。');
     return j;
   }
@@ -237,19 +245,23 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
     if (busy) return;
     setBusy(d.id); setNotice('');
     try {
-      const j = await patch('/api/private-deals', { id: d.id, nextDone: true, previousNext: d.nextAction });
-      setDeals((p) => p?.map((x) => x.id === d.id ? { ...x, hiroNote: `✅ 次の一手「${d.nextAction}」は完了。次の一手と期限を決めて更新してください。`, nextAction: j.nextAction ?? `${DONE_MARK}：${d.nextAction}`, due: null, updatedAt: new Date().toISOString() } : x) ?? null);
-      setNotice(`「${d.name.slice(0, 24)}」の次の一手をNotionで完了にし、AIに次の一手の更新を頼みました。${auditWarn(j)}`);
+      const j = await patch('/api/private-deals', { id: d.id, nextDone: true, previousNext: d.nextAction, expectNextAction: d.nextAction, expectStage: d.stage, expectDue: d.due, expectUpdatedAt: d.updatedAt });
+      setDeals((p) => p?.filter((x) => x.id !== d.id) ?? null);
+      setNotice(`「${d.name.slice(0, 24)}」の次の一手を完了にしました。次の一手と期限が再設定されるまで進行中一覧から非表示です。${auditWarn(j)}`);
     } catch (e) { setNotice(e instanceof Error ? e.message : '保存失敗'); } finally { setBusy(null); }
   }
   async function saveDeal(d: HubDeal, e: Edit, snap: Edit) {
     setBusy(d.id); setNotice('');
+    if (!e.nextAction.trim() || !e.due) { setNotice('進行中の物件には次の一手と期限が必要です。完了する場合は左のチェックを使ってください。'); setBusy(null); return; }
     const body: Record<string, unknown> = { id: d.id };
     if (e.nextAction !== snap.nextAction) body.nextAction = e.nextAction;
     if (e.due !== snap.due) body.due = e.due || null;
     if (e.instruction.trim()) body.instruction = e.instruction.trim();
     if (Object.keys(body).length === 1) { setBusy(null); setEditing(null); return; }
-    body.expectNextAction = snap.nextAction; // server answers 409 if the row changed meanwhile
+    body.expectNextAction = snap.nextAction;
+    body.expectStage = d.stage;
+    body.expectDue = d.due;
+    if (d.updatedAt) body.expectUpdatedAt = d.updatedAt;
     try {
       const j = await patch('/api/private-deals', body);
       setDeals((p) => p?.map((x) => x.id === d.id ? { ...x, ...('nextAction' in body ? { nextAction: e.nextAction } : {}), ...('due' in body ? { due: e.due || null } : {}), hiroNote: e.instruction.trim() || x.hiroNote, updatedAt: new Date().toISOString() } : x) ?? null);
@@ -356,13 +368,13 @@ export default function TaskHub({ onConnect }: { onConnect: () => void }) {
     </div>
 
     <section className="th-block tone-deal">
-      <div className="th-block-head static"><span className="th-block-title">🏠 進行中の物件（買付・詳細調査）</span><span className="th-block-count">{deals ? `${deals.length}件` : ''}</span><a href={NOTION_LINKS.deals} target="_blank" rel="noreferrer">Notionで開く ↗</a></div>
+      <div className="th-block-head static"><span className="th-block-title">🏠 進行中の物件（次の一手・期限あり）</span><span className="th-block-count">{deals ? `${deals.length}件` : ''}</span><a href={NOTION_LINKS.deals} target="_blank" rel="noreferrer">Notionで開く ↗</a></div>
       {dealError ? <p className="th-alert soft">{dealError}</p> : !deals ? <div className="th-empty">読み込み中…</div> : <>
         <div className="th-stages">
           <button type="button" className={stage === 'all' ? 'on' : ''} onClick={() => setStage('all')}>すべて <b>{deals.length}</b></button>
           {[...STAGE_FLOW].reverse().map((s) => <button key={s} type="button" className={stage === s ? 'on' : ''} onClick={() => setStage(stage === s ? 'all' : s)}>{STAGE_LABEL[s]} <b>{deals.filter((d) => d.stage === s).length}</b></button>)}
         </div>
-        {stage === 'all' && hiddenDeals > 0 && <p className="th-hint">{allDeals ? `全${deals.length}件を表示中。` : '本命（買付済・買付準備・銀行打診）は全件、それ以外は14日以内に動いたものだけ表示中。'}<button type="button" className="th-linkbtn" onClick={() => setAllDeals(!allDeals)}>{allDeals ? '絞り込む' : `残り${hiddenDeals}件（動きなし・見送り判断済み）も表示`}</button></p>}
+        {stage === 'all' && hiddenDeals > 0 && <p className="th-hint">{allDeals ? `全${deals.length}件を表示中。` : '本命（買付済・買付準備・銀行打診）は全件、それ以外は14日以内に動いたものだけ表示中。'}<button type="button" className="th-linkbtn" onClick={() => setAllDeals(!allDeals)}>{allDeals ? '絞り込む' : `残り${hiddenDeals}件（期限あり・長期未更新）も表示`}</button></p>}
         {dealList.length === 0 ? <div className="th-empty">この段階の物件はありません。</div> : <div className="th-rows">{dealList.map((d) => {
           const idx = STAGE_FLOW.indexOf(d.stage);
           return <div key={d.id} className={`th-row deal${(daysUntil(d.due) ?? 1) < 0 ? ' overdue' : ''}`}>

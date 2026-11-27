@@ -186,22 +186,40 @@ export const rich = (text: string) => {
 export const jstStamp = (d = new Date()) => new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).format(d);
 const plain = (prop: { rich_text?: Array<{ plain_text?: string }> } | undefined) => (prop?.rich_text ?? []).map((p) => p.plain_text ?? '').join('');
 
+export interface NotionEditPage {
+  id: string;
+  last_edited_time?: string;
+  parent?: { database_id?: string; data_source_id?: string };
+  properties?: Record<string, {
+    title?: Array<{ plain_text?: string }>;
+    rich_text?: Array<{ plain_text?: string }>;
+    select?: { name: string } | null;
+    date?: { start: string } | null;
+  }>;
+}
+export type RowEditValidator = (page: NotionEditPage, requestHeaders: Record<string, string>) => Promise<void>;
+
 /**
  * Shared edit for any allowed Notion row: next action, due date, and Hiro→AI instruction.
  * The page's parent must match `allowed` (data source id or database id). Appends one audit paragraph.
  */
 export async function editRow(env: NotionEnv, pageId: string, edit: RowEdit, allowed: { dataSourceId: string; databaseId: string },
-  fields: { nextAction: string; due: string }, via: string, expect: { nextAction?: string } = {}): Promise<{ ok: true; id: string; savedAt: string; auditLogged: boolean }> {
+  fields: { nextAction: string; due: string }, via: string, expect: { nextAction?: string; stage?: string; due?: string | null; lastEditedTime?: string } = {}, validate?: RowEditValidator): Promise<{ ok: true; id: string; savedAt: string; auditLogged: boolean }> {
   const { token } = notionConfig(env);
   if (!/^[a-f0-9-]{32,36}$/i.test(pageId)) throw new NotionError('invalid_edit_request', 400);
   const h = headers(token);
   const pageResponse = await fetch(`https://api.notion.com/v1/pages/${pageId}`, { headers: h });
   if (!pageResponse.ok) throw new NotionError('row_not_found_or_inaccessible', 404);
-  const page = await pageResponse.json() as { parent?: { database_id?: string; data_source_id?: string }; properties?: Record<string, { rich_text?: Array<{ plain_text?: string }> }> };
+  const page = await pageResponse.json() as NotionEditPage;
   const norm = (v?: string) => (v ?? '').replace(/-/g, '').toLowerCase();
   if (norm(page.parent?.data_source_id) !== norm(allowed.dataSourceId) && norm(page.parent?.database_id) !== norm(allowed.databaseId)) throw new NotionError('wrong_database', 403);
   // optimistic concurrency: refuse when the row changed since the screen was loaded
   if (typeof expect.nextAction === 'string' && plain(page.properties?.[fields.nextAction]).trim() !== expect.nextAction.trim()) throw new NotionError('row_changed_reload', 409);
+  if (typeof expect.stage === 'string' && (page.properties?.['パイプライン段階']?.select?.name ?? '') !== expect.stage) throw new NotionError('row_changed_reload', 409);
+  if (Object.prototype.hasOwnProperty.call(expect, 'due') && (page.properties?.[fields.due]?.date?.start ?? null) !== expect.due) throw new NotionError('row_changed_reload', 409);
+  if (typeof expect.lastEditedTime === 'string' && page.last_edited_time !== expect.lastEditedTime) throw new NotionError('row_changed_reload', 409);
+  // The caller may enforce a domain-specific fail-closed check on this freshly re-read page.
+  if (validate) await validate(page, h);
   const properties: Record<string, unknown> = {};
   const overflow: string[] = [];
   const now = new Date();

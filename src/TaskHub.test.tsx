@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import TaskHub, { bucketOf, daysUntil, groupChildren, isHiro, jstDate, matches, who, type HubTask } from './TaskHub';
+import TaskHub, { bucketOf, daysUntil, defaultDeal, groupChildren, isHiro, jstDate, matches, who, type HubTask } from './TaskHub';
 
 const base: HubTask = { id: 't1', url: 'https://notion.so/t1', title: '納税する', category: '🧾 確定申告・経理', priority: '🔴 最高', status: '🟡 進行中',
   owner: '🤖 AI', executor: 'CLIエージェント', assignedAi: '🤖 Claude', due: null, nextAction: '納付書を出す', humanAction: '', executionStatus: '実行中',
@@ -8,6 +8,15 @@ const base: HubTask = { id: 't1', url: 'https://notion.so/t1', title: '納税す
 const now = new Date('2026-11-26T10:00:00+09:00');
 
 describe('TaskHub helpers', () => {
+  it('requires a next action and deadline for an active property', () => {
+    const deal = { id: 'd1', url: 'https://notion.so/d1', name: '戸建', stage: '買付済', status: '打診中', rank: 'A', score: 80, genre: '', kind: '戸建', area: '杉並', station: '荻窪', priceMan: 500, yieldPct: 10, offerPriceMan: null, sale: '販売中', owner: 'Claude', nextAction: '元付へ接道確認', due: '2026-11-30', risk: '', loan: '', drive: null, listing: null, lastMemo: '', hiroNote: '', hiroNoteAt: null, updatedAt: '2026-11-26T00:00:00+09:00' };
+    expect(defaultDeal(deal, now)).toBe(true);
+    expect(defaultDeal({ ...deal, due: null }, now)).toBe(false);
+    expect(defaultDeal({ ...deal, nextAction: ' ' }, now)).toBe(false);
+    expect(defaultDeal({ ...deal, nextAction: '重複統合済。正本へ集約' }, now)).toBe(false);
+    expect(defaultDeal({ ...deal, nextAction: '見送り：再検討しない' }, now)).toBe(false);
+  });
+
   it('counts days in JST', () => {
     expect(daysUntil('2026-11-25', now)).toBe(-1);
     expect(daysUntil('2026-11-26', now)).toBe(0);
@@ -66,7 +75,8 @@ describe('TaskHub screen', () => {
     fireEvent.click(within(row).getByText('Notionに保存'));
     await waitFor(() => expect(calls.some((c) => c.method === 'PATCH' && c.body?.includes('明日10時に行く') && c.body?.includes('"expectNextAction":"納付書を出す"'))).toBe(true));
     fireEvent.click(screen.getByLabelText('東村山 ライフピアの次の一手を完了'));
-    await waitFor(() => expect(calls.some((c) => c.url === '/api/private-deals' && c.body?.includes('"nextDone":true'))).toBe(true));
+    await waitFor(() => expect(calls.some((c) => c.url === '/api/private-deals' && c.body?.includes('"nextDone":true') && c.body?.includes('"expectStage":"買付済"') && c.body?.includes('"expectDue":"2026-11-27"'))).toBe(true));
+    await waitFor(() => expect(screen.queryByText('東村山 ライフピア')).not.toBeInTheDocument());
   });
   it('asks to connect when unauthenticated', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 401 })));
