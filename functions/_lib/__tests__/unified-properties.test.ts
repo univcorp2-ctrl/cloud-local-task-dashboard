@@ -1,0 +1,10 @@
+import {describe,it,expect} from 'vitest';
+import {searchParams,liveSql} from '../unified-properties';
+import {renderUnified,archiveRows} from '../unified-property-render';
+describe('unified property interface',()=>{
+ it('same base URL defaults to live ranks and bank archive is explicit',()=>{expect(searchParams('https://x/api/private-kanashin').mode).toBe('ranked');expect(searchParams('https://x/api/private-kanashin?bank=all').mode).toBe('ranked');expect(searchParams('https://x/api/private-kanashin?bank=kanashin').mode).toBe('archive')});
+ it('queries all source rows for inventory without a Notion-only gate',()=>{const q=liveSql(searchParams('https://x/?mode=inventory&area=群馬県&source=muse&q=前橋'));expect(q.args).toEqual(['群馬県','muse','前橋']);expect(q.rows).toContain('FROM properties');expect(q.rows).not.toContain("source='notion'")});
+ it('uses published ranking generation, no fuzzy join',()=>{const q=liveSql(searchParams('https://x/?mode=ranked'));expect(q.rows).toContain('v_rank_active');expect(q.rows).not.toContain('match_key')});
+ it('has common favorite controls and escapes data',()=>{const f=searchParams('https://x/?mode=new');const s=renderUnified(f,{total:1,limit:25,rows:[{id:'abc',source:'muse',name:'<script>bad</script>'}]},[]);expect(s).toContain('data-fav="muse:abc"');expect(s).not.toContain('<script>bad</script>');expect(s).toContain('統一物件ダッシュボード')});
+ it('keeps original archive card and its favorite identifier',()=>{const f=searchParams('https://x/?bank=kanashin');const a=archiveRows('<section data-key="p1"><h2>横浜市A</h2><button data-fav="p1">☆</button></section>',f);expect(a.total).toBe(1);expect(a.body).toContain('data-fav="p1"');expect(renderUnified(f,{total:0,rows:[],limit:25},[],a)).toContain('統一物件ダッシュボード')});
+});
