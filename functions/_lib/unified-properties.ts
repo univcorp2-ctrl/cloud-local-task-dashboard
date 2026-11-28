@@ -3,7 +3,7 @@ const bankAliases:Record<string,string[]>={kanashin:['かながわ信金','か�
 const modes=['ranked','new','inventory','review','archive'] as const;
 export type Mode=typeof modes[number];
 export type Search=Filters&{mode:Mode;q:string;source:string;genre:string;sort:string};
-const sources=['all','notion','muse','terass','terass_house','cgs','estateboard','daiwa'];
+const sources=['all','notion','muse','terass','terass_house','cgs','estateboard','daiwa','ai_observation'];
 export function searchParams(url:string):Search{
  const u=new URL(url),p=u.searchParams;const f=parseFilters(url);
  const mode=p.get('mode') as Mode;const source=p.get('source')??'all';
@@ -25,8 +25,8 @@ export function liveSql(f:Search){
   const bankExpr="COALESCE(json_extract("+safe+",'$.fmt.loan2.\"②打診すべき銀行\"'),'')||' '||COALESCE(json_extract("+safe+",'$.loan'),'')";
   w+=bankWhere(f,bankExpr,args);
   if(f.source!=='all'){w+=" AND EXISTS (SELECT 1 FROM json_each("+safe+",'$.sources') WHERE value=?)";args.push(f.source)}
-  const cte="WITH r AS (SELECT *,ROW_NUMBER() OVER(PARTITION BY COALESCE(NULLIF(property_id,''),rid) ORDER BY total_score DESC,pos,rid) AS rn FROM v_rank_active WHERE "+w+")";
-  return {args,count:cte+' SELECT count(*) n FROM r WHERE rn=1',rows:cte+" SELECT COALESCE(NULLIF(property_id,''),rid) AS id,'ranking' AS source,name,address,station,kind AS genre,price AS price_text,yield AS yield_text,structure,built AS built_text,total_score AS score,rank,ai_status,top_risk,notion_url AS notion_page,drive_url,run_at AS last_seen,raw_json FROM r WHERE rn=1 ORDER BY "+(f.sort==='new'?'run_at DESC,total_score DESC':'total_score DESC,run_at DESC')+",id LIMIT ? OFFSET ?"};
+  const cte="WITH ranked_input AS (SELECT r.*,i.canonical_id,i.identity_state,i.matched_source_id FROM v_rank_active r JOIN v_property_rank_identity i ON i.list=r.list AND i.rid=r.rid), r AS (SELECT *,ROW_NUMBER() OVER(PARTITION BY canonical_id ORDER BY total_score DESC,pos,rid) AS rn FROM ranked_input WHERE "+w+")";
+  return {args,count:cte+' SELECT count(*) n FROM r WHERE rn=1',rows:cte+" SELECT COALESCE(NULLIF(property_id,''),rid) AS id,'ranking' AS source,name,address,station,kind AS genre,price AS price_text,yield AS yield_text,structure,built AS built_text,total_score AS score,rank,ai_status,top_risk,notion_url AS notion_page,drive_url,run_at AS last_seen,canonical_id,identity_state,matched_source_id,raw_json FROM r WHERE rn=1 ORDER BY "+(f.sort==='new'?'run_at DESC,total_score DESC':'total_score DESC,run_at DESC')+",id LIMIT ? OFFSET ?"};
  }
  let w="status='active' AND price_man>0";
  if(f.mode==='new')w+=" AND first_seen>=date('now','+9 hours','-1 day')";
@@ -42,7 +42,12 @@ export function liveSql(f:Search){
  const order=f.sort==='new'?'first_seen DESC,property_id':'score DESC,gross_yield DESC,last_seen DESC,property_id';
  const useIndex=(f.mode==='new'||f.mode==='inventory')&&f.sort==='new'&&f.area==='all'&&f.source==='all'&&f.bank==='all'&&!f.q&&!f.genre;
  const from='properties'+(useIndex?' INDEXED BY idx_prop_web_first_seen':'');
- return {args,count:"SELECT count(*) n FROM "+from+" WHERE "+w,rows:"SELECT "+fields+" FROM "+from+" WHERE "+w+" ORDER BY "+order+" LIMIT ? OFFSET ?"};
+ const retired=(alias:string)=>'NOT EXISTS (SELECT 1 FROM property_notion_retired_pages t WHERE t.alias_id='+alias+'.property_id AND t.alias_id<>t.target_id)';
+ const priority=(alias:string)=>"CASE WHEN "+alias+".source='notion' THEN 0 ELSE 1 END";
+ const better="("+priority('peer')+"<"+priority('properties')+" OR ("+priority('peer')+"="+priority('properties')+" AND (COALESCE(peer.last_seen,'')>COALESCE(properties.last_seen,'') OR (COALESCE(peer.last_seen,'')=COALESCE(properties.last_seen,'') AND peer.property_id<properties.property_id))))";
+ const exclusion=" AND "+retired('properties')+" AND NOT EXISTS (SELECT 1 FROM property_listing_groups g WHERE g.url=properties.source_url AND g.conflict=0 AND NOT EXISTS(SELECT 1 FROM property_notion_retired_pages t WHERE t.target_id=properties.property_id) AND EXISTS (SELECT 1 FROM properties peer WHERE peer.source_url=g.url AND "+w+" AND "+retired('peer')+" AND NOT EXISTS(SELECT 1 FROM property_notion_retired_pages t WHERE t.target_id=peer.property_id) AND "+better+"))";
+ const base=" FROM "+from+" WHERE "+w+exclusion;
+ return {args:[...args,...args],count:"SELECT count(*) n"+base,rows:"WITH page AS (SELECT "+fields+base+" ORDER BY "+order+" LIMIT ? OFFSET ?) SELECT page.*,i.canonical_id,i.identity_state,i.ad_rows,i.ad_sources FROM page JOIN v_property_identity i ON i.property_id=page.id ORDER BY "+(f.sort==='new'?"page.first_seen DESC,page.id":"page.score DESC,page.gross_yield DESC,page.last_seen DESC,page.id")};
 }
 export async function liveSearch(db:D1Database,f:Search,limit=25){
  const q=liveSql(f);const run=async<T>(sql:string,a:unknown[])=>{const r=await db.prepare(sql).bind(...a).all<T>();if(!r.success)throw Error('query_failed');return r.results??[]};
@@ -52,7 +57,14 @@ export async function liveSearch(db:D1Database,f:Search,limit=25){
 export async function sourceStats(db:D1Database){const r=await db.prepare("SELECT source,count(*) n,sum(status='active') active,sum(first_seen=date('now','+9 hours')) new_today,max(last_seen) last_seen FROM properties GROUP BY source ORDER BY n DESC").all();if(!r.success)throw Error('query_failed');return r.results??[]}
 export async function liveGet(db:D1Database,id:string,source:string){
  if(!id||id.length>160)throw Error('invalid_id');
- const sql=source==='ranking'?"SELECT * FROM v_rank_active WHERE COALESCE(NULLIF(property_id,''),rid)=? ORDER BY CASE WHEN list='reco' THEN 0 ELSE 1 END,pos LIMIT 1":"SELECT * FROM properties WHERE property_id=? LIMIT 1";
+ const sql=source==='ranking'?"SELECT r.*,i.canonical_id,i.identity_state,i.matched_source_id FROM v_rank_active r JOIN v_property_rank_identity i ON i.list=r.list AND i.rid=r.rid WHERE COALESCE(NULLIF(r.property_id,''),r.rid)=? ORDER BY CASE WHEN r.list='reco' THEN 0 ELSE 1 END,r.pos LIMIT 1":"SELECT p.*,i.canonical_id,i.identity_state,i.retired_alias,i.ad_rows,i.ad_sources FROM properties p JOIN v_property_identity i ON i.property_id=p.property_id WHERE p.property_id=? LIMIT 1";
  const r=await db.prepare(sql).bind(id).all();if(!r.success)throw Error('query_failed');return r.results?.[0]??null;
+}
+export async function identityGet(db:D1Database,canonicalId:string){
+ if(!canonicalId||canonicalId.length>256)throw Error('invalid_identity');
+ const r=await db.prepare("SELECT i.property_id,i.source,i.source_url,i.notion_page,i.identity_state,i.retired_alias,p.name,p.address,p.price_man,p.status,p.last_seen FROM v_property_identity i JOIN properties p ON p.property_id=i.property_id WHERE i.canonical_id=? ORDER BY i.retired_alias,p.source,p.property_id LIMIT 50").bind(canonicalId).all();if(!r.success)throw Error('query_failed');return {canonicalId,rows:r.results??[]};
+}
+export async function identityStats(db:D1Database){
+ const r=await db.prepare("SELECT identity_state,count(*) AS n,count(DISTINCT canonical_id) AS ids FROM v_property_identity GROUP BY identity_state").all();if(!r.success)throw Error('query_failed');return r.results??[];
 }
 export {PREFS};
