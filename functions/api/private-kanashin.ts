@@ -2,6 +2,8 @@
 import { authorize, jsonResponse, type AuthEnv } from '../_lib/auth';
 import { d1Store, renderReport, REPORT_KEY } from '../_lib/kanashin';
 import { parseFilters, filterKanashin, masterQuery, renderMaster } from '../_lib/property-filters';
+import { shortlistQuery } from '../_lib/property-shortlist';
+import { renderShortlist } from '../_lib/property-shortlist-render';
 interface Env extends AuthEnv { TCC_STATE?: KVNamespace; HIRO_DATA?: D1Database }
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
  const auth = await authorize(request, env);
@@ -17,7 +19,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   html=filterKanashin(html,filters);
  }else{
   if(!env.HIRO_DATA)return jsonResponse({error:'master_unavailable'},503);
-  try{html=renderMaster(filters,await masterQuery(env.HIRO_DATA,filters))}
+  try{html=new URL(request.url).searchParams.get('mode')==='inventory'?renderMaster(filters,await masterQuery(env.HIRO_DATA,filters)):renderShortlist(filters,await shortlistQuery(env.HIRO_DATA,filters))}
   catch{return jsonResponse({error:'master_query_failed'},503)}
  }
  return new Response(html,{headers:{
