@@ -1,3 +1,4 @@
+import {propertyCss,scorePanel} from './unified-property-render';
 /** Public read-only projection. No private records, owner IDs, raw notes, links or favorites. */
 export const PUBLIC_ADS = [
  {url:'https://www.rakumachi.jp/syuuekibukken/kanto/tokyo/dim1003/3810802/show.html',name:'東京都大田区',genre:'商業ビル',area:'東京都',conflict:true},
@@ -12,8 +13,6 @@ export const PUBLIC_ADS = [
 // Exact public URLs independently retrieved anonymously on 2026-11-28.
 // The list is deliberately bounded; a public URL in a private DB does not prove publication permission.
 const esc=(s:unknown)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
-const axes=[['エリア',22],['融資評価',20],['利回り割安度',16],['土地出口',16],['決算書への影響',15],['融資期間・残債利回り',11]] as const;
-const angles=['決算書・格付け','売りやすさ・流動性','収益力','融資の付きやすさ','土地値','立地'] as const;
 type D=Record<string,unknown>;
 function obj(v:unknown):D{return v&&typeof v==='object'&&!Array.isArray(v)?v as D:{}}
 function num(v:unknown,max:number){return typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=max?v:null}
@@ -29,13 +28,14 @@ export function publicViewResponse(request:Request,rows:D[]=[]){
  if(sort==='score')candidates.sort((a,b)=>(b.score??-1)-(a.score??-1));
  const options=(arr:string[],sel:string,all:string)=>'<option value="">'+all+'</option>'+arr.map(x=>'<option'+(x===sel?' selected':'')+' value="'+esc(x)+'">'+esc(x)+'</option>').join('');
  const cards=candidates.map(({a,score,conflict,raw},i)=>{
-   const label=score===null?'未採点・再照合':score+'点 / 100';
-   const s=obj(raw.scores),ang=obj(raw.angles);
-   const detail=axes.map(([k,max])=>{const ar=s[k],v=Array.isArray(ar)&&ar[1]===max?num(ar[0],max):null;return '<tr><td>'+esc(k)+'</td><td>'+(v??'未確認')+' / '+max+'</td></tr>'}).join('');
-   const angleRows=angles.map(k=>'<tr><td>'+esc(k)+'</td><td>'+(num(obj(ang[k]).score,100)??'未確認')+' / 100</td></tr>').join('');
-   return '<article><details><summary><strong>'+esc(label)+'</strong>　旧評価・内訳</summary><table>'+detail+angleRows+'</table></details><h2>'+esc(a.name)+'</h2><p>'+esc(a.genre)+'｜'+esc(a.area)+'</p><p class="hint">'+(conflict?'旧採点の種別矛盾：再採点待ち':'広告ページ取得確認済・販売状況は未確定')+'</p><a href="'+esc(a.url)+'" rel="noopener noreferrer">公開掲載元を開く</a></article>';
+   const rank=score===null?null:score>=80?'A+':score>=70?'A':score>=60?'A-':score>=50?'B':score>=40?'C':'D';
+   const status=conflict?'旧採点の種別矛盾・再採点待ち':'掲載取得確認・販売未確定';
+   const metrics=[['価格','掲載元で確認'],['表面利回り','掲載元で確認'],['満室年家賃','未確認'],['建物構造','未確認']].map(([k,v])=>'<div><span>'+esc(k)+'</span><b>'+esc(v)+'</b></div>').join('');
+   return '<section class="card">'+scorePanel(score,rank,{scores:obj(raw.scores),angles:obj(raw.angles)})+'<div class="ch"><span class="no2">'+(i+1)+'</span><span class="tier">'+esc(status)+'</span></div><h2>'+esc(a.name)+'</h2><p class="sub">'+esc(a.area)+'｜'+esc(a.genre)+'</p><div class="kpis">'+metrics+'</div><details><summary>① 物件詳細</summary><p>公開広告を参照してください。非公開資料は表示しません。</p></details><details><summary>② リスク・販売状況</summary><p>'+esc(status)+'。成約・販売中の保証ではありません。</p></details><div class="links"><a class="btn" href="'+esc(a.url)+'" target="_blank" rel="noopener noreferrer">掲載元</a></div></section>';
  }).join('');
- return new Response('<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>統一物件ダッシュボード｜閲覧用</title><style>body{font:16px/1.6 system-ui,sans-serif;color:#17352c;background:#f4f6f4;margin:0}main{max-width:780px;margin:auto;padding:14px}h1{font-size:24px}h2{font-size:19px}article,form,.box{background:white;border:1px solid #d1dbd5;border-radius:12px;padding:14px;margin:12px 0}label{display:block;margin:6px 0}select,input,button{font:inherit;min-height:42px;width:100%;box-sizing:border-box}button{background:#17665b;color:white;border:0;border-radius:7px}summary{cursor:pointer;color:#17665b}summary strong{font-size:24px}table{border-collapse:collapse;width:100%}td{border-bottom:1px solid #ddd;padding:6px}a{color:#12655b}.hint{font-size:14px;color:#59685f}</style><main><h1>統一物件ダッシュボード</h1><p>認証不要・公開広告の閲覧専用</p><div class="box">公開取得確認：2026-11-28。掲載ページの存在は成約・販売中の保証ではありません。旧採点順（再検証前）。非公開資料・メール・融資交渉・お気に入りは非表示。</div><form action="/api/public-properties" method="get"><label>物件種別<select name="genre">'+options([...new Set(PUBLIC_ADS.map(a=>a.genre))],kind,'全種別')+'</select></label><label>エリア<select name="area">'+options([...new Set(PUBLIC_ADS.map(a=>a.area))],area,'全エリア')+'</select></label><label>物件名<input name="q" value="'+esc(q)+'"></label><label>並び<select name="sort">'+options(['score','listing'],sort,'点数順（既定）')+'</select></label><button>検索・更新</button></form><p>'+candidates.length+'件｜確認済み公開広告のみ</p>'+cards+'<p><a href="/">接続済み端末の管理画面</a></p></main></html>',{headers:baseHeaders});
+ const tab=(label:string,href:string,active=false)=>'<a href="'+esc(href)+'" aria-current="'+active+'">'+esc(label)+'</a>';
+ const tabs=tab('最新AIランキング','/api/public-properties?sort=score',sort==='score')+tab('公開物件一覧','/api/public-properties?sort=listing',sort!=='score')+tab('全件・保存分析（本人用）','/api/private-kanashin?mode=archive&bank=kanashin');
+ return new Response('<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>統一物件ダッシュボード</title><style>'+propertyCss+'.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.grid select,.grid input{min-width:0;max-width:100%}.kpis b{overflow-wrap:anywhere}.score-detail th,.score-detail td{overflow-wrap:anywhere}</style></head><body><main class="wrap"><header><h1>統一物件ダッシュボード</h1><p class="sub">認証不要・公開広告の閲覧専用</p></header><div class="box"><div class="kpis"><div><span>公開確認済み広告</span><b>'+PUBLIC_ADS.length+'件</b></div><div><span>表示条件</span><b>'+candidates.length+'件</b></div></div><p class="sub">2026-11-28取得確認。販売状況は未確定。旧採点順（再検証前）。非公開資料・メール・お気に入り編集は本人用画面のみ。</p></div><nav class="tabs">'+tabs+'</nav><form class="box" action="/api/public-properties" method="get"><div class="grid"><label>物件種別<select name="genre">'+options([...new Set(PUBLIC_ADS.map(a=>a.genre))],kind,'全種別')+'</select></label><label>エリア<select name="area">'+options([...new Set(PUBLIC_ADS.map(a=>a.area))],area,'全エリア')+'</select></label><label>物件名・住所<input name="q" value="'+esc(q)+'"></label><label>並び<select name="sort"><option value="score"'+(sort==='score'?' selected':'')+'>既存点数順</option><option value="listing"'+(sort==='listing'?' selected':'')+'>掲載順</option></select></label></div><button class="primary" style="width:100%;margin-top:10px">検索・更新</button></form><div class="box"><strong>公開広告：'+candidates.length+'件</strong><p class="sub">下へスクロールすると全件を確認できます。</p></div><div id="property-results">'+(cards||'<div class="box">該当する候補なし。</div>')+'</div><div class="box"><a class="btn" href="/">本人用接続設定</a></div></main></body></html>',{headers:baseHeaders});
 }
 export async function publicView(request:Request,db?:D1Database){
  let rows:D[]=[];
