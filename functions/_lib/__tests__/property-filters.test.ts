@@ -1,0 +1,10 @@
+import {describe,it,expect} from 'vitest';
+import {areaOf,parseFilters,filterKanashin,masterWhere,renderMaster} from '../property-filters';
+const parse=(s:string)=>parseFilters('https://example.com/api/private-kanashin?'+s);
+const html='<html><head></head><body><header>元</header><section data-key="a" data-tier="A"><h2>横浜市西区</h2></section><section data-key="b" data-tier="B"><h2>町田市木曽東</h2></section></body></html>';
+describe('bank and prefecture filtering',()=>{
+ it('classifies addresses without treating bank and area as equivalent',()=>{expect(areaOf('横浜市神奈川区')).toBe('神奈川県');expect(areaOf('町田市木曽東')).toBe('東京都');expect(areaOf('群馬県前橋市')).toBe('群馬県');expect(areaOf('栃木県宇都宮市')).toBe('栃木県');expect(areaOf('不明')).toBe('unknown')});
+ it('keeps original kanashin view and removes only nonmatching cards',()=>{expect(filterKanashin(html,parse(''))).toContain('横浜市西区');const h=filterKanashin(html,parse('area=東京都'));expect(h).toContain('町田市木曽東');expect(h).not.toContain('横浜市西区');expect(h).toContain('1 / 2');const g=filterKanashin(html,parse('area=群馬県'));expect(g).toContain('0 / 2');expect(g).toContain('統一DBの同じエリアを表示')});
+ it('binds bank and prefecture parameters separately and rejects invalid values',()=>{const f=parse('bank=shizuoka&area=栃木県&page=2');expect(masterWhere(f).args).toEqual(['栃木県','静岡銀行']);expect(masterWhere(f).where).toContain('pref=?');expect(parse('bank=__proto__&area=bad&page=-1')).toEqual({bank:'kanashin',area:'all',page:1});expect(masterWhere(parse('bank=all&area=群馬県')).args).toEqual(['群馬県'])});
+ it('renders all prefectures and pagination without inferring bank approval',()=>{const h=renderMaster(parse('bank=all&area=群馬県'),{total:87,counts:{群馬県:87},rows:[]});expect(h).toContain('群馬県 (87)');expect(h).toContain('栃木県');expect(h).toContain('東京都');expect(h).toContain('87件');expect(h).toContain('次へ');expect(h).toContain('保証する件数ではありません')});
+});
