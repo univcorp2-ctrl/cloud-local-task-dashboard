@@ -6,7 +6,17 @@ import { archiveRows,linkArchiveIdentity,renderUnified,renderPropertyCards } fro
 interface Env extends AuthEnv { TCC_STATE?: KVNamespace; HIRO_DATA?: D1Database }
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
  const auth = await authorize(request, env);
- if (!auth.ok) return jsonResponse({ error: auth.error }, auth.status);
+ if (!auth.ok) {
+   // Ordinary browser navigation can see ONLY the separate public projection.
+   // API clients, fragment/detail routes and invalid supplied credentials remain fail-closed.
+   const u=new URL(request.url);
+   if(auth.status===401&&request.headers.get('Accept')?.includes('text/html')&&!u.searchParams.has('fragment')&&!u.searchParams.has('detailId')&&!u.searchParams.has('detailSource')){
+     const target=new URL('/api/public-properties',u.origin);
+     for(const k of ['genre','area','sort']){const v=u.searchParams.get(k);if(v&&v.length<=40)target.searchParams.set(k,v)}
+     return new Response(null,{status:302,headers:{Location:target.pathname+target.search,'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
+   }
+   return jsonResponse({ error: auth.error }, auth.status);
+ }
  if (auth.actor !== 'owner') return jsonResponse({ error: 'owner_token_required' }, 403);
  const filters=searchParams(request.url);const params=new URL(request.url).searchParams;const detailId=params.get('detailId')??'';const detailSource=params.get('detailSource')??'';if(detailId&&detailSource==='archive'){filters.mode='archive';filters.bank='kanashin';filters.page=1;filters.area='all';filters.q='';}
  if(!env.HIRO_DATA)return jsonResponse({error:'master_unavailable'},503);
