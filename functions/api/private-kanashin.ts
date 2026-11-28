@@ -12,7 +12,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
    const u=new URL(request.url);
    if(auth.status===401&&request.headers.get('Accept')?.includes('text/html')&&!u.searchParams.has('fragment')&&!u.searchParams.has('detailId')&&!u.searchParams.has('detailSource')){
      const target=new URL('/api/public-properties',u.origin);
-     for(const k of ['genre','area','sort']){const v=u.searchParams.get(k);if(v&&v.length<=40)target.searchParams.set(k,v)}
+     for(const k of ['genre','area','sort','mode','bank']){const v=u.searchParams.get(k);if(v&&v.length<=40)target.searchParams.set(k,v)}
      return new Response(null,{status:302,headers:{Location:target.pathname+target.search,'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
    }
    return jsonResponse({ error: auth.error }, auth.status);
