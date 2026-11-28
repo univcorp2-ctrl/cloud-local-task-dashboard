@@ -32,7 +32,8 @@ export const onRequestPost:PagesFunction<Env>=async({request,env})=>{
  if(req.method==='initialize')return rpc(id,{protocolVersion:params.protocolVersion==='2025-03-26'?'2025-03-26':'2025-06-18',capabilities:{tools:{listChanged:false}},serverInfo:{name:'kanashin-property-editor',version:'1.3.0'},instructions:'Use property_search/get, canonical_id and property_identity_get. property_observe saves evidence-backed source observations into shared D1; Notion decisions and canonical ranking remain protected. Use expectedRowHash and operationId; UI is bounded. Do not send to banks.'});
  if(req.method.startsWith('notifications/'))return new Response(null,{status:202});
  if(req.method==='ping')return rpc(id,{});
- if(req.method==='tools/list')return rpc(id,{tools:[...KTOOLS,...UTOOLS]});
+ const owner=async()=>{const auth=await authorize(request,env);return auth.ok&&auth.actor==='owner'};
+ if(req.method==='tools/list'){const isOwner=await owner();return rpc(id,{tools:[...KTOOLS,...UTOOLS.filter(t=>t.name!=='property_analysis_get'||isOwner)]})}
  if(req.method==='resources/list')return rpc(id,{resources:[]});
  if(req.method==='prompts/list')return rpc(id,{prompts:[]});
  if(req.method!=='tools/call')return error(id,-32601,'method_not_found');
@@ -41,7 +42,7 @@ export const onRequestPost:PagesFunction<Env>=async({request,env})=>{
   const args=params.arguments??{};if(!args||typeof args!=='object'||Array.isArray(args))throw Error('invalid_arguments');
   const a=args as Record<string,unknown>;
   let result:unknown;
-  if(params.name==='property_analysis_get')result=await latestAnalysis(env.HIRO_DATA,a.canonicalId);
+  if(params.name==='property_analysis_get'){if(!(await owner()))return error(id,-32001,'owner_scope_required',403);result=await latestAnalysis(env.HIRO_DATA,a.canonicalId)}
   else if(params.name==='property_observe')result=await observe(env.HIRO_DATA,a);
   else if(params.name==='property_identity_get')result=await identityGet(env.HIRO_DATA,String(a.canonicalId??''));
   else if(params.name==='property_identity_status')result=await identityStats(env.HIRO_DATA);
