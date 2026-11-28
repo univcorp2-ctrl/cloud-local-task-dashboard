@@ -54,6 +54,10 @@ export async function liveSearch(db:D1Database,f:Search,limit=25){
  const [n,rows]=await Promise.all([run<{n:number}>(q.count,q.args),run<Record<string,unknown>>(q.rows,[...q.args,limit,(f.page-1)*limit])]);
  return {total:n[0]?.n??0,rows,page:f.page,limit};
 }
+export async function liveSearchPage(db:D1Database,f:Search,limit=25){
+ const q=liveSql(f);const r=await db.prepare(q.rows).bind(...q.args,limit,(f.page-1)*limit).all<Record<string,unknown>>();
+ if(!r.success)throw Error('query_failed');return r.results??[];
+}
 export async function sourceStats(db:D1Database){const r=await db.prepare("SELECT source,count(*) n,sum(status='active') active,sum(first_seen=date('now','+9 hours')) new_today,max(last_seen) last_seen FROM properties GROUP BY source ORDER BY n DESC").all();if(!r.success)throw Error('query_failed');return r.results??[]}
 export async function liveGet(db:D1Database,id:string,source:string){
  if(!id||id.length>160)throw Error('invalid_id');
