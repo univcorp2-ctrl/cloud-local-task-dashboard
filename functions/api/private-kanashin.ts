@@ -2,6 +2,7 @@
 import { authorize, jsonResponse, type AuthEnv } from '../_lib/auth';
 import { d1Store, renderReport, REPORT_KEY } from '../_lib/kanashin';
 import { searchParams,liveSearch,liveGet,sourceStats } from '../_lib/unified-properties';
+import {latestAnalysis} from '../_lib/property-analysis';
 import { archiveRows,linkArchiveIdentity,renderUnified } from '../_lib/unified-property-render';
 interface Env extends AuthEnv { TCC_STATE?: KVNamespace; HIRO_DATA?: D1Database }
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
@@ -23,7 +24,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
    }else if(detailId&&['property','ranking'].includes(detailSource)){
     filters.page=1;filters.mode=detailSource==='ranking'?'ranked':'inventory';
     const r=await liveGet(env.HIRO_DATA,detailId,detailSource);
-    const row=r?{...r,id:r.property_id??r.rid,source:detailSource==='ranking'?'ranking':r.source,price_text:detailSource==='ranking'?r.price:undefined,yield_text:detailSource==='ranking'?r.yield:undefined,built_text:detailSource==='ranking'?r.built:undefined,score:detailSource==='ranking'?r.total_score:undefined,last_seen:r.last_seen??r.run_at,notion_page:r.notion_page??r.notion_url}:null;
+    const analysis=r&&typeof r.canonical_id==='string'?await latestAnalysis(env.HIRO_DATA,r.canonical_id):null;
+    const row=r?{...r,analysis,id:r.property_id??r.rid,source:detailSource==='ranking'?'ranking':r.source,price_text:detailSource==='ranking'?r.price:undefined,yield_text:detailSource==='ranking'?r.yield:undefined,built_text:detailSource==='ranking'?r.built:undefined,score:detailSource==='ranking'?r.total_score:undefined,last_seen:r.last_seen??r.run_at,notion_page:r.notion_page??r.notion_url}:null;
     html=renderUnified(filters,{total:row?1:0,rows:row?[row]:[],limit:25},stats,undefined,ui);
    }else html=renderUnified(filters,await liveSearch(env.HIRO_DATA,filters),stats,undefined,ui);
  }catch{return jsonResponse({error:'master_query_failed'},503)}
